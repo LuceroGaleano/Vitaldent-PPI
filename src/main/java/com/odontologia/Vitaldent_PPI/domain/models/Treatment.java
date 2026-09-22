@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 
-public class Tratament {
+public class Treatment {
     private UUID tratamentId;
     private String name;
     private String description;
