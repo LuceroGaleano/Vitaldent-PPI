@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.domain.ports;
+package com.odontologia.Vitaldent_PPI.domain.ports.out;
 
 import java.util.UUID;
 
@@ -9,7 +9,7 @@ public interface PayPort {
     public Pay findById(UUID id);
     
     //exists
-    public boolean existisById(UUID id);
+    public boolean existsById(UUID id);
 
     //operation
     public void save(Pay pay);

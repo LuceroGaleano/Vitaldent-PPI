@@ -17,4 +17,5 @@ public class ClinicalRecord {
     private String reasonForConsultation;
     private String record;
     private String diagnostic;
+    private Appointment appointment;
 }

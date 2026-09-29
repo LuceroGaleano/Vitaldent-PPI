@@ -14,4 +14,7 @@ public class Item {
     private UUID itemId;
     private String name;
     private int stock;
+    private boolean active;
+    private Inventory inventory;
+
 }

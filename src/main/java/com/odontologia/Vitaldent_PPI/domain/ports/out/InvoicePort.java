@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.domain.ports;
+package com.odontologia.Vitaldent_PPI.domain.ports.out;
 
 import java.util.UUID;
 

@@ -1,6 +1,7 @@
 package com.odontologia.Vitaldent_PPI.domain.models;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.Getter;
@@ -16,5 +17,5 @@ public class Treatment {
     private String name;
     private String description;
     private BigDecimal cost;
-    //Lista de insumos?
+    private List<TreatmentItem> treatmentItems;
 }
