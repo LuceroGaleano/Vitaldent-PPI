@@ -2,6 +2,8 @@ package com.odontologia.Vitaldent_PPI.domain.models;
 
 import java.util.UUID;
 
+import com.odontologia.Vitaldent_PPI.domain.models.enums.RolUser;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
