@@ -13,5 +13,5 @@ public class TreatmentItem {
     private UUID treatmentItemId;
     private Treatment treatment;
     private Item item;
-    private int quantityUsed; // Cantidad del insumo gastada en el tratamiento
+    private int quantityUsed; 
 }

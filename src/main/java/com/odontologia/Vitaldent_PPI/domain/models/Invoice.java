@@ -15,6 +15,7 @@ import lombok.Setter;
 public class Invoice {
     private UUID invoiceId;
     private LocalDate date;
-    private BigDecimal subtotal;
     private BigDecimal total;
+    private boolean isPaid;
+    private ClinicalRecord clinicalRecord;
 }

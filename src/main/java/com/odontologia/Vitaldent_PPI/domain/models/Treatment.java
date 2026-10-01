@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 
 public class Treatment {
-    private UUID tratamentId;
+    private UUID treatamentId;
     private String name;
     private String description;
     private BigDecimal cost;

@@ -1,6 +1,7 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,23 +10,32 @@ import org.springframework.stereotype.Service;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
+import com.odontologia.Vitaldent_PPI.domain.models.Item;
+import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
+import com.odontologia.Vitaldent_PPI.domain.models.TreatmentItem;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
 import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.AppointmentPort;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.ClinicalRecordPort;
+import com.odontologia.Vitaldent_PPI.domain.ports.out.ItemPort;
+import com.odontologia.Vitaldent_PPI.domain.ports.out.TreatmentPort;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 
 @Service 
-public class CreateClinicalRecrod {
+public class CreateClinicalRecord {
     private final ClinicalRecordPort clinicalRecordPort;
     private final AppointmentPort appointmentPort;
     private final UserPort userPort;
+    private final TreatmentPort treatmentPort;
+    private final ItemPort itemPort;
 
     @Autowired 
-    public CreateClinicalRecrod(ClinicalRecordPort clinicalRecordPort, AppointmentPort appointmentPort, UserPort userPort){
+    public CreateClinicalRecord(ClinicalRecordPort clinicalRecordPort, AppointmentPort appointmentPort, UserPort userPort, TreatmentPort treatmentPort, ItemPort itemPort){
         this.clinicalRecordPort = clinicalRecordPort;
         this.appointmentPort = appointmentPort;
         this.userPort = userPort;
+        this.treatmentPort = treatmentPort;
+        this.itemPort = itemPort;
     }
 
     public void createClinicalRecord(ClinicalRecord record, UUID relatedUserId) throws BusinessException{
@@ -42,6 +52,11 @@ public class CreateClinicalRecrod {
             throw new BusinessException("No se ha encontrado la cita");
         }
 
+        Treatment treatment = treatmentPort.findById(record.getTreatment().getTreatamentId());
+        if(treatment == null){
+            throw new BusinessException("No se ha encontrado el tratamiento");
+        }
+
         User doctor = userPort.findByDocument(appointment.getDoctor().getDocument());
         if(doctor == null){
             throw new BusinessException("No se ha encontrado el doctor");
@@ -49,6 +64,25 @@ public class CreateClinicalRecrod {
 
         if(!doctor.getUserId().equals(relatedUserId)){
             throw new BusinessException("Solo puede crear el historial el doctoe de la cita");
+        }
+
+        //Actualizar el stock de cada insumo
+        List<TreatmentItem> treatmentItems = treatment.getTreatmentItems();
+        if (treatmentItems != null && !treatmentItems.isEmpty()) {
+            for (TreatmentItem treatmentItem : treatmentItems) {
+                Item item = treatmentItem.getItem();
+                int quantityUsed = treatmentItem.getQuantityUsed();
+
+                if (item.getStock() < quantityUsed) {
+                    throw new BusinessException("Stock insuficiente para el insumo: " + item.getName());
+                }
+
+                //Descontar sotck
+                item.setStock(item.getStock() - quantityUsed);
+                
+                // Guardar stock
+                itemPort.update(item);
+            }
         }
 
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);

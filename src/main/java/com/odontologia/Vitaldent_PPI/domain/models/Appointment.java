@@ -18,8 +18,6 @@ public class Appointment {
     private UUID appointmentId;
     private LocalDate date;
     private LocalTime hour;
-    private String reasonForConsultation; //¿Es necesario?
-    private String estado; //¿Estado que es?
     private Patient patient;
     private User doctor;
     private AppointmentStatus appointmentStatus;

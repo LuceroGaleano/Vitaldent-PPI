@@ -18,4 +18,5 @@ public class ClinicalRecord {
     private String record;
     private String diagnostic;
     private Appointment appointment;
+    private Treatment treatment;
 }
