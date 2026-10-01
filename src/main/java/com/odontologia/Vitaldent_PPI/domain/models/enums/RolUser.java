@@ -3,5 +3,6 @@ package com.odontologia.Vitaldent_PPI.domain.models.enums;
 public enum RolUser {
     PATIENT, 
     RECEPTIONIST,
-    DOCTOR
+    DOCTOR,
+    INVENTORY_MANAGER
 }
