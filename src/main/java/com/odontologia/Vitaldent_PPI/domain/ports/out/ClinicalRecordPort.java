@@ -13,6 +13,6 @@ public interface ClinicalRecordPort {
     public boolean existsById(UUID id);
 
     //operation
-    public void save(ClinicalRecord clinicalRecord);
+    public ClinicalRecord save(ClinicalRecord clinicalRecord);
     public void update(ClinicalRecord clinicalRecord);
 }

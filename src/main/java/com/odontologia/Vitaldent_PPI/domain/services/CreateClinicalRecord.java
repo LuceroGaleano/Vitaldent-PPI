@@ -11,6 +11,7 @@ import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
 import com.odontologia.Vitaldent_PPI.domain.models.Item;
+import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 import com.odontologia.Vitaldent_PPI.domain.models.TreatmentItem;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
@@ -28,14 +29,16 @@ public class CreateClinicalRecord {
     private final UserPort userPort;
     private final TreatmentPort treatmentPort;
     private final ItemPort itemPort;
+    private final CreateInvoice createInvoice;
 
     @Autowired 
-    public CreateClinicalRecord(ClinicalRecordPort clinicalRecordPort, AppointmentPort appointmentPort, UserPort userPort, TreatmentPort treatmentPort, ItemPort itemPort){
+    public CreateClinicalRecord(ClinicalRecordPort clinicalRecordPort, AppointmentPort appointmentPort, UserPort userPort, TreatmentPort treatmentPort, ItemPort itemPort, CreateInvoice createInvoice){
         this.clinicalRecordPort = clinicalRecordPort;
         this.appointmentPort = appointmentPort;
         this.userPort = userPort;
         this.treatmentPort = treatmentPort;
         this.itemPort = itemPort;
+        this.createInvoice = createInvoice;
     }
 
     public void createClinicalRecord(ClinicalRecord record, UUID relatedUserId) throws BusinessException{
@@ -88,6 +91,9 @@ public class CreateClinicalRecord {
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
         record.setDate(LocalDate.now());
         record.setAppointment(appointment);
-        clinicalRecordPort.save(record);
+        ClinicalRecord savedRecord = clinicalRecordPort.save(record);
+
+        createInvoice.createInvoiceForClinicalRecord(savedRecord.getClinicalRecordId());
+
     }
 }

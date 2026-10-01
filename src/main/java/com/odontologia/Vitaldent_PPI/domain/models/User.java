@@ -16,8 +16,11 @@ public class User{
     private UUID userId;
     private String userName;
     private String password;
+    private String fullName;
     private String document;
     private String email;
     private String phone; 
+    private String addres;
     private RolUser rol;
+    private UUID patientId;
 }

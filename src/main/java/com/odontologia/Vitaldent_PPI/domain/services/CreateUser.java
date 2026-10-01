@@ -4,16 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
+import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
+import com.odontologia.Vitaldent_PPI.domain.models.enums.RolUser;
+import com.odontologia.Vitaldent_PPI.domain.ports.out.PatientPort;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 
 @Service 
 public class CreateUser{
     private final UserPort userPort;
+    private final PatientPort patientPort;
 
     @Autowired 
-    public CreateUser(UserPort userPort){
+    public CreateUser(UserPort userPort, PatientPort patientPort){
         this.userPort = userPort;
+        this.patientPort = patientPort;
     }
 
     public void createUser(User user) throws BusinessException{
@@ -37,6 +42,24 @@ public class CreateUser{
 
         if(userPort.existsByEmail(user.getEmail())){
             throw new BusinessException("Ya existe un usuario con el mismo correo");
+        }
+
+        if(user.getRol() == RolUser.PATIENT){
+            Patient patient = patientPort.findByDocument(user.getDocument());
+            if(patient == null){
+                Patient newPatient = new Patient();
+                newPatient.setFullName(user.getFullName());
+                newPatient.setDocument(user.getDocument());
+                newPatient.setPhone(user.getPhone());
+                newPatient.setEmail(user.getEmail());
+                newPatient.setAddres(user.getAddres());
+
+                patientPort.save(newPatient);
+                Patient savedPatient = patientPort.findByDocument(user.getDocument());
+                user.setPatientId(savedPatient.getPatientId());
+            }else{
+                user.setPatientId(patient.getPatientId());
+            }
         }
 
         //Finalmente guardamos usuarios
