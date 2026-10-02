@@ -1,5 +1,7 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,7 @@ public class UpdateUser {
         this.patientPort = patientPort;
     }
 
-    public void updateUser(User user) throws BusinessException{
+    public void updateUser(User user, UUID relatedId) throws BusinessException{
         //Validar que el usuario exista
         if(!userPort.existsByDocument(user.getDocument())){
             throw new BusinessException("No existe usuairo con ese documento");
@@ -35,6 +37,18 @@ public class UpdateUser {
         if(userPort.existsByUserNameAndDocumentNot(user.getUserName(), user.getDocument())){
             throw new BusinessException("Nombre de usuario ya existente");
         }
+
+        User relatedUser = userPort.findById(relatedId);
+        if(relatedUser == null){
+            throw new BusinessException("El usuario no esta autenticado");
+        }
+
+        if(user.getRol() != RolUser.RECEPTIONIST){
+            if(!user.getDocument().equals(relatedUser.getDocument())){
+                throw new BusinessException("No puedes actualizar otro usuario diferente al tuyo");
+            }
+        }
+
         if(user.getRol() == RolUser.PATIENT){
             Patient patient = patientPort.findByDocument(user.getDocument());
             if(patient == null){

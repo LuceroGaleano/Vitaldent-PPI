@@ -1,5 +1,7 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,8 @@ public class InactiveItem {
         this.itemPort = itemPort;
     }
 
-    public void inactiveItem(Item item) throws  BusinessException{
+    public void inactiveItem(UUID idItem) throws  BusinessException{
+        Item item = itemPort.findById(idItem);
         if(item == null){
             throw new BusinessException("No se entregado el item");
         }

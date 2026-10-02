@@ -24,7 +24,8 @@ public class CancelAppointment {
         this.userPort = userPort;
     }
 
-    public void cancelAppointment(Appointment appointment, UUID relatedId) throws BusinessException{
+    public void cancelAppointment(UUID idAppointment, UUID relatedId) throws BusinessException{
+        Appointment appointment = appointmentPort.findById(idAppointment);
         if(appointment == null){
             throw new BusinessException("Cita no encontrada");
         }

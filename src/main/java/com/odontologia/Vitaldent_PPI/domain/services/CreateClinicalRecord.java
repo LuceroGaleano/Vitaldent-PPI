@@ -11,7 +11,6 @@ import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
 import com.odontologia.Vitaldent_PPI.domain.models.Item;
-import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 import com.odontologia.Vitaldent_PPI.domain.models.TreatmentItem;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
