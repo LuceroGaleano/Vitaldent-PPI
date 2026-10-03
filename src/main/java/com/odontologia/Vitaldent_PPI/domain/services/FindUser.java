@@ -18,7 +18,7 @@ public class FindUser{
         this.userPort = userPort;
     }
 
-    public User findById(UUID id) throws NotFoundException{
+    public User findUserById(UUID id) throws NotFoundException{
         User user = userPort.findById(id);
         
         if(user == null){
@@ -28,7 +28,7 @@ public class FindUser{
         return user;
     }
 
-    public User findByDocument(String document) throws NotFoundException{
+    public User findUserByDocument(String document) throws NotFoundException{
         User user = userPort.findByDocument(document);
 
         if(user == null){

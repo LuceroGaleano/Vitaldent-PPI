@@ -18,7 +18,7 @@ public class FindPatient{
         this.patientPort = patientPort;
     }
 
-    public Patient findById(UUID id) throws NotFoundException{
+    public Patient findPatientById(UUID id) throws NotFoundException{
         Patient patient = patientPort.findById(id);
 
         if(patient == null){
@@ -28,7 +28,7 @@ public class FindPatient{
         return patient;
     }
 
-    public Patient findByDocument(String document) throws NotFoundException{
+    public Patient findPatientByDocument(String document) throws NotFoundException{
         Patient patient = patientPort.findByDocument(document);
 
         if(patient == null){

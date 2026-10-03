@@ -1,0 +1,195 @@
+package com.odontologia.Vitaldent_PPI.application.usecases;
+
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
+import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
+import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
+import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
+import com.odontologia.Vitaldent_PPI.domain.models.Invoice;
+import com.odontologia.Vitaldent_PPI.domain.models.Patient;
+import com.odontologia.Vitaldent_PPI.domain.models.Pay;
+import com.odontologia.Vitaldent_PPI.domain.models.User;
+import com.odontologia.Vitaldent_PPI.domain.services.CancelAppointment;
+import com.odontologia.Vitaldent_PPI.domain.services.CloseAppointment;
+import com.odontologia.Vitaldent_PPI.domain.services.CreateAppoitment;
+import com.odontologia.Vitaldent_PPI.domain.services.CreatePatient;
+import com.odontologia.Vitaldent_PPI.domain.services.CreatePay;
+import com.odontologia.Vitaldent_PPI.domain.services.DeletePatient;
+import com.odontologia.Vitaldent_PPI.domain.services.DeleteUser;
+import com.odontologia.Vitaldent_PPI.domain.services.FindAppointment;
+import com.odontologia.Vitaldent_PPI.domain.services.FindClinicalRecord;
+import com.odontologia.Vitaldent_PPI.domain.services.FindInvoice;
+import com.odontologia.Vitaldent_PPI.domain.services.FindPatient;
+import com.odontologia.Vitaldent_PPI.domain.services.FindPay;
+import com.odontologia.Vitaldent_PPI.domain.services.FindUser;
+
+@Service
+public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domain.ports.in.ReceptionistUseCase{
+    @Autowired
+    private final CreateAppoitment createAppoitment;
+
+    @Autowired
+    private final CreatePatient createPatient;
+
+    @Autowired
+    private final CreatePay createPay;
+
+    @Autowired
+    private final DeletePatient deletePatient;
+
+    @Autowired
+    private final DeleteUser deleteUser;
+
+    @Autowired
+    private final FindAppointment findAppointment;
+
+    @Autowired
+    private final FindClinicalRecord findClinicalRecord;
+
+    @Autowired
+    private final FindInvoice findInvoice;
+
+    @Autowired
+    private final FindPatient findPatient;
+
+    @Autowired
+    private final FindPay findPay;
+
+    @Autowired 
+    private final FindUser findUser;
+
+    @Autowired
+    private final CancelAppointment cancelAppointment;
+
+    @Autowired 
+    private final CloseAppointment closeAppointment;
+
+    public ReceptionistUseCase(CreateAppoitment createAppoitment,
+        CreatePatient createPatient,
+        CreatePay createPay,
+        DeletePatient deletePatient,
+        DeleteUser deleteUser,
+        FindAppointment findAppointment,
+        FindClinicalRecord findClinicalRecord,
+        FindInvoice findInvoice,
+        FindPatient findPatient,
+        FindPay findPay,
+        FindUser findUser,
+        CancelAppointment cancelAppointment,
+        CloseAppointment closeAppointment
+    ){
+        this.createAppoitment = createAppoitment;
+        this.createPatient = createPatient;
+        this.createPay = createPay;
+        this.deletePatient = deletePatient;
+        this.deleteUser = deleteUser;
+        this.findAppointment = findAppointment;
+        this.findClinicalRecord = findClinicalRecord;
+        this.findInvoice = findInvoice;
+        this.findPatient = findPatient;
+        this.findPay = findPay;
+        this.findUser = findUser;
+        this.cancelAppointment = cancelAppointment;
+        this.closeAppointment = closeAppointment;
+    }
+
+    @Override
+    public void createAppoitment(Appointment appointment) throws BusinessException{
+        createAppoitment.createAppoitment(appointment);
+    }
+
+    @Override 
+    public void createPatient(Patient patient) throws BusinessException{
+        createPatient.createPatient(patient);
+    }
+
+    @Override
+    public void createPay(Pay pay) throws BusinessException{
+        createPay.createPay(pay);
+    }
+    
+    @Override 
+    public void deletePatient(String document) throws BusinessException{
+        deletePatient.deletePatient(document);
+    }
+
+    @Override 
+    public void deleteUser(String document) throws BusinessException{
+        deleteUser.deleteUser(document);
+    }
+
+    @Override 
+    public Appointment findAppointmentById(UUID id) throws NotFoundException{
+        return findAppointment.findAppointmentById(id);
+    }
+
+    @Override 
+    public  List<Appointment> findAppointmentByPatient(String patientDocument) throws NotFoundException{
+        return findAppointment.findAppointmentByPatient(patientDocument);
+    }
+
+    @Override 
+    public ClinicalRecord findRecordById(UUID id) throws NotFoundException{
+        return findClinicalRecord.findRecordById(id);
+    }
+
+    @Override 
+    public ClinicalRecord findRecordByAppointmentID(UUID idAppointment) throws NotFoundException{
+        return findClinicalRecord.findRecordByAppointmentID(idAppointment);
+    }
+
+    @Override
+    public  List<ClinicalRecord> findRecordByPatientDocument(String documentPatient) throws NotFoundException{
+        return findClinicalRecord.findRecordByPatientDocument(documentPatient);
+    }
+
+    @Override
+    public Invoice findInvoiceById(UUID id) throws NotFoundException{
+        return findInvoice.findInvoiceById(id);
+    }
+
+    @Override 
+    public Invoice findInvoiceByClinicalRecordId(UUID idClinicalRecord) throws NotFoundException{
+        return findInvoice.findInvoiceByClinicalRecordId(idClinicalRecord);
+    }
+
+    @Override 
+    public List<Invoice> findInvoiceByPatientId(UUID idPatient) throws NotFoundException{
+        return findInvoice.findInvoiceByPatientId(idPatient);
+    }
+
+    @Override 
+    public Patient findPatientByDocument(String document) throws NotFoundException{
+        return findPatient.findPatientByDocument(document);
+    }
+
+    @Override 
+    public Pay findPayById(UUID id) throws NotFoundException{
+        return findPay.findPayById(id);
+    }
+
+    @Override 
+    public List<Pay> findPayByInvoiceId(UUID idInvoice) throws NotFoundException{
+        return findPay.findPayByInvoiceId(idInvoice);
+    }
+
+    @Override  
+    public User findUserByDocument(String document) throws NotFoundException{
+        return findUser.findUserByDocument(document);
+    }
+
+    @Override 
+    public void cancelAppointment(UUID idAppointment, UUID relatedId) throws BusinessException{
+        cancelAppointment.cancelAppointment(idAppointment, relatedId);
+    }
+
+    @Override 
+    public void closeAppointment(UUID idAppointment) throws BusinessException{
+        closeAppointment.closeAppointment(idAppointment);
+    }
+}

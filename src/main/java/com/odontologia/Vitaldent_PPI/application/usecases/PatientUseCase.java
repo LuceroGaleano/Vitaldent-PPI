@@ -42,8 +42,8 @@ public class PatientUseCase implements com.odontologia.Vitaldent_PPI.domain.port
     }
 
     @Override
-    public List<Appointment> findByPatient(String patientDocument) throws NotFoundException{
-        return findAppointment.findByPatient(patientDocument);
+    public List<Appointment> findAppointmentByPatient(String patientDocument) throws NotFoundException{
+        return findAppointment.findAppointmentByPatient(patientDocument);
     }
 
     @Override

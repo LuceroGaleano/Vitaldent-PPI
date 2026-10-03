@@ -19,7 +19,7 @@ public class FindPay {
         this.payPort = payPort;
     }
 
-    public Pay findById(UUID id) throws NotFoundException{
+    public Pay findPayById(UUID id) throws NotFoundException{
         Pay pay = payPort.findById(id);
         if(pay == null){
             throw new  NotFoundException("No se ha encontrado el pago");
@@ -27,7 +27,7 @@ public class FindPay {
         return pay;
     }
 
-    public List<Pay> findByInvoiceId(UUID idInvoice) throws NotFoundException{
+    public List<Pay> findPayByInvoiceId(UUID idInvoice) throws NotFoundException{
         List<Pay> pays = payPort.findByInvoiceId(idInvoice);
         if(pays == null || pays.isEmpty()){
             throw new NotFoundException("La factura no tiene pagos registrados");

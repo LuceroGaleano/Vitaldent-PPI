@@ -19,7 +19,7 @@ public class FindTreatment {
         this.treatmentPort = treatmentPort;
     }
 
-    public Treatment findById(UUID id) throws NotFoundException{
+    public Treatment findTreatmentById(UUID id) throws NotFoundException{
         Treatment treatment = treatmentPort.findById(id);
         if(treatment == null){
             throw new NotFoundException("No se ha encontrado el tratamiento");
@@ -27,7 +27,7 @@ public class FindTreatment {
         return treatment;
     }
 
-        public List<Treatment> findAll() throws NotFoundException {
+        public List<Treatment> findTreatmentAll() throws NotFoundException {
             List<Treatment> treatments = treatmentPort.findAll();
             if (treatments.isEmpty()) {
                 throw new NotFoundException("No hay tratamientos registrados en el sistema");

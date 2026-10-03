@@ -9,8 +9,8 @@ import com.odontologia.Vitaldent_PPI.domain.models.Item;
 
 public interface InventoryManagerUseCase {
     void createItem(Item item) throws BusinessException;
-    Item findById(UUID id) throws NotFoundException;
-    List<Item> findAll() throws NotFoundException;
+    Item findItemById(UUID id) throws NotFoundException;
+    List<Item> findItemAll() throws NotFoundException;
     void activeItem(UUID idItem) throws  BusinessException;
     void inactiveItem(UUID idItem) throws  BusinessException;
     void updateItem(Item item) throws BusinessException;

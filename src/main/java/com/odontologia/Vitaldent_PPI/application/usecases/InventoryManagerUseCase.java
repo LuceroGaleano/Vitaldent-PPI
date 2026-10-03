@@ -51,13 +51,13 @@ public class InventoryManagerUseCase implements  com.odontologia.Vitaldent_PPI.d
     }
 
     @Override 
-    public Item findById(UUID id) throws NotFoundException{
-        return findItem.findById(id);
+    public Item findItemById(UUID id) throws NotFoundException{
+        return findItem.findItemById(id);
     }
 
     @Override 
-    public List<Item> findAll() throws NotFoundException{
-        return findItem.findAll();
+    public List<Item> findItemAll() throws NotFoundException{
+        return findItem.findItemAll();
     }
 
     @Override 
