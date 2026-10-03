@@ -58,7 +58,7 @@ public class UpdateUser {
             patient.setFullName(user.getFullName());
             patient.setPhone(user.getPhone());
             patient.setEmail(user.getEmail());
-            patient.setAddres(user.getAddres());
+            patient.setAddress(user.getAddress());
             
             patientPort.update(patient);
             user.setPatientId(patient.getPatientId());

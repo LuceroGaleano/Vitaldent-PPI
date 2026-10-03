@@ -52,7 +52,8 @@ public class CreateUser{
                 newPatient.setDocument(user.getDocument());
                 newPatient.setPhone(user.getPhone());
                 newPatient.setEmail(user.getEmail());
-                newPatient.setAddres(user.getAddres());
+                newPatient.setAddress(user.getAddress());
+                newPatient.setBirthDate(user.getBirthDate());
 
                 patientPort.save(newPatient);
                 Patient savedPatient = patientPort.findByDocument(user.getDocument());
