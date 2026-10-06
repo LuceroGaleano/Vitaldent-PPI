@@ -40,12 +40,7 @@ public class SendReminder {
         }
 
         String message = "Recuerda tu cita el " + appointment.getDate() + "a las" + appointment.getHour();
-
-        if (channel == ReminderChannel.SMS){
-            notificationPort.sendSms(appointment.getPatient().getPhone(), message);
-        } else{
-            notificationPort.sendEmail(appointment.getPatient().getEmail(), "Recordatorio de cita", message);
-        }
+        notificationPort.sendEmail(appointment.getPatient().getEmail(), "Recordatorio de cita", message);
 
         Reminder reminder = new Reminder();
         reminder.setAppointmentId(appointmentId);
