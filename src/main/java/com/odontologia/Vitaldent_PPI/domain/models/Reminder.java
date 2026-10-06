@@ -17,5 +17,5 @@ public class Reminder {
     private UUID reminderId;
     private UUID appointmentId;
     private LocalDate date;
-    private ReminderChannel chanel;
+    private ReminderChannel channel;
 }

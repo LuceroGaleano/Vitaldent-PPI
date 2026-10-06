@@ -45,7 +45,7 @@ public class SendReminder {
         Reminder reminder = new Reminder();
         reminder.setAppointmentId(appointmentId);
         reminder.setDate(LocalDate.now());
-        reminder.setChanel(channel);
+        reminder.setChannel(channel);
         reminderPort.save(reminder);
     }
 }
