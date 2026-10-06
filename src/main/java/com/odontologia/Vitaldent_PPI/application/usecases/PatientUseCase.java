@@ -47,8 +47,8 @@ public class PatientUseCase implements com.odontologia.Vitaldent_PPI.domain.port
     }
 
     @Override
-    public void scheduleAppointment(UUID idAppointment) throws BusinessException{
-        scheduleAppointment.scheduleAppointment(idAppointment);
+    public void scheduleAppointment(UUID idAppointment, String patientDocument) throws BusinessException{
+        scheduleAppointment.scheduleAppointment(idAppointment, patientDocument);
     }
 
     @Override 

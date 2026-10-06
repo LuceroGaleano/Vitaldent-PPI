@@ -49,6 +49,14 @@ public class CreateClinicalRecord {
             throw new BusinessException("El id del usuario esta vacio");
         }
 
+        if (record.getAppointment() == null || record.getAppointment().getAppointmentId() == null) {
+            throw new BusinessException("La cita asociada es obligatoria");
+        }
+
+        if (record.getTreatment() == null || record.getTreatment().getTreatamentId() == null) {
+            throw new BusinessException("El tratamiento asociado es obligatorio");
+        }
+
         Appointment appointment = appointmentPort.findById(record.getAppointment().getAppointmentId());
         if(appointment == null){
             throw new BusinessException("No se ha encontrado la cita");
@@ -90,6 +98,7 @@ public class CreateClinicalRecord {
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
         record.setDate(LocalDate.now());
         record.setAppointment(appointment);
+        record.setTreatment(treatment);
         ClinicalRecord savedRecord = clinicalRecordPort.save(record);
 
         createInvoice.createInvoiceForClinicalRecord(savedRecord.getClinicalRecordId());

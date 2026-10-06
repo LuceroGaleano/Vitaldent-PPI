@@ -92,5 +92,4 @@ public class DoctorUseCase implements com.odontologia.Vitaldent_PPI.domain.ports
     public void updateTreatment(Treatment treatment) throws BusinessException{
         updateTreatment.updateTreatment(treatment);
     }
-
 }

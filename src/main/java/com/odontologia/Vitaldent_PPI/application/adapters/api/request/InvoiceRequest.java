@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -13,6 +14,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InvoiceRequest {
+    private UUID invoiceId;
+
     @NotNull(message = "La fecha de la factura es obligatoria")
     @PastOrPresent(message = "La fecha de la factura no puede ser futura")
     private LocalDate date;
@@ -25,5 +28,6 @@ public class InvoiceRequest {
     private Boolean isPaid;
 
     @NotNull(message = "La historia clínica asociada es obligatoria")
-    private UUID clinicalRecordId;
+    @Valid
+    private ClinicalRecordRequest clinicalRecord;
 }

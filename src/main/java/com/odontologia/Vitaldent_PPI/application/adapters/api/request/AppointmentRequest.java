@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,16 +15,20 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AppointmentRequest {
+    private UUID appointmentId;
+
     @NotNull(message = "La fecha de la cita es obligatoria")
     private LocalDate date;
 
     @NotNull(message = "La hora de la cita es obligatoria")
     private LocalTime hour;
 
-    private UUID patientId;
+    @Valid
+    private PatientRequest patient;
 
     @NotNull(message = "El doctor es obligatorio")
-    private UUID doctorId;
+    @Valid
+    private UserRequest doctor;
 
     private AppointmentStatus appointmentStatus;
 }

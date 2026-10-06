@@ -23,13 +23,17 @@ public class ScheduleAppointment {
         this.patientPort = patientPort;
     }
 
-    public void scheduleAppointment(UUID idAppointment) throws BusinessException{
+    public void scheduleAppointment(UUID idAppointment, String patientDocument) throws BusinessException{
         Appointment appointment = appointmentPort.findById(idAppointment);
         if(appointment == null){
             throw new BusinessException("Cita no encontrada");
         }
 
-        Patient patient = patientPort.findByDocument(appointment.getPatient().getDocument());
+        if (patientDocument == null || patientDocument.isBlank()) {
+            throw new BusinessException("El documento del paciente es obligatorio");
+        }
+
+        Patient patient = patientPort.findByDocument(patientDocument);
 
         if(patient == null){
             throw new BusinessException("No se ha registrado el paciente");

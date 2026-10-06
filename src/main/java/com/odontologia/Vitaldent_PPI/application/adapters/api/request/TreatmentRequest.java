@@ -2,6 +2,7 @@ package com.odontologia.Vitaldent_PPI.application.adapters.api.request;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +14,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TreatmentRequest {
+    private UUID treatmentId;
+
     @NotBlank(message = "El nombre del tratamiento es obligatorio")
     private String name;
 

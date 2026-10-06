@@ -2,6 +2,7 @@ package com.odontologia.Vitaldent_PPI.application.adapters.api.request;
 
 import java.util.UUID;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ItemRequest {
+    private UUID itemId;
+
     @NotBlank(message = "El nombre del insumo es obligatorio")
     private String name;
 
@@ -21,5 +24,6 @@ public class ItemRequest {
     @NotNull(message = "Debe indicar si el insumo está activo")
     private Boolean active;
 
-    private UUID inventoryId;
+    @Valid
+    private InventoryRequest inventory;
 }
