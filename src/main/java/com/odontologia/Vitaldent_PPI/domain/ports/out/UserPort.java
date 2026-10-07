@@ -8,6 +8,7 @@ public interface UserPort {
     //find
     public User findById(UUID id);
     public User findByDocument(String document);
+    public User findByUserName(String userName);
     
     //exists
     public boolean existsById(UUID id);
