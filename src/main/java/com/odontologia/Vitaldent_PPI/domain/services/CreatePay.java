@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -18,7 +17,6 @@ public class CreatePay {
     private final PayPort payPort;
     private final InvoicePort invoicePort;
 
-    @Autowired
     public CreatePay(PayPort payPort, InvoicePort invoicePort){
         this.payPort = payPort;
         this.invoicePort = invoicePort;

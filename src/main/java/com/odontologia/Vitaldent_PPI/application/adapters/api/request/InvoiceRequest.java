@@ -2,7 +2,6 @@ package com.odontologia.Vitaldent_PPI.application.adapters.api.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InvoiceRequest {
-    private UUID invoiceId;
 
     @NotNull(message = "La fecha de la factura es obligatoria")
     @PastOrPresent(message = "La fecha de la factura no puede ser futura")

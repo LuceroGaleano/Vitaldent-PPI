@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.ItemEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.TreatmentEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.TreatmentItemEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.ItemRepository;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.TreatmentRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.ItemEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.TreatmentEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.TreatmentItemEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.ItemRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.TreatmentRepository;
 import com.odontologia.Vitaldent_PPI.domain.models.Item;
 import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 import com.odontologia.Vitaldent_PPI.domain.models.TreatmentItem;

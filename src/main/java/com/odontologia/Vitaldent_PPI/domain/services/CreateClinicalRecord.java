@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -30,7 +29,6 @@ public class CreateClinicalRecord {
     private final ItemPort itemPort;
     private final CreateInvoice createInvoice;
 
-    @Autowired 
     public CreateClinicalRecord(ClinicalRecordPort clinicalRecordPort, AppointmentPort appointmentPort, UserPort userPort, TreatmentPort treatmentPort, ItemPort itemPort, CreateInvoice createInvoice){
         this.clinicalRecordPort = clinicalRecordPort;
         this.appointmentPort = appointmentPort;

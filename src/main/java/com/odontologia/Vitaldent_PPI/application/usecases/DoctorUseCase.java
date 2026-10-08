@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.application.usecases;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -20,22 +19,16 @@ import com.odontologia.Vitaldent_PPI.domain.services.UpdateTreatment;
 
 @Service 
 public class DoctorUseCase implements com.odontologia.Vitaldent_PPI.domain.ports.in.DoctorUseCase{
-    @Autowired 
     private final CreateClinicalRecord createClinicalRecord;
 
-    @Autowired
     private final CreateTreatment createTreatment;
 
-    @Autowired
     private final FindAppointment findAppointment;
 
-    @Autowired
     private final FindClinicalRecord findClinicalRecord;
 
-    @Autowired
     private final FindTreatment findTreatment;
 
-    @Autowired
     private final UpdateTreatment updateTreatment;
 
     public DoctorUseCase(CreateClinicalRecord createClinicalRecord,

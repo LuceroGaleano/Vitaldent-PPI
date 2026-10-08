@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -22,7 +21,6 @@ public class SendReminder {
     private final ReminderPort reminderPort;
     private final NotificationPort notificationPort;
 
-    @Autowired
     public SendReminder(AppointmentPort appointmentPort, ReminderPort reminderPort, NotificationPort notificationPort) {
         this.appointmentPort = appointmentPort;
         this.reminderPort = reminderPort;

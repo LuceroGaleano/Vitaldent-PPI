@@ -1,12 +1,12 @@
-package com.odontologia.Vitaldent_PPI.infrastructure.notification;
+package com.odontologia.Vitaldent_PPI.infrastructure;
 
-import app.domain.ports.NotificationPort;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+
 @Component
-public class EmailNotificationAdapter implements NotificationPort {
+public class EmailNotificationAdapter implements com.odontologia.Vitaldent_PPI.domain.ports.out.NotificationPort {
 
     private final JavaMailSender mailSender;
 

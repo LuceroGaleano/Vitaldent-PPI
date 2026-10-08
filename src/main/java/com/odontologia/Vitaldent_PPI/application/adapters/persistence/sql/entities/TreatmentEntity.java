@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities;
 
 import java.math.BigDecimal;
 import java.util.List;

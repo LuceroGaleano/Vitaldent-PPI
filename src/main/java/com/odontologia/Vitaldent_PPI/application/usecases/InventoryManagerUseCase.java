@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.application.usecases;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -17,19 +16,14 @@ import com.odontologia.Vitaldent_PPI.domain.services.UpdateItem;
 
 @Service
 public class InventoryManagerUseCase implements  com.odontologia.Vitaldent_PPI.domain.ports.in.InventoryManagerUseCase{
-    @Autowired
     private final CreateItem createItem;
 
-    @Autowired
     private final FindItem findItem;
 
-    @Autowired
     private final ActiveItem activeItem;
 
-    @Autowired
     private final InactiveItem inactiveItem;
 
-    @Autowired
     private final UpdateItem updateItem;
 
     public InventoryManagerUseCase(CreateItem createItem,

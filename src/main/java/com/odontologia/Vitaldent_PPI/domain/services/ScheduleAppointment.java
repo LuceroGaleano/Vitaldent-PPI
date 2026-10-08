@@ -2,7 +2,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -17,7 +16,6 @@ public class ScheduleAppointment {
     private final AppointmentPort appointmentPort;
     private final PatientPort patientPort;
 
-    @Autowired 
     public ScheduleAppointment(AppointmentPort appointmentPort, PatientPort patientPort){
         this.appointmentPort = appointmentPort;
         this.patientPort = patientPort;

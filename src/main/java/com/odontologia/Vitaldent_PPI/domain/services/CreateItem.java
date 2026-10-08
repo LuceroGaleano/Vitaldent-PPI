@@ -1,6 +1,5 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -14,7 +13,6 @@ public class CreateItem {
     private final ItemPort itemPort;
     private final InventoryPort inventoryPort;
 
-    @Autowired 
     public CreateItem(ItemPort itemPort, InventoryPort inventoryPort){
         this.itemPort = itemPort;
         this.inventoryPort = inventoryPort;

@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.AppointmentRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.PatientRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.PayRequest;
+import com.odontologia.Vitaldent_PPI.application.adapters.api.request.UserRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.AppointmentResponse;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.ClinicalRecordResponse;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.InvoiceResponse;
@@ -27,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequestMapping("/receptionist")
 public class ReceptionistController {
@@ -35,6 +37,8 @@ public class ReceptionistController {
     public ReceptionistController(ReceptionistUseCase receptionistUseCase) {
         this.receptionistUseCase = receptionistUseCase;
     }
+
+    
 
     //-Appointment-------------------------------------------------------------------
     @PostMapping("/appointment")
@@ -86,6 +90,15 @@ public class ReceptionistController {
     public ResponseEntity<Void> deletePatient(@PathVariable String document) {
         receptionistUseCase.deletePatient(document);
         return ResponseEntity.noContent().build();
+    }
+
+     //-user------------------------------------------------------------------
+
+    @PostMapping("/user")
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest request) {
+        User user = toUser(request);
+        receptionistUseCase.createUser(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(toUserResponse(user));
     }
 
     @DeleteMapping("/user/{document}")
@@ -213,7 +226,6 @@ public class ReceptionistController {
         pay.setMethodPayment(request.getMethodPayment());
         pay.setState(request.getState());
         Invoice invoice = new Invoice();
-        invoice.setInvoiceId(request.getInvoice().getInvoiceId());
         pay.setInvoice(invoice);
         return pay;
     }

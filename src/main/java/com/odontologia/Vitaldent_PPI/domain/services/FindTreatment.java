@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
@@ -14,7 +13,6 @@ import com.odontologia.Vitaldent_PPI.domain.ports.out.TreatmentPort;
 public class FindTreatment {
     private final TreatmentPort treatmentPort;
 
-    @Autowired 
     public FindTreatment(TreatmentPort treatmentPort){
         this.treatmentPort = treatmentPort;
     }

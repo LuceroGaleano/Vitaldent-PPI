@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,12 +8,12 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.AppointmentEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.PatientEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.UserEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.AppointmentRepository;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.PatientRepository;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.UserRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.AppointmentEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.PatientEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.UserEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.AppointmentRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.PatientRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.UserRepository;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.models.User;

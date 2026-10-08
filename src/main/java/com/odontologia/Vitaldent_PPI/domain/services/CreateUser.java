@@ -1,6 +1,5 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -15,7 +14,6 @@ public class CreateUser{
     private final UserPort userPort;
     private final PatientPort patientPort;
 
-    @Autowired 
     public CreateUser(UserPort userPort, PatientPort patientPort){
         this.userPort = userPort;
         this.patientPort = patientPort;
@@ -28,9 +26,7 @@ public class CreateUser{
         }
 
         //Validamos credenciales unicas del usuario
-        if(userPort.existsById(user.getUserId())){
-            throw  new BusinessException("Ya existe un usuario con el mismo ID");
-        }
+
 
         if(userPort.existsByDocument(user.getDocument())){
             throw new BusinessException("Ya existe un usuario con el mismo documento");

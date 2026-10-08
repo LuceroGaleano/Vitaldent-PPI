@@ -1,9 +1,9 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql;
 
 import org.springframework.stereotype.Service;
 
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.InventoryEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.InventoryRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.InventoryEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.InventoryRepository;
 import com.odontologia.Vitaldent_PPI.domain.models.Inventory;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.InventoryPort;
 

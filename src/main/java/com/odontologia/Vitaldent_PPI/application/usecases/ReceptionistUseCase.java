@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.application.usecases;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -19,6 +18,7 @@ import com.odontologia.Vitaldent_PPI.domain.services.CloseAppointment;
 import com.odontologia.Vitaldent_PPI.domain.services.CreateAppoitment;
 import com.odontologia.Vitaldent_PPI.domain.services.CreatePatient;
 import com.odontologia.Vitaldent_PPI.domain.services.CreatePay;
+import com.odontologia.Vitaldent_PPI.domain.services.CreateUser;
 import com.odontologia.Vitaldent_PPI.domain.services.DeletePatient;
 import com.odontologia.Vitaldent_PPI.domain.services.DeleteUser;
 import com.odontologia.Vitaldent_PPI.domain.services.FindAppointment;
@@ -30,47 +30,37 @@ import com.odontologia.Vitaldent_PPI.domain.services.FindUser;
 
 @Service
 public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domain.ports.in.ReceptionistUseCase{
-    @Autowired
     private final CreateAppoitment createAppoitment;
 
-    @Autowired
     private final CreatePatient createPatient;
 
-    @Autowired
+    private final CreateUser createUser;
+
     private final CreatePay createPay;
 
-    @Autowired
     private final DeletePatient deletePatient;
 
-    @Autowired
     private final DeleteUser deleteUser;
 
-    @Autowired
     private final FindAppointment findAppointment;
 
-    @Autowired
     private final FindClinicalRecord findClinicalRecord;
 
-    @Autowired
     private final FindInvoice findInvoice;
 
-    @Autowired
     private final FindPatient findPatient;
 
-    @Autowired
     private final FindPay findPay;
 
-    @Autowired 
     private final FindUser findUser;
 
-    @Autowired
     private final CancelAppointment cancelAppointment;
 
-    @Autowired 
     private final CloseAppointment closeAppointment;
 
     public ReceptionistUseCase(CreateAppoitment createAppoitment,
         CreatePatient createPatient,
+        CreateUser createUser,
         CreatePay createPay,
         DeletePatient deletePatient,
         DeleteUser deleteUser,
@@ -96,6 +86,7 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
         this.findUser = findUser;
         this.cancelAppointment = cancelAppointment;
         this.closeAppointment = closeAppointment;
+        this.createUser = createUser;
     }
 
     @Override
@@ -106,6 +97,11 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
     @Override 
     public void createPatient(Patient patient) throws BusinessException{
         createPatient.createPatient(patient);
+    }
+
+    @Override 
+    public void createUser(User user) throws BusinessException{
+        createUser.createUser(user);
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -17,7 +16,6 @@ public class UpdateUser {
     private final UserPort userPort;
     private final PatientPort patientPort;
 
-    @Autowired 
     public UpdateUser(UserPort userPort, PatientPort patientPort){
         this.userPort = userPort;
         this.patientPort = patientPort;

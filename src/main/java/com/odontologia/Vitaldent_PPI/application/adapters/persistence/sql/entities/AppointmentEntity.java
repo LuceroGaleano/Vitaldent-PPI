@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,6 +8,8 @@ import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,13 +35,14 @@ public class AppointmentEntity {
     private LocalTime hour;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id")
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     private PatientEntity patient;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id")
+    @JoinColumn(name = "doctor_id", referencedColumnName = "user_id")
     private UserEntity doctor;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "appointment_status")
     private AppointmentStatus appointmentStatus;
 }

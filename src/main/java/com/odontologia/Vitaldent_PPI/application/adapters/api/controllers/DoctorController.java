@@ -122,7 +122,6 @@ public class DoctorController {
         clinical.setRecord(req.getRecord());
         clinical.setDiagnostic(req.getDiagnostic());
         Appointment appointment = new Appointment();
-        appointment.setAppointmentId(req.getAppointment().getAppointmentId());
         clinical.setAppointment(appointment);
 
         Treatment treatment = new Treatment();
@@ -188,7 +187,6 @@ public class DoctorController {
 
     private Item toItem(ItemRequest request) {
         Item item = new Item();
-        item.setItemId(request.getItemId());
         item.setName(request.getName());
         if (request.getStock() != null) {
             item.setStock(request.getStock());

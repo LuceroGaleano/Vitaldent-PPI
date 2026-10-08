@@ -2,7 +2,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -13,7 +12,6 @@ import com.odontologia.Vitaldent_PPI.domain.ports.out.ItemPort;
 public class InactiveItem {
     private final ItemPort itemPort;
 
-    @Autowired 
     public InactiveItem(ItemPort itemPort){
         this.itemPort = itemPort;
     }

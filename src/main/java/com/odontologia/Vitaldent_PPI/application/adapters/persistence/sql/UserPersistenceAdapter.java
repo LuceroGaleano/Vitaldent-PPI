@@ -1,13 +1,13 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql;
 
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.PatientEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.UserEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.PatientRepository;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.UserRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.PatientEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.UserEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.PatientRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.UserRepository;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 
@@ -94,6 +94,11 @@ public class UserPersistenceAdapter implements UserPort {
     @Override 
     public User findByDocument(String document){
         return toModel(userRepository.findByDocument(document));
+    }
+
+    @Override
+    public User findByUserName(String userName){
+        return toModel(userRepository.findByUserName(userName));
     }
 
     private User toModel(UserEntity e){

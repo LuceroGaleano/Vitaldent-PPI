@@ -68,13 +68,11 @@ public class InventoryManagerController {
     // -Mappers-------------------------------------------------------------------
     private Item toItem(ItemRequest request) {
         Item item = new Item();
-        item.setItemId(request.getItemId());
         item.setName(request.getName());
         item.setStock(request.getStock());
         item.setActive(request.getActive());
         if (request.getInventory() != null) {
             Inventory inventory = new Inventory();
-            inventory.setInventoryID(request.getInventory().getInventoryID());
             inventory.setUpdateDate(request.getInventory().getUpdateDate());
             item.setInventory(inventory);
         }

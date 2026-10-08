@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.InvoiceEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.PayEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.InvoiceRepository;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.PayRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.InvoiceEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.PayEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.InvoiceRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.PayRepository;
 import com.odontologia.Vitaldent_PPI.domain.models.Invoice;
 import com.odontologia.Vitaldent_PPI.domain.models.Pay;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.PayPort;

@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -14,8 +14,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Getter 
+@Setter 
 @Entity
 @Table(name = "clinical_records")
 public class ClinicalRecordEntity {

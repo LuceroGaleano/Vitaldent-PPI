@@ -1,11 +1,11 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql;
 
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.PatientEntity;
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories.PatientRepository;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.PatientEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.PatientRepository;
 import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.PatientPort;
 

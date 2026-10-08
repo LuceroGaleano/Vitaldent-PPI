@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -21,7 +20,6 @@ public class CreateInvoice {
     private final ClinicalRecordPort clinicalRecordPort;
     private final TreatmentPort treatmentPort;
 
-    @Autowired 
     public CreateInvoice(InvoicePort invoicePort, ClinicalRecordPort clinicalRecordPort, TreatmentPort treatmentPort){
         this.invoicePort = invoicePort;
         this.clinicalRecordPort = clinicalRecordPort;

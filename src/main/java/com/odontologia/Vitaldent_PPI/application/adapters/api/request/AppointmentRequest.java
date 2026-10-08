@@ -2,7 +2,6 @@ package com.odontologia.Vitaldent_PPI.application.adapters.api.request;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.UUID;
 
 import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 
@@ -15,7 +14,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AppointmentRequest {
-    private UUID appointmentId;
 
     @NotNull(message = "La fecha de la cita es obligatoria")
     private LocalDate date;

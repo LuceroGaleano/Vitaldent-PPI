@@ -1,10 +1,10 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories;
 
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.PatientEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.PatientEntity;
 
 public interface PatientRepository extends JpaRepository<PatientEntity, UUID> {
     PatientEntity findByDocument(String document);

@@ -1,4 +1,4 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities;
 
 import java.util.Date;
 import java.util.UUID;
@@ -16,10 +16,11 @@ import lombok.Setter;
 @Getter 
 @Setter 
 @Entity
-@Table(name = "Patients")
+@Table(name = "patients")
 public class PatientEntity {
     @Id 
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "patient_id", nullable = false, updatable = false)
     private UUID patientId = UUID.randomUUID();
 
     @Column (name = "full_name")

@@ -17,6 +17,8 @@ public interface ReceptionistUseCase{
 
     void createPatient(Patient patient) throws BusinessException;
 
+    void createUser(User user) throws BusinessException;
+
     void createPay(Pay pay) throws BusinessException;
     
     void deletePatient(String document) throws BusinessException;

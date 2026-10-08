@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.application.adapters.api.request;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -29,9 +28,4 @@ public class PayRequest {
 
     @NotNull(message = "La factura asociada es obligatoria")
     private InvoiceRequest invoice;
-
-    @AssertTrue(message = "La factura debe incluir su identificador")
-    public boolean isInvoiceIdentifierValid() {
-        return invoice != null && invoice.getInvoiceId() != null;
-    }
 }

@@ -1,13 +1,14 @@
-package com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.repositories;
+package com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories;
 
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.odontologia.Vitaldent_PPI.application.adaptes.persistence.sql.entities.UserEntity;
+import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, UUID>{
     UserEntity findByDocument(String document);
+    UserEntity findByUserName(String userName);
 
     boolean existsByDocument(String document);
     boolean existsByEmail(String email);
