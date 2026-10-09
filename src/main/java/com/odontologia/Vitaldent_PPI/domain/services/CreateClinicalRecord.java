@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -28,14 +27,15 @@ public class CreateClinicalRecord {
     private final UserPort userPort;
     private final TreatmentPort treatmentPort;
     private final ItemPort itemPort;
+    private final CreateInvoice createInvoice;
 
-    @Autowired 
-    public CreateClinicalRecord(ClinicalRecordPort clinicalRecordPort, AppointmentPort appointmentPort, UserPort userPort, TreatmentPort treatmentPort, ItemPort itemPort){
+    public CreateClinicalRecord(ClinicalRecordPort clinicalRecordPort, AppointmentPort appointmentPort, UserPort userPort, TreatmentPort treatmentPort, ItemPort itemPort, CreateInvoice createInvoice){
         this.clinicalRecordPort = clinicalRecordPort;
         this.appointmentPort = appointmentPort;
         this.userPort = userPort;
         this.treatmentPort = treatmentPort;
         this.itemPort = itemPort;
+        this.createInvoice = createInvoice;
     }
 
     public void createClinicalRecord(ClinicalRecord record, UUID relatedUserId) throws BusinessException{
@@ -45,6 +45,14 @@ public class CreateClinicalRecord {
 
         if(relatedUserId == null){
             throw new BusinessException("El id del usuario esta vacio");
+        }
+
+        if (record.getAppointment() == null || record.getAppointment().getAppointmentId() == null) {
+            throw new BusinessException("La cita asociada es obligatoria");
+        }
+
+        if (record.getTreatment() == null || record.getTreatment().getTreatamentId() == null) {
+            throw new BusinessException("El tratamiento asociado es obligatorio");
         }
 
         Appointment appointment = appointmentPort.findById(record.getAppointment().getAppointmentId());
@@ -88,6 +96,10 @@ public class CreateClinicalRecord {
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
         record.setDate(LocalDate.now());
         record.setAppointment(appointment);
-        clinicalRecordPort.save(record);
+        record.setTreatment(treatment);
+        ClinicalRecord savedRecord = clinicalRecordPort.save(record);
+
+        createInvoice.createInvoiceForClinicalRecord(savedRecord.getClinicalRecordId());
+
     }
 }

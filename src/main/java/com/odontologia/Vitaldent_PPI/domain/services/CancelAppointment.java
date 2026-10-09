@@ -2,7 +2,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -18,13 +17,13 @@ public class CancelAppointment {
     private final AppointmentPort appointmentPort;
     private final UserPort userPort;
 
-    @Autowired 
     public CancelAppointment(AppointmentPort appointmentPort, UserPort userPort){
         this.appointmentPort = appointmentPort;
         this.userPort = userPort;
     }
 
-    public void cancelAppointment(Appointment appointment, UUID relatedId) throws BusinessException{
+    public void cancelAppointment(UUID idAppointment, UUID relatedId) throws BusinessException{
+        Appointment appointment = appointmentPort.findById(idAppointment);
         if(appointment == null){
             throw new BusinessException("Cita no encontrada");
         }

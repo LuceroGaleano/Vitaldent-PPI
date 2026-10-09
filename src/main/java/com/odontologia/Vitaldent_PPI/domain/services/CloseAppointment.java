@@ -1,6 +1,7 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -12,12 +13,12 @@ import com.odontologia.Vitaldent_PPI.domain.ports.out.AppointmentPort;
 public class CloseAppointment {
     private final AppointmentPort apointmentPort;
     
-    @Autowired 
     public CloseAppointment(AppointmentPort apointmentPort){
         this.apointmentPort = apointmentPort;
     }
 
-    public void closeAppointment(Appointment appointment) throws BusinessException{
+    public void closeAppointment(UUID idAppointment) throws BusinessException{
+        Appointment appointment = apointmentPort.findById(idAppointment);
         if(appointment == null){
             throw new BusinessException("No se ha encontrado la cita");
         }

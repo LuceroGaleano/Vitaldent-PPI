@@ -2,7 +2,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
@@ -13,12 +12,11 @@ import com.odontologia.Vitaldent_PPI.domain.ports.out.PatientPort;
 public class FindPatient{
     private final PatientPort patientPort;
 
-    @Autowired
     public FindPatient(PatientPort patientPort){
         this.patientPort = patientPort;
     }
 
-    public Patient findById(UUID id) throws NotFoundException{
+    public Patient findPatientById(UUID id) throws NotFoundException{
         Patient patient = patientPort.findById(id);
 
         if(patient == null){
@@ -28,7 +26,7 @@ public class FindPatient{
         return patient;
     }
 
-    public Patient findByDocument(String document) throws NotFoundException{
+    public Patient findPatientByDocument(String document) throws NotFoundException{
         Patient patient = patientPort.findByDocument(document);
 
         if(patient == null){

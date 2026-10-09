@@ -2,7 +2,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.math.BigDecimal;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -16,7 +15,6 @@ public class UpdateTreatment {
     private final TreatmentPort treatmentPort;
     private final ItemPort itemPort;
 
-    @Autowired
     public UpdateTreatment(TreatmentPort treatmentPort, ItemPort itemPort){
         this.treatmentPort = treatmentPort;
         this.itemPort = itemPort;

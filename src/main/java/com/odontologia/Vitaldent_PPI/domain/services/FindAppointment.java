@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -22,14 +21,13 @@ public class FindAppointment{
     private final PatientPort patientPort;
     private final UserPort userPort;
 
-    @Autowired
     public FindAppointment(AppointmentPort appointmentPort, PatientPort patientPort, UserPort userPort){
         this.appointmentPort = appointmentPort;
         this.patientPort = patientPort;
         this.userPort = userPort;
     }
 
-    public Appointment findById(UUID id) throws NotFoundException{
+    public Appointment findAppointmentById(UUID id) throws NotFoundException{
         Appointment appointment = appointmentPort.findById(id);
 
         if(appointment == null){
@@ -39,7 +37,7 @@ public class FindAppointment{
         return appointment;
     }
 
-    public List<Appointment> findByPatient(String patientDocument) throws NotFoundException{
+    public List<Appointment> findAppointmentByPatient(String patientDocument) throws NotFoundException{
         Patient patient = patientPort.findByDocument(patientDocument);
         if(patient == null){
             throw new NotFoundException("No se ha encontrado el paciente");
@@ -47,7 +45,7 @@ public class FindAppointment{
         return appointmentPort.findByPatient(patient);
     }
 
-    public List<Appointment> findByDoctor(String doctorDcoument) throws NotFoundException, BusinessException{
+    public List<Appointment> findAppointmentByDoctor(String doctorDcoument) throws NotFoundException, BusinessException{
         User user = userPort.findByDocument(doctorDcoument);
         if(user == null){
             throw new NotFoundException("No se ha encontrado el docotor");

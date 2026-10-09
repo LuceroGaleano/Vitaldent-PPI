@@ -1,8 +1,8 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -20,21 +20,20 @@ public class CreateInvoice {
     private final ClinicalRecordPort clinicalRecordPort;
     private final TreatmentPort treatmentPort;
 
-    @Autowired 
     public CreateInvoice(InvoicePort invoicePort, ClinicalRecordPort clinicalRecordPort, TreatmentPort treatmentPort){
         this.invoicePort = invoicePort;
         this.clinicalRecordPort = clinicalRecordPort;
         this.treatmentPort = treatmentPort;
     }
 
-    public void createInvoice(Invoice invoice) throws BusinessException{
-        if(invoice == null){
-            throw new BusinessException("No se ha entregado la factura");
+    public void createInvoiceForClinicalRecord(UUID idClinicalRecord) throws BusinessException{
+        ClinicalRecord clinicalRecord = clinicalRecordPort.findById(idClinicalRecord);
+        if(clinicalRecord == null){
+            throw new BusinessException("No se ha entregado la historia clinica");
         }
 
-        ClinicalRecord clinicalRecord = clinicalRecordPort.findById(invoice.getClinicalRecord().getClinicalRecordId());
-        if(clinicalRecord == null){
-            throw new BusinessException("No se ha encontrado la cita medica");
+        if(clinicalRecord.getTreatment() == null){
+            throw new BusinessException("La historia clinica debe tener un tratamiento");
         }
 
         Treatment treatment = treatmentPort.findById(clinicalRecord.getTreatment().getTreatamentId());
@@ -42,6 +41,7 @@ public class CreateInvoice {
             throw new BusinessException("Debe tener un tratamiento");
         }
 
+        Invoice invoice = new Invoice();
         invoice.setTotal(treatment.getCost());
         invoice.setClinicalRecord(clinicalRecord);
         invoice.setDate(LocalDate.now());

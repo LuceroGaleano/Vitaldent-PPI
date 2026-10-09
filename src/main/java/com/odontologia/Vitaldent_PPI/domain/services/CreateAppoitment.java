@@ -3,7 +3,6 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -19,8 +18,7 @@ public class CreateAppoitment {
     private final AppointmentPort appointmentPort;
     private final UserPort userPort;
 
-    @Autowired 
-    public CreateAppoitment(AppointmentPort appointmentPort,  UserPort userPort){
+    public CreateAppoitment(AppointmentPort appointmentPort, UserPort userPort){
         this.appointmentPort = appointmentPort;
         this.userPort = userPort;
     }

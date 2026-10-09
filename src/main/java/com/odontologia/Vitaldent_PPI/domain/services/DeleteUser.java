@@ -1,6 +1,5 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -10,7 +9,6 @@ import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 public class DeleteUser {
     private final UserPort userPort;
 
-    @Autowired
     public DeleteUser(UserPort userPort){
         this.userPort = userPort;
     }

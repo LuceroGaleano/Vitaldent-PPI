@@ -1,6 +1,7 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -15,18 +16,22 @@ public class ScheduleAppointment {
     private final AppointmentPort appointmentPort;
     private final PatientPort patientPort;
 
-    @Autowired 
     public ScheduleAppointment(AppointmentPort appointmentPort, PatientPort patientPort){
         this.appointmentPort = appointmentPort;
         this.patientPort = patientPort;
     }
 
-    public void scheduleAppointment(Appointment appointment) throws BusinessException{
+    public void scheduleAppointment(UUID idAppointment, String patientDocument) throws BusinessException{
+        Appointment appointment = appointmentPort.findById(idAppointment);
         if(appointment == null){
             throw new BusinessException("Cita no encontrada");
         }
 
-        Patient patient = patientPort.findByDocument(appointment.getPatient().getDocument());
+        if (patientDocument == null || patientDocument.isBlank()) {
+            throw new BusinessException("El documento del paciente es obligatorio");
+        }
+
+        Patient patient = patientPort.findByDocument(patientDocument);
 
         if(patient == null){
             throw new BusinessException("No se ha registrado el paciente");

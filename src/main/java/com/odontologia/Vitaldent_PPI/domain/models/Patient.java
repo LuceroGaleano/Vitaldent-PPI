@@ -1,5 +1,6 @@
 package com.odontologia.Vitaldent_PPI.domain.models;
 
+import java.util.Date;
 import java.util.UUID;
 
 import lombok.Getter;
@@ -16,5 +17,6 @@ public class Patient {
     private String document;
     private String phone;
     private String email;
-    private String addres;
+    private String address;
+    private Date birthDate;
 }
