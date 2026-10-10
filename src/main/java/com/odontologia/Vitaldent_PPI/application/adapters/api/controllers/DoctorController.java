@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.ClinicalRecordRequest;
-import com.odontologia.Vitaldent_PPI.application.adapters.api.request.ItemRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.TreatmentRequest;
+import com.odontologia.Vitaldent_PPI.application.adapters.api.request.TreatmentPatchRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.TreatmentItemRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.AppointmentResponse;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.ClinicalRecordResponse;
@@ -14,7 +14,6 @@ import com.odontologia.Vitaldent_PPI.application.adapters.api.response.Treatment
 import com.odontologia.Vitaldent_PPI.application.usecases.DoctorUseCase;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
-import com.odontologia.Vitaldent_PPI.domain.models.Item;
 import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 import com.odontologia.Vitaldent_PPI.domain.models.TreatmentItem;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
@@ -104,6 +103,23 @@ public class DoctorController {
         return ResponseEntity.ok(toTreatmentResponse(treatment));
     }
 
+    @PatchMapping("/treatment/{id}")
+    public ResponseEntity<TreatmentResponse> patchTreatment(
+            @PathVariable UUID id,
+            @Valid @RequestBody TreatmentPatchRequest request) {
+        Treatment treatment = doctorUseCase.findTreatmentById(id);
+        if (request.getName() != null) treatment.setName(request.getName());
+        if (request.getDescription() != null) treatment.setDescription(request.getDescription());
+        if (request.getCost() != null) treatment.setCost(request.getCost());
+        if (request.getTreatmentItems() != null) {
+            treatment.setTreatmentItems(request.getTreatmentItems().stream()
+                    .map(this::toTreatmentItem)
+                    .toList());
+        }
+        doctorUseCase.updateTreatment(treatment);
+        return ResponseEntity.ok(toTreatmentResponse(treatment));
+    }
+
     //-Appointment-------------------------------------------------------------------
     @GetMapping("/appointment/doctor/{documentDoctor}")
     public ResponseEntity<List<AppointmentResponse>> findAppointmentByDoctor(@PathVariable String documentDoctor){
@@ -121,12 +137,8 @@ public class DoctorController {
         clinical.setReasonForConsultation(req.getReasonForConsultation());
         clinical.setRecord(req.getRecord());
         clinical.setDiagnostic(req.getDiagnostic());
-        Appointment appointment = new Appointment();
-        clinical.setAppointment(appointment);
-
-        Treatment treatment = new Treatment();
-        treatment.setTreatamentId(req.getTreatment().getTreatmentId());
-        clinical.setTreatment(treatment);
+        clinical.setAppointmentId(req.getAppointmentId());
+        clinical.setTreatmentId(req.getTreatmentId());
         return clinical;
     }
 
@@ -137,8 +149,8 @@ public class DoctorController {
             clinical.getReasonForConsultation(),
             clinical.getRecord(),
             clinical.getDiagnostic(),
-            clinical.getAppointment() == null ? null : clinical.getAppointment().getAppointmentId(),
-            clinical.getTreatment() == null ? null : clinical.getTreatment().getTreatamentId()
+            clinical.getAppointmentId(),
+            clinical.getTreatmentId()
         );
     }
 
@@ -170,8 +182,8 @@ public class DoctorController {
             appointment.getAppointmentId(),
             appointment.getDate(),
             appointment.getHour(),
-            appointment.getPatient() == null ? null : appointment.getPatient().getPatientId(),
-            appointment.getDoctor() == null ? null : appointment.getDoctor().getUserId(),
+            appointment.getPatientId(),
+            appointment.getDoctorId(),
             appointment.getAppointmentStatus()
         );
     }
@@ -179,29 +191,15 @@ public class DoctorController {
     private TreatmentItem toTreatmentItem(TreatmentItemRequest request) {
         TreatmentItem treatmentItem = new TreatmentItem();
         treatmentItem.setQuantityUsed(request.getQuantityUsed());
-        if (request.getItem() != null) {
-            treatmentItem.setItem(toItem(request.getItem()));
-        }
+        treatmentItem.setItemId(request.getItemId());
         return treatmentItem;
-    }
-
-    private Item toItem(ItemRequest request) {
-        Item item = new Item();
-        item.setName(request.getName());
-        if (request.getStock() != null) {
-            item.setStock(request.getStock());
-        }
-        if (request.getActive() != null) {
-            item.setActive(request.getActive());
-        }
-        return item;
     }
 
     private TreatmentItemResponse toTreatmentItemResponse(TreatmentItem item) {
         return new TreatmentItemResponse(
                 item.getTreatmentItemId(),
-                item.getTreatment() == null ? null : item.getTreatment().getTreatamentId(),
-                item.getItem() == null ? null : item.getItem().getItemId(),
+                item.getTreatmentId(),
+                item.getItemId(),
                 item.getQuantityUsed());
     }
 }

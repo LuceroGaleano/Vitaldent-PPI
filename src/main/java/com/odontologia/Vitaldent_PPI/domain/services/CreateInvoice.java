@@ -32,18 +32,18 @@ public class CreateInvoice {
             throw new BusinessException("No se ha entregado la historia clinica");
         }
 
-        if(clinicalRecord.getTreatment() == null){
+        if(clinicalRecord.getTreatmentId() == null){
             throw new BusinessException("La historia clinica debe tener un tratamiento");
         }
 
-        Treatment treatment = treatmentPort.findById(clinicalRecord.getTreatment().getTreatamentId());
+        Treatment treatment = treatmentPort.findById(clinicalRecord.getTreatmentId());
         if(treatment == null){
             throw new BusinessException("Debe tener un tratamiento");
         }
 
         Invoice invoice = new Invoice();
         invoice.setTotal(treatment.getCost());
-        invoice.setClinicalRecord(clinicalRecord);
+        invoice.setClinicalRecordId(clinicalRecord.getClinicalRecordId());
         invoice.setDate(LocalDate.now());
         invoice.setPaid(false);
 

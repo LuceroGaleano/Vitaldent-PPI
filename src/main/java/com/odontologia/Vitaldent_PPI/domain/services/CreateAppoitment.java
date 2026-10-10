@@ -28,7 +28,11 @@ public class CreateAppoitment {
             throw new BusinessException("No se encuentra la cita");
         }
 
-        User doctor = userPort.findByDocument(appointment.getDoctor().getDocument());
+        if (appointment.getDoctorId() == null) {
+            throw new BusinessException("El doctor es obligatorio");
+        }
+
+        User doctor = userPort.findById(appointment.getDoctorId());
         if(doctor == null){
             throw new BusinessException("No existe el doctor");
         }
@@ -50,8 +54,8 @@ public class CreateAppoitment {
         }
 
         appointment.setAppointmentStatus(AppointmentStatus.AVAILABLE);
-        appointment.setDoctor(doctor);
-        appointment.setPatient(null);
+        appointment.setDoctorId(doctor.getUserId());
+        appointment.setPatientId(null);
         appointmentPort.save(appointment);
     }   
 }

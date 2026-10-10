@@ -31,7 +31,11 @@ public class CreatePay {
             throw new BusinessException("El monto a pagar debe ser mayor a cero");
         }
 
-        Invoice invoice = invoicePort.findById(pay.getInvoice().getInvoiceId());
+        if (pay.getInvoiceId() == null) {
+            throw new BusinessException("La factura asociada es obligatoria");
+        }
+
+        Invoice invoice = invoicePort.findById(pay.getInvoiceId());
         if(invoice == null){
             throw new BusinessException("Mp se ha encontrado la factura");
         }
@@ -51,7 +55,7 @@ public class CreatePay {
             throw new BusinessException("El monto ingresado supera el saldo pendiente. Saldo actual: " + remainingBalance);
         }
         pay.setDate(LocalDate.now());
-        pay.setInvoice(invoice);
+        pay.setInvoiceId(invoice.getInvoiceId());
     
         payPort.save(pay);
 

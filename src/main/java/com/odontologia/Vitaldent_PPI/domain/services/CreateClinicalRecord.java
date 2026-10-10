@@ -47,25 +47,29 @@ public class CreateClinicalRecord {
             throw new BusinessException("El id del usuario esta vacio");
         }
 
-        if (record.getAppointment() == null || record.getAppointment().getAppointmentId() == null) {
+        if (record.getAppointmentId() == null) {
             throw new BusinessException("La cita asociada es obligatoria");
         }
 
-        if (record.getTreatment() == null || record.getTreatment().getTreatamentId() == null) {
+        if (record.getTreatmentId() == null) {
             throw new BusinessException("El tratamiento asociado es obligatorio");
         }
 
-        Appointment appointment = appointmentPort.findById(record.getAppointment().getAppointmentId());
+        Appointment appointment = appointmentPort.findById(record.getAppointmentId());
         if(appointment == null){
             throw new BusinessException("No se ha encontrado la cita");
         }
 
-        Treatment treatment = treatmentPort.findById(record.getTreatment().getTreatamentId());
+        Treatment treatment = treatmentPort.findById(record.getTreatmentId());
         if(treatment == null){
             throw new BusinessException("No se ha encontrado el tratamiento");
         }
 
-        User doctor = userPort.findByDocument(appointment.getDoctor().getDocument());
+        if (appointment.getDoctorId() == null) {
+            throw new BusinessException("La cita no tiene un doctor asociado");
+        }
+
+        User doctor = userPort.findById(appointment.getDoctorId());
         if(doctor == null){
             throw new BusinessException("No se ha encontrado el doctor");
         }
@@ -78,7 +82,13 @@ public class CreateClinicalRecord {
         List<TreatmentItem> treatmentItems = treatment.getTreatmentItems();
         if (treatmentItems != null && !treatmentItems.isEmpty()) {
             for (TreatmentItem treatmentItem : treatmentItems) {
-                Item item = treatmentItem.getItem();
+                if (treatmentItem.getItemId() == null) {
+                    throw new BusinessException("El insumo asociado al tratamiento es obligatorio");
+                }
+                Item item = itemPort.findById(treatmentItem.getItemId());
+                if (item == null) {
+                    throw new BusinessException("No se ha encontrado el insumo del tratamiento");
+                }
                 int quantityUsed = treatmentItem.getQuantityUsed();
 
                 if (item.getStock() < quantityUsed) {
@@ -95,8 +105,8 @@ public class CreateClinicalRecord {
 
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
         record.setDate(LocalDate.now());
-        record.setAppointment(appointment);
-        record.setTreatment(treatment);
+        record.setAppointmentId(appointment.getAppointmentId());
+        record.setTreatmentId(treatment.getTreatamentId());
         ClinicalRecord savedRecord = clinicalRecordPort.save(record);
 
         createInvoice.createInvoiceForClinicalRecord(savedRecord.getClinicalRecordId());

@@ -15,6 +15,6 @@ public class Item {
     private String name;
     private int stock;
     private boolean active;
-    private Inventory inventory;
+    private UUID inventoryId;
 
 }

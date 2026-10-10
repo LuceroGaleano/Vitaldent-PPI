@@ -11,6 +11,8 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.reposi
 import com.odontologia.Vitaldent_PPI.domain.models.User;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserPersistenceAdapter implements UserPort {
     private final UserRepository userRepository;
@@ -51,7 +53,8 @@ public class UserPersistenceAdapter implements UserPort {
     }
 
     @Override
-    public void deleteByDocument(String document){
+    @Transactional 
+    public void deleteByDocument(String document) {
         userRepository.deleteByDocument(document);
     }
 

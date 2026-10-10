@@ -12,10 +12,10 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entiti
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.AppointmentRepository;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.ClinicalRecordRepository;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.TreatmentRepository;
-import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
-import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.ClinicalRecordPort;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ClinicalRecordPersistenceAdapter implements ClinicalRecordPort {
@@ -34,21 +34,25 @@ public class ClinicalRecordPersistenceAdapter implements ClinicalRecordPort {
     }
 
     @Override
+    @Transactional 
     public ClinicalRecord findById(UUID id) {
         return toModel(clinicalRecordRepository.findById(id).orElse(null));
     }
 
     @Override
+    @Transactional 
     public ClinicalRecord findByAppointmentID(UUID appointmentId) {
         return toModel(clinicalRecordRepository.findByAppointment_AppointmentId(appointmentId));
     }
 
     @Override
+    @Transactional 
     public List<ClinicalRecord> findByDoctorDocument(String doctorDocument) {
         return toModels(clinicalRecordRepository.findByAppointment_Doctor_Document(doctorDocument));
     }
 
     @Override
+    @Transactional 
     public List<ClinicalRecord> findByPatientDocument(String patientDocument) {
         return toModels(clinicalRecordRepository.findByAppointment_Patient_Document(patientDocument));
     }
@@ -74,14 +78,16 @@ public class ClinicalRecordPersistenceAdapter implements ClinicalRecordPort {
             existingEntity.setReasonForConsultation(clinicalRecord.getReasonForConsultation());
             existingEntity.setRecord(clinicalRecord.getRecord());
             existingEntity.setDiagnostic(clinicalRecord.getDiagnostic());
-            if (clinicalRecord.getAppointment() != null) {
+            if (clinicalRecord.getAppointmentId() != null) {
                 AppointmentEntity appointmentEntity = appointmentRepository
-                    .findById(clinicalRecord.getAppointment().getAppointmentId()).orElse(null);
+                    .findById(clinicalRecord.getAppointmentId())
+                    .orElseThrow(() -> new IllegalArgumentException("No existe la cita asociada"));
                 existingEntity.setAppointment(appointmentEntity);
             }
-            if (clinicalRecord.getTreatment() != null) {
+            if (clinicalRecord.getTreatmentId() != null) {
                 TreatmentEntity treatmentEntity = treatmentRepository
-                    .findById(clinicalRecord.getTreatment().getTreatamentId()).orElse(null);
+                    .findById(clinicalRecord.getTreatmentId())
+                    .orElseThrow(() -> new IllegalArgumentException("No existe el tratamiento asociado"));
                 existingEntity.setTreatment(treatmentEntity);
             }
             clinicalRecordRepository.save(existingEntity);
@@ -106,33 +112,13 @@ public class ClinicalRecordPersistenceAdapter implements ClinicalRecordPort {
         clinicalRecord.setReasonForConsultation(entity.getReasonForConsultation());
         clinicalRecord.setRecord(entity.getRecord());
         clinicalRecord.setDiagnostic(entity.getDiagnostic());
-        clinicalRecord.setAppointment(toAppointmentModel(entity.getAppointment()));
-        clinicalRecord.setTreatment(toTreatmentModel(entity.getTreatment()));
+        clinicalRecord.setAppointmentId(entity.getAppointment() == null
+            ? null
+            : entity.getAppointment().getAppointmentId());
+        clinicalRecord.setTreatmentId(entity.getTreatment() == null
+            ? null
+            : entity.getTreatment().getTreatamentId());
         return clinicalRecord;
-    }
-
-    private Appointment toAppointmentModel(AppointmentEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Appointment appointment = new Appointment();
-        appointment.setAppointmentId(entity.getAppointmentId());
-        appointment.setDate(entity.getDate());
-        appointment.setHour(entity.getHour());
-        appointment.setAppointmentStatus(entity.getAppointmentStatus());
-        return appointment;
-    }
-
-    private Treatment toTreatmentModel(TreatmentEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Treatment treatment = new Treatment();
-        treatment.setTreatamentId(entity.getTreatamentId());
-        treatment.setName(entity.getName());
-        treatment.setDescription(entity.getDescription());
-        treatment.setCost(entity.getCost());
-        return treatment;
     }
 
     private ClinicalRecordEntity toEntity(ClinicalRecord clinicalRecord) {
@@ -141,14 +127,16 @@ public class ClinicalRecordPersistenceAdapter implements ClinicalRecordPort {
         entity.setReasonForConsultation(clinicalRecord.getReasonForConsultation());
         entity.setRecord(clinicalRecord.getRecord());
         entity.setDiagnostic(clinicalRecord.getDiagnostic());
-        if (clinicalRecord.getAppointment() != null) {
+        if (clinicalRecord.getAppointmentId() != null) {
             AppointmentEntity appointmentEntity = appointmentRepository
-                .findById(clinicalRecord.getAppointment().getAppointmentId()).orElse(null);
+                .findById(clinicalRecord.getAppointmentId())
+                .orElseThrow(() -> new IllegalArgumentException("No existe la cita asociada"));
             entity.setAppointment(appointmentEntity);
         }
-        if (clinicalRecord.getTreatment() != null) {
+        if (clinicalRecord.getTreatmentId() != null) {
             TreatmentEntity treatmentEntity = treatmentRepository
-                .findById(clinicalRecord.getTreatment().getTreatamentId()).orElse(null);
+                .findById(clinicalRecord.getTreatmentId())
+                .orElseThrow(() -> new IllegalArgumentException("No existe el tratamiento asociado"));
             entity.setTreatment(treatmentEntity);
         }
         return entity;

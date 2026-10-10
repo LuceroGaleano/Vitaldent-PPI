@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TreatmentItem {
     private UUID treatmentItemId;
-    private Treatment treatment;
-    private Item item;
+    private UUID treatmentId;
+    private UUID itemId;
     private int quantityUsed; 
 }

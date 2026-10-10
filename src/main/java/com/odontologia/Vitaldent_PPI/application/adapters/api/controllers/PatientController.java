@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.UserRequest;
+import com.odontologia.Vitaldent_PPI.application.adapters.api.request.UserProfilePatchRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.AppointmentResponse;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.UserResponse;
 import com.odontologia.Vitaldent_PPI.application.usecases.PatientUseCase;
@@ -63,6 +64,21 @@ public class PatientController {
         return ResponseEntity.ok(toUserResponse(user));
     }
 
+    @PatchMapping("/profile")
+    public ResponseEntity<UserResponse> patchProfile(@Valid @RequestBody UserProfilePatchRequest request) {
+        User user = getAuthenticatedUser();
+        if (request.getUserName() != null) user.setUserName(request.getUserName());
+        if (request.getPassword() != null) user.setPassword(request.getPassword());
+        if (request.getFullName() != null) user.setFullName(request.getFullName());
+        if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getPhone() != null) user.setPhone(request.getPhone());
+        if (request.getAddress() != null) user.setAddress(request.getAddress());
+        if (request.getBirthDate() != null) user.setBirthDate(request.getBirthDate());
+
+        patientUseCase.updateUser(user, user.getUserId());
+        return ResponseEntity.ok(toUserResponse(user));
+    }
+
     // -Mappers-------------------------------------------------------------------
     private User getAuthenticatedUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -96,8 +112,8 @@ public class PatientController {
                 appointment.getAppointmentId(),
                 appointment.getDate(),
                 appointment.getHour(),
-                appointment.getPatient() == null ? null : appointment.getPatient().getPatientId(),
-                appointment.getDoctor() == null ? null : appointment.getDoctor().getUserId(),
+                appointment.getPatientId(),
+                appointment.getDoctorId(),
                 appointment.getAppointmentStatus());
     }
 

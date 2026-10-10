@@ -36,7 +36,7 @@ public class UpdateItem {
             throw new BusinessException("El inventario principal no está configurado");
         }
         
-        item.setInventory(inventory);
+        item.setInventoryId(inventory.getInventoryID());
         itemPort.update(item);
     }
 }

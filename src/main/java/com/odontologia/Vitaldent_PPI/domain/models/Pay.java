@@ -18,5 +18,5 @@ public class Pay {
     private LocalDate date;
     private String methodPayment;
     private String state;
-    private Invoice invoice;
+    private UUID invoiceId;
 }

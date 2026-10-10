@@ -39,12 +39,13 @@ public class CancelAppointment {
         }
 
         if(relatedUser.getRol() == RolUser.PATIENT){
-            if(!appointment.getPatient().getDocument().equals(relatedUser.getDocument())){
+            if(relatedUser.getPatientId() == null
+                    || !relatedUser.getPatientId().equals(appointment.getPatientId())){
                 throw new BusinessException("No puedes cancelar la cita de otro paciente");
             }
         }
 
-        appointment.setPatient(null);
+        appointment.setPatientId(null);
         appointment.setAppointmentStatus(AppointmentStatus.AVAILABLE);
 
         appointmentPort.update(appointment);

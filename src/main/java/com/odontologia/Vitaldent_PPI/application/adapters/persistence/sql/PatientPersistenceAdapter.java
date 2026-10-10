@@ -9,6 +9,8 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.reposi
 import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.PatientPort;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PatientPersistenceAdapter implements PatientPort {
     private final PatientRepository patientRepository;
@@ -39,7 +41,9 @@ public class PatientPersistenceAdapter implements PatientPort {
 
     @Override
     public void save(Patient patient) {
-        PatientEntity savedEntity = patientRepository.save(toEntity(patient));
+        PatientEntity entity = toEntity(patient);
+        entity.setPatientId(null);
+        PatientEntity savedEntity = patientRepository.save(entity);
         patient.setPatientId(savedEntity.getPatientId());
     }
 
@@ -58,6 +62,7 @@ public class PatientPersistenceAdapter implements PatientPort {
     }
 
     @Override
+    @Transactional
     public void deleteByDocument(String document) {
         patientRepository.deleteByDocument(document);
     }
@@ -79,6 +84,9 @@ public class PatientPersistenceAdapter implements PatientPort {
 
     private PatientEntity toEntity(Patient patient) {
         PatientEntity entity = new PatientEntity();
+        if (patient.getPatientId() != null) {
+            entity.setPatientId(patient.getPatientId());
+        }
         entity.setFullName(patient.getFullName());
         entity.setDocument(patient.getDocument());
         entity.setPhone(patient.getPhone());

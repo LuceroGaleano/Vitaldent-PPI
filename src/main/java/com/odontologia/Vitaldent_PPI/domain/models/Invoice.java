@@ -17,5 +17,5 @@ public class Invoice {
     private LocalDate date;
     private BigDecimal total;
     private boolean isPaid;
-    private ClinicalRecord clinicalRecord;
+    private UUID clinicalRecordId;
 }

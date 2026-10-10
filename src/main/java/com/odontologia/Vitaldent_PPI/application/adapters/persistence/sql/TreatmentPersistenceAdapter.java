@@ -11,10 +11,11 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entiti
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.TreatmentItemEntity;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.ItemRepository;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.TreatmentRepository;
-import com.odontologia.Vitaldent_PPI.domain.models.Item;
 import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 import com.odontologia.Vitaldent_PPI.domain.models.TreatmentItem;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.TreatmentPort;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class TreatmentPersistenceAdapter implements TreatmentPort {
@@ -27,11 +28,13 @@ public class TreatmentPersistenceAdapter implements TreatmentPort {
     }
 
     @Override
+    @Transactional  
     public Treatment findById(UUID id) {
         return toModel(treatmentRepository.findById(id).orElse(null));
     }
 
     @Override
+    @Transactional 
     public List<Treatment> findAll() {
         List<Treatment> treatments = new ArrayList<>();
         for (TreatmentEntity entity : treatmentRepository.findAll()) {
@@ -79,25 +82,16 @@ public class TreatmentPersistenceAdapter implements TreatmentPort {
             for (TreatmentItemEntity itemEntity : entity.getTreatmentItems()) {
                 TreatmentItem treatmentItem = new TreatmentItem();
                 treatmentItem.setTreatmentItemId(itemEntity.getTreatmentItemId());
+                treatmentItem.setTreatmentId(itemEntity.getTreatment() == null
+                    ? null
+                    : itemEntity.getTreatment().getTreatamentId());
                 treatmentItem.setQuantityUsed(itemEntity.getQuantityUsed());
-                treatmentItem.setItem(toItemModel(itemEntity.getItem()));
+                treatmentItem.setItemId(itemEntity.getItem() == null ? null : itemEntity.getItem().getItemId());
                 treatmentItems.add(treatmentItem);
             }
             treatment.setTreatmentItems(treatmentItems);
         }
         return treatment;
-    }
-
-    private Item toItemModel(ItemEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Item item = new Item();
-        item.setItemId(entity.getItemId());
-        item.setName(entity.getName());
-        item.setStock(entity.getStock());
-        item.setActive(entity.isActive());
-        return item;
     }
 
     private TreatmentEntity toEntity(Treatment treatment) {
@@ -120,9 +114,10 @@ public class TreatmentPersistenceAdapter implements TreatmentPort {
             TreatmentItemEntity entity = new TreatmentItemEntity();
             entity.setTreatment(treatmentEntity);
             entity.setQuantityUsed(treatmentItem.getQuantityUsed());
-            if (treatmentItem.getItem() != null) {
+            if (treatmentItem.getItemId() != null) {
                 ItemEntity itemEntity = itemRepository
-                    .findById(treatmentItem.getItem().getItemId()).orElse(null);
+                    .findById(treatmentItem.getItemId())
+                    .orElseThrow(() -> new IllegalArgumentException("No existe el insumo asociado"));
                 entity.setItem(itemEntity);
             }
             entities.add(entity);

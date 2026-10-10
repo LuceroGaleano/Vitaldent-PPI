@@ -33,7 +33,7 @@ public class CreateItem {
         }
 
         item.setActive(true);
-        item.setInventory(inventory);
+        item.setInventoryId(inventory.getInventoryID());
         itemPort.save(item);
     }
 }

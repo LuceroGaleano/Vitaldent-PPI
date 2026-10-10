@@ -61,6 +61,12 @@ public class ReceptionistController {
                 .toList());
     }
 
+    @PatchMapping("/appointment/{id}/{document}/schedule")
+    public ResponseEntity<Void> scheduleAppointment(@PathVariable UUID id, @PathVariable String document) {
+        receptionistUseCase.scheduleAppointment(id, document);
+        return ResponseEntity.noContent().build();
+    }
+
     @PatchMapping("/appointment/{id}/cancel")
     public ResponseEntity<Void> cancelAppointment(@PathVariable UUID id) {
         receptionistUseCase.cancelAppointment(id, getAuthenticatedUser().getUserId());
@@ -84,12 +90,6 @@ public class ReceptionistController {
     @GetMapping("/patient/{document}")
     public ResponseEntity<PatientResponse> findPatientByDocument(@PathVariable String document) {
         return ResponseEntity.ok(toPatientResponse(receptionistUseCase.findPatientByDocument(document)));
-    }
-
-    @DeleteMapping("/patient/{document}")
-    public ResponseEntity<Void> deletePatient(@PathVariable String document) {
-        receptionistUseCase.deletePatient(document);
-        return ResponseEntity.noContent().build();
     }
 
      //-user------------------------------------------------------------------
@@ -187,8 +187,8 @@ public class ReceptionistController {
         Appointment appointment = new Appointment();
         appointment.setDate(request.getDate());
         appointment.setHour(request.getHour());
-        appointment.setDoctor(toUser(request.getDoctor()));
-        appointment.setPatient(request.getPatient() == null ? null : toPatient(request.getPatient()));
+        appointment.setDoctorId(request.getDoctorId());
+        appointment.setPatientId(request.getPatientId());
         appointment.setAppointmentStatus(request.getAppointmentStatus());
         return appointment;
     }
@@ -204,7 +204,7 @@ public class ReceptionistController {
         return patient;
     }
 
-    private User toUser(com.odontologia.Vitaldent_PPI.application.adapters.api.request.UserRequest request) {
+    private User toUser(UserRequest request) {
         User user = new User();
         user.setUserName(request.getUserName());
         user.setPassword(request.getPassword());
@@ -225,8 +225,7 @@ public class ReceptionistController {
         pay.setDate(request.getDate());
         pay.setMethodPayment(request.getMethodPayment());
         pay.setState(request.getState());
-        Invoice invoice = new Invoice();
-        pay.setInvoice(invoice);
+        pay.setInvoiceId(request.getInvoiceId());
         return pay;
     }
 
@@ -235,8 +234,8 @@ public class ReceptionistController {
                 appointment.getAppointmentId(),
                 appointment.getDate(),
                 appointment.getHour(),
-                appointment.getPatient() == null ? null : appointment.getPatient().getPatientId(),
-                appointment.getDoctor() == null ? null : appointment.getDoctor().getUserId(),
+                appointment.getPatientId(),
+                appointment.getDoctorId(),
                 appointment.getAppointmentStatus());
     }
 
@@ -257,19 +256,19 @@ public class ReceptionistController {
         return new ClinicalRecordResponse(
                 record.getClinicalRecordId(), record.getDate(), record.getReasonForConsultation(),
                 record.getRecord(), record.getDiagnostic(),
-                record.getAppointment() == null ? null : record.getAppointment().getAppointmentId(),
-                record.getTreatment() == null ? null : record.getTreatment().getTreatamentId());
+                record.getAppointmentId(),
+                record.getTreatmentId());
     }
 
     private InvoiceResponse toInvoiceResponse(Invoice invoice) {
         return new InvoiceResponse(
                 invoice.getInvoiceId(), invoice.getDate(), invoice.getTotal(), invoice.isPaid(),
-                invoice.getClinicalRecord() == null ? null : invoice.getClinicalRecord().getClinicalRecordId());
+                invoice.getClinicalRecordId());
     }
 
     private PayResponse toPayResponse(Pay pay) {
         return new PayResponse(
                 pay.getPayId(), pay.getAmount(), pay.getDate(), pay.getMethodPayment(), pay.getState(),
-                pay.getInvoice() == null ? null : pay.getInvoice().getInvoiceId());
+                pay.getInvoiceId());
     }
 }

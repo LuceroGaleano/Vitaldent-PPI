@@ -2,6 +2,7 @@ package com.odontologia.Vitaldent_PPI.application.adapters.api.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,5 +28,5 @@ public class PayRequest {
     private String state;
 
     @NotNull(message = "La factura asociada es obligatoria")
-    private InvoiceRequest invoice;
+    private UUID invoiceId;
 }

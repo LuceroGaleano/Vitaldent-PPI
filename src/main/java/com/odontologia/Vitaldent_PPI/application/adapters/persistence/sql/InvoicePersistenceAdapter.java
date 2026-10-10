@@ -10,7 +10,6 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entiti
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.InvoiceEntity;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.ClinicalRecordRepository;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.InvoiceRepository;
-import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
 import com.odontologia.Vitaldent_PPI.domain.models.Invoice;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.InvoicePort;
 
@@ -64,9 +63,10 @@ public class InvoicePersistenceAdapter implements InvoicePort {
             existingEntity.setDate(invoice.getDate());
             existingEntity.setTotal(invoice.getTotal());
             existingEntity.setPaid(invoice.isPaid());
-            if (invoice.getClinicalRecord() != null) {
+            if (invoice.getClinicalRecordId() != null) {
                 ClinicalRecordEntity clinicalRecordEntity = clinicalRecordRepository
-                    .findById(invoice.getClinicalRecord().getClinicalRecordId()).orElse(null);
+                    .findById(invoice.getClinicalRecordId())
+                    .orElseThrow(() -> new IllegalArgumentException("No existe la historia clínica asociada"));
                 existingEntity.setClinicalRecord(clinicalRecordEntity);
             }
             invoiceRepository.save(existingEntity);
@@ -82,21 +82,10 @@ public class InvoicePersistenceAdapter implements InvoicePort {
         invoice.setDate(entity.getDate());
         invoice.setTotal(entity.getTotal());
         invoice.setPaid(entity.isPaid());
-        invoice.setClinicalRecord(toClinicalRecordModel(entity.getClinicalRecord()));
+        invoice.setClinicalRecordId(entity.getClinicalRecord() == null
+            ? null
+            : entity.getClinicalRecord().getClinicalRecordId());
         return invoice;
-    }
-
-    private ClinicalRecord toClinicalRecordModel(ClinicalRecordEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        ClinicalRecord clinicalRecord = new ClinicalRecord();
-        clinicalRecord.setClinicalRecordId(entity.getClinicalRecordId());
-        clinicalRecord.setDate(entity.getDate());
-        clinicalRecord.setReasonForConsultation(entity.getReasonForConsultation());
-        clinicalRecord.setRecord(entity.getRecord());
-        clinicalRecord.setDiagnostic(entity.getDiagnostic());
-        return clinicalRecord;
     }
 
     private InvoiceEntity toEntity(Invoice invoice) {
@@ -104,9 +93,10 @@ public class InvoicePersistenceAdapter implements InvoicePort {
         entity.setDate(invoice.getDate());
         entity.setTotal(invoice.getTotal());
         entity.setPaid(invoice.isPaid());
-        if (invoice.getClinicalRecord() != null) {
+        if (invoice.getClinicalRecordId() != null) {
             ClinicalRecordEntity clinicalRecordEntity = clinicalRecordRepository
-                .findById(invoice.getClinicalRecord().getClinicalRecordId()).orElse(null);
+                .findById(invoice.getClinicalRecordId())
+                .orElseThrow(() -> new IllegalArgumentException("No existe la historia clínica asociada"));
             entity.setClinicalRecord(clinicalRecordEntity);
         }
         return entity;

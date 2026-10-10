@@ -10,7 +10,6 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entiti
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.PayEntity;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.InvoiceRepository;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.PayRepository;
-import com.odontologia.Vitaldent_PPI.domain.models.Invoice;
 import com.odontologia.Vitaldent_PPI.domain.models.Pay;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.PayPort;
 
@@ -59,20 +58,8 @@ public class PayPersistenceAdapter implements PayPort {
         pay.setDate(entity.getDate());
         pay.setMethodPayment(entity.getMethodPayment());
         pay.setState(entity.getState());
-        pay.setInvoice(toInvoiceModel(entity.getInvoice()));
+        pay.setInvoiceId(entity.getInvoice() == null ? null : entity.getInvoice().getInvoiceId());
         return pay;
-    }
-
-    private Invoice toInvoiceModel(InvoiceEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Invoice invoice = new Invoice();
-        invoice.setInvoiceId(entity.getInvoiceId());
-        invoice.setDate(entity.getDate());
-        invoice.setTotal(entity.getTotal());
-        invoice.setPaid(entity.isPaid());
-        return invoice;
     }
 
     private PayEntity toEntity(Pay pay) {
@@ -81,9 +68,10 @@ public class PayPersistenceAdapter implements PayPort {
         entity.setDate(pay.getDate());
         entity.setMethodPayment(pay.getMethodPayment());
         entity.setState(pay.getState());
-        if (pay.getInvoice() != null) {
+        if (pay.getInvoiceId() != null) {
             InvoiceEntity invoiceEntity = invoiceRepository
-                .findById(pay.getInvoice().getInvoiceId()).orElse(null);
+                .findById(pay.getInvoiceId())
+                .orElseThrow(() -> new IllegalArgumentException("No existe la factura asociada"));
             entity.setInvoice(invoiceEntity);
         }
         return entity;

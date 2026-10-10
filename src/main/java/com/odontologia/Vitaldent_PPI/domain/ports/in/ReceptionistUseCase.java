@@ -20,10 +20,10 @@ public interface ReceptionistUseCase{
     void createUser(User user) throws BusinessException;
 
     void createPay(Pay pay) throws BusinessException;
-    
-    void deletePatient(String document) throws BusinessException;
 
     void deleteUser(String document) throws BusinessException;
+
+    void scheduleAppointment(UUID idAppointment, String patientDocument) throws BusinessException;
     
     Appointment findAppointmentById(UUID id) throws NotFoundException;
     List<Appointment> findAppointmentByPatient(String patientDocument) throws NotFoundException;

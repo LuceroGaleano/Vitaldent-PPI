@@ -2,8 +2,8 @@ package com.odontologia.Vitaldent_PPI.application.adapters.api.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
@@ -26,6 +26,5 @@ public class InvoiceRequest {
     private Boolean isPaid;
 
     @NotNull(message = "La historia clínica asociada es obligatoria")
-    @Valid
-    private ClinicalRecordRequest clinicalRecord;
+    private UUID clinicalRecordId;
 }

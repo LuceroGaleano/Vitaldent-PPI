@@ -10,7 +10,6 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entiti
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.ItemEntity;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.InventoryRepository;
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.repositories.ItemRepository;
-import com.odontologia.Vitaldent_PPI.domain.models.Inventory;
 import com.odontologia.Vitaldent_PPI.domain.models.Item;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.ItemPort;
 
@@ -56,9 +55,10 @@ public class ItemPersistenceAdapter implements ItemPort {
             existingEntity.setName(item.getName());
             existingEntity.setStock(item.getStock());
             existingEntity.setActive(item.isActive());
-            if (item.getInventory() != null) {
+            if (item.getInventoryId() != null) {
                 InventoryEntity inventoryEntity = inventoryRepository
-                    .findById(item.getInventory().getInventoryID()).orElse(null);
+                    .findById(item.getInventoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("No existe el inventario asociado"));
                 existingEntity.setInventory(inventoryEntity);
             }
             itemRepository.save(existingEntity);
@@ -74,18 +74,8 @@ public class ItemPersistenceAdapter implements ItemPort {
         item.setName(entity.getName());
         item.setStock(entity.getStock());
         item.setActive(entity.isActive());
-        item.setInventory(toInventoryModel(entity.getInventory()));
+        item.setInventoryId(entity.getInventory() == null ? null : entity.getInventory().getInventoryID());
         return item;
-    }
-
-    private Inventory toInventoryModel(InventoryEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Inventory inventory = new Inventory();
-        inventory.setInventoryID(entity.getInventoryID());
-        inventory.setUpdateDate(entity.getUpdateDate());
-        return inventory;
     }
 
     private ItemEntity toEntity(Item item) {
@@ -93,9 +83,10 @@ public class ItemPersistenceAdapter implements ItemPort {
         entity.setName(item.getName());
         entity.setStock(item.getStock());
         entity.setActive(item.isActive());
-        if (item.getInventory() != null) {
+        if (item.getInventoryId() != null) {
             InventoryEntity inventoryEntity = inventoryRepository
-                .findById(item.getInventory().getInventoryID()).orElse(null);
+                .findById(item.getInventoryId())
+                .orElseThrow(() -> new IllegalArgumentException("No existe el inventario asociado"));
             entity.setInventory(inventoryEntity);
         }
         return entity;

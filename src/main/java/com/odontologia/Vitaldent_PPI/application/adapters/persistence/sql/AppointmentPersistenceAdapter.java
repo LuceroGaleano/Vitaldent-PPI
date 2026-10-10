@@ -84,15 +84,13 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
             existingEntity.setDate(appointment.getDate());
             existingEntity.setHour(appointment.getHour());
             existingEntity.setAppointmentStatus(appointment.getAppointmentStatus());
-            if (appointment.getPatient() != null) {
-                PatientEntity patientEntity = patientRepository
-                    .findById(appointment.getPatient().getPatientId()).orElse(null);
-                existingEntity.setPatient(patientEntity);
-            }
-            if (appointment.getDoctor() != null) {
-                UserEntity doctorEntity = userRepository
-                    .findById(appointment.getDoctor().getUserId()).orElse(null);
-                existingEntity.setDoctor(doctorEntity);
+            existingEntity.setPatient(appointment.getPatientId() == null
+                ? null
+                : patientRepository.findById(appointment.getPatientId())
+                    .orElseThrow(() -> new IllegalArgumentException("No existe el paciente de la cita")));
+            if (appointment.getDoctorId() != null) {
+                existingEntity.setDoctor(userRepository.findById(appointment.getDoctorId())
+                    .orElseThrow(() -> new IllegalArgumentException("No existe el doctor de la cita")));
             }
             appointmentRepository.save(existingEntity);
         }
@@ -115,45 +113,9 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
         appointment.setDate(entity.getDate());
         appointment.setHour(entity.getHour());
         appointment.setAppointmentStatus(entity.getAppointmentStatus());
-        appointment.setPatient(toPatientModel(entity.getPatient()));
-        appointment.setDoctor(toUserModel(entity.getDoctor()));
+        appointment.setPatientId(entity.getPatient() == null ? null : entity.getPatient().getPatientId());
+        appointment.setDoctorId(entity.getDoctor() == null ? null : entity.getDoctor().getUserId());
         return appointment;
-    }
-
-    private Patient toPatientModel(PatientEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        Patient patient = new Patient();
-        patient.setPatientId(entity.getPatientId());
-        patient.setFullName(entity.getFullName());
-        patient.setDocument(entity.getDocument());
-        patient.setPhone(entity.getPhone());
-        patient.setEmail(entity.getEmail());
-        patient.setAddress(entity.getAddress());
-        patient.setBirthDate(entity.getBirthDate());
-        return patient;
-    }
-
-    private User toUserModel(UserEntity entity) {
-        if (entity == null) {
-            return null;
-        }
-        User user = new User();
-        user.setUserId(entity.getUserId());
-        user.setUserName(entity.getUserName());
-        user.setPassword(entity.getPassword());
-        user.setFullName(entity.getFullName());
-        user.setDocument(entity.getDocument());
-        user.setEmail(entity.getEmail());
-        user.setPhone(entity.getPhone());
-        user.setAddress(entity.getAddress());
-        user.setBirthDate(entity.getBirthDate());
-        user.setRol(entity.getRol());
-        if (entity.getPatient() != null) {
-            user.setPatientId(entity.getPatient().getPatientId());
-        }
-        return user;
     }
 
     private AppointmentEntity toEntity(Appointment appointment) {
@@ -161,12 +123,14 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
         entity.setDate(appointment.getDate());
         entity.setHour(appointment.getHour());
         entity.setAppointmentStatus(appointment.getAppointmentStatus());
-        if (appointment.getPatient() != null) {
-            PatientEntity patientEntity = patientRepository.findById(appointment.getPatient().getPatientId()).orElse(null);
+        if (appointment.getPatientId() != null) {
+            PatientEntity patientEntity = patientRepository.findById(appointment.getPatientId())
+                .orElseThrow(() -> new IllegalArgumentException("No existe el paciente de la cita"));
             entity.setPatient(patientEntity);
         }
-        if (appointment.getDoctor() != null) {
-            UserEntity doctorEntity = userRepository.findById(appointment.getDoctor().getUserId()).orElse(null);
+        if (appointment.getDoctorId() != null) {
+            UserEntity doctorEntity = userRepository.findById(appointment.getDoctorId())
+                .orElseThrow(() -> new IllegalArgumentException("No existe el doctor de la cita"));
             entity.setDoctor(doctorEntity);
         }
         return entity;

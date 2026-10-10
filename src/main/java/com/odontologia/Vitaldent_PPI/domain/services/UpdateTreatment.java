@@ -25,7 +25,7 @@ public class UpdateTreatment {
             throw new BusinessException("Tratamiento no entregado");
         }
 
-        if(treatmentPort.existsById(treatment.getTreatamentId())){
+        if(!treatmentPort.existsById(treatment.getTreatamentId())){
             throw new BusinessException("No se ha encontraod el tratamiento en la base de datos");
         }
 
@@ -42,7 +42,7 @@ public class UpdateTreatment {
                 if(treatmentItem.getQuantityUsed() <= 0){
                     throw new BusinessException("La cantidad usada del insumo debe ser mayor a 0");
                 }
-                if(!itemPort.existsById(treatmentItem.getItem().getItemId())){
+                if(treatmentItem.getItemId() == null || !itemPort.existsById(treatmentItem.getItemId())){
                     throw new BusinessException("El insumo no se encuentra en la base de datos");
                 }
             }

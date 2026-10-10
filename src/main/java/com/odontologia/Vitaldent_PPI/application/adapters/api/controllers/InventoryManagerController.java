@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.ItemRequest;
+import com.odontologia.Vitaldent_PPI.application.adapters.api.request.ItemPatchRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.ItemResponse;
 import com.odontologia.Vitaldent_PPI.application.usecases.InventoryManagerUseCase;
-import com.odontologia.Vitaldent_PPI.domain.models.Inventory;
 import com.odontologia.Vitaldent_PPI.domain.models.Item;
 
 import jakarta.validation.Valid;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/inventory_manager")
+@CrossOrigin (origins = "http://localhost:5173")
 public class InventoryManagerController {
     private final InventoryManagerUseCase inventoryManagerUseCase;
 
@@ -53,6 +54,18 @@ public class InventoryManagerController {
         return ResponseEntity.ok(toItemResponse(item));
     }
 
+    @PatchMapping("/item/{id}")
+    public ResponseEntity<ItemResponse> patchItem(
+            @PathVariable UUID id,
+            @Valid @RequestBody ItemPatchRequest request) {
+        Item item = inventoryManagerUseCase.findItemById(id);
+        if (request.getName() != null) item.setName(request.getName());
+        if (request.getStock() != null) item.setStock(request.getStock());
+        if (request.getActive() != null) item.setActive(request.getActive());
+        inventoryManagerUseCase.updateItem(item);
+        return ResponseEntity.ok(toItemResponse(item));
+    }
+
     @PatchMapping("/item/{id}/activate")
     public ResponseEntity<Void> activateItem(@PathVariable UUID id) {
         inventoryManagerUseCase.activeItem(id);
@@ -71,11 +84,7 @@ public class InventoryManagerController {
         item.setName(request.getName());
         item.setStock(request.getStock());
         item.setActive(request.getActive());
-        if (request.getInventory() != null) {
-            Inventory inventory = new Inventory();
-            inventory.setUpdateDate(request.getInventory().getUpdateDate());
-            item.setInventory(inventory);
-        }
+        item.setInventoryId(request.getInventoryId());
         return item;
     }
 
@@ -85,6 +94,6 @@ public class InventoryManagerController {
                 item.getName(),
                 item.getStock(),
                 item.isActive(),
-                item.getInventory() == null ? null : item.getInventory().getInventoryID());
+                item.getInventoryId());
     }
 }

@@ -19,7 +19,6 @@ import com.odontologia.Vitaldent_PPI.domain.services.CreateAppoitment;
 import com.odontologia.Vitaldent_PPI.domain.services.CreatePatient;
 import com.odontologia.Vitaldent_PPI.domain.services.CreatePay;
 import com.odontologia.Vitaldent_PPI.domain.services.CreateUser;
-import com.odontologia.Vitaldent_PPI.domain.services.DeletePatient;
 import com.odontologia.Vitaldent_PPI.domain.services.DeleteUser;
 import com.odontologia.Vitaldent_PPI.domain.services.FindAppointment;
 import com.odontologia.Vitaldent_PPI.domain.services.FindClinicalRecord;
@@ -27,6 +26,7 @@ import com.odontologia.Vitaldent_PPI.domain.services.FindInvoice;
 import com.odontologia.Vitaldent_PPI.domain.services.FindPatient;
 import com.odontologia.Vitaldent_PPI.domain.services.FindPay;
 import com.odontologia.Vitaldent_PPI.domain.services.FindUser;
+import com.odontologia.Vitaldent_PPI.domain.services.ScheduleAppointment;
 
 @Service
 public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domain.ports.in.ReceptionistUseCase{
@@ -37,8 +37,6 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
     private final CreateUser createUser;
 
     private final CreatePay createPay;
-
-    private final DeletePatient deletePatient;
 
     private final DeleteUser deleteUser;
 
@@ -54,6 +52,8 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
 
     private final FindUser findUser;
 
+    private final ScheduleAppointment scheduleAppointment;
+
     private final CancelAppointment cancelAppointment;
 
     private final CloseAppointment closeAppointment;
@@ -62,7 +62,6 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
         CreatePatient createPatient,
         CreateUser createUser,
         CreatePay createPay,
-        DeletePatient deletePatient,
         DeleteUser deleteUser,
         FindAppointment findAppointment,
         FindClinicalRecord findClinicalRecord,
@@ -70,13 +69,13 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
         FindPatient findPatient,
         FindPay findPay,
         FindUser findUser,
+        ScheduleAppointment scheduleAppointment,
         CancelAppointment cancelAppointment,
         CloseAppointment closeAppointment
     ){
         this.createAppoitment = createAppoitment;
         this.createPatient = createPatient;
         this.createPay = createPay;
-        this.deletePatient = deletePatient;
         this.deleteUser = deleteUser;
         this.findAppointment = findAppointment;
         this.findClinicalRecord = findClinicalRecord;
@@ -84,6 +83,7 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
         this.findPatient = findPatient;
         this.findPay = findPay;
         this.findUser = findUser;
+        this.scheduleAppointment = scheduleAppointment;
         this.cancelAppointment = cancelAppointment;
         this.closeAppointment = closeAppointment;
         this.createUser = createUser;
@@ -99,6 +99,7 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
         createPatient.createPatient(patient);
     }
 
+    @Override
     @Override 
     public void createUser(User user) throws BusinessException{
         createUser.createUser(user);
@@ -109,11 +110,6 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
         createPay.createPay(pay);
     }
     
-    @Override 
-    public void deletePatient(String document) throws BusinessException{
-        deletePatient.deletePatient(document);
-    }
-
     @Override 
     public void deleteUser(String document) throws BusinessException{
         deleteUser.deleteUser(document);
@@ -177,6 +173,11 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
     @Override  
     public User findUserByDocument(String document) throws NotFoundException{
         return findUser.findUserByDocument(document);
+    }
+
+    @Override
+    public void scheduleAppointment(UUID idAppointment, String patientDocument) throws BusinessException{
+        scheduleAppointment.scheduleAppointment(idAppointment, patientDocument);
     }
 
     @Override 

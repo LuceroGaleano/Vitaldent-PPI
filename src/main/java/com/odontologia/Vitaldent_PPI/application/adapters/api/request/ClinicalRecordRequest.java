@@ -1,8 +1,8 @@
 package com.odontologia.Vitaldent_PPI.application.adapters.api.request;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -24,12 +24,10 @@ public class ClinicalRecordRequest {
     @NotBlank(message = "El diagnóstico es obligatorio")
     private String diagnostic;
 
-    @Valid
     @NotNull(message = "La cita es obligaotria")
-    private AppointmentRequest appointment;
+    private UUID appointmentId;
 
-    @Valid
     @NotNull(message = "El tratamiento es obligatorio")
-    private TreatmentRequest treatment;
+    private UUID treatmentId;
 
 }

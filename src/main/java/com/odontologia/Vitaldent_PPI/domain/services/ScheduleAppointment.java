@@ -45,7 +45,7 @@ public class ScheduleAppointment {
             throw new BusinessException("El paciente ya tiene una cita en ese mismo horario");
         }
 
-        appointment.setPatient(patient);
+        appointment.setPatientId(patient.getPatientId());
         appointment.setAppointmentStatus(AppointmentStatus.SCHEDULED);
         appointmentPort.update(appointment);
     }

@@ -37,7 +37,7 @@ public class CreateTreatment{
                 if(treatmentItem.getQuantityUsed() <= 0){
                     throw new BusinessException("La cantidad usada del insumo debe ser mayor a 0");
                 }
-                if(!itemPort.existsById(treatmentItem.getItem().getItemId())){
+                if(treatmentItem.getItemId() == null || !itemPort.existsById(treatmentItem.getItemId())){
                     throw new BusinessException("El insumo no se encuentra en la base de datos");
                 }
             }

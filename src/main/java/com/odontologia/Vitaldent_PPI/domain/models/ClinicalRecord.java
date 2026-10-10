@@ -17,6 +17,6 @@ public class ClinicalRecord {
     private String reasonForConsultation;
     private String record;
     private String diagnostic;
-    private Appointment appointment;
-    private Treatment treatment;
+    private UUID appointmentId;
+    private UUID treatmentId;
 }
