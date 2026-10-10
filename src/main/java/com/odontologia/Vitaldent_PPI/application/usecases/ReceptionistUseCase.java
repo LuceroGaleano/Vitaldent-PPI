@@ -99,7 +99,6 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
         createPatient.createPatient(patient);
     }
 
-    @Override
     @Override 
     public void createUser(User user) throws BusinessException{
         createUser.createUser(user);
