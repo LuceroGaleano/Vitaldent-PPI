@@ -33,6 +33,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
             // Login público
             .requestMatchers("/auth/**").permitAll()
+            //Permisos para cualquier usuario autenticado
+            .requestMatchers("/user/**").hasAnyRole("DOCTOR", "RECEPTIONIST", "PATIENT", "INVENTORY_MANAGER")
             //doctor
             .requestMatchers("/doctor/**").hasRole("DOCTOR")
             //receptionist

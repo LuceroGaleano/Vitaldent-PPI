@@ -8,11 +8,9 @@ import org.springframework.stereotype.Service;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
-import com.odontologia.Vitaldent_PPI.domain.models.User;
 import com.odontologia.Vitaldent_PPI.domain.services.CancelAppointment;
 import com.odontologia.Vitaldent_PPI.domain.services.FindAppointment;
 import com.odontologia.Vitaldent_PPI.domain.services.ScheduleAppointment;
-import com.odontologia.Vitaldent_PPI.domain.services.UpdateUser;
 
 
 @Service
@@ -23,17 +21,14 @@ public class PatientUseCase implements com.odontologia.Vitaldent_PPI.domain.port
 
     private final CancelAppointment cancelAppointment;
 
-    private final UpdateUser updateUser;
 
     public PatientUseCase(FindAppointment findAppointment,
         ScheduleAppointment scheduleAppointment,
-        CancelAppointment cancelAppointment,
-        UpdateUser updateUser
+        CancelAppointment cancelAppointment
     ){
         this.findAppointment = findAppointment;
         this.scheduleAppointment = scheduleAppointment;
         this.cancelAppointment = cancelAppointment;
-        this.updateUser = updateUser;
     }
 
     @Override
@@ -49,10 +44,5 @@ public class PatientUseCase implements com.odontologia.Vitaldent_PPI.domain.port
     @Override 
     public void cancelAppointment(UUID idAppointment, UUID relatedId) throws BusinessException{
         cancelAppointment.cancelAppointment(idAppointment, relatedId);
-    }
-
-    @Override 
-    public void updateUser(User user, UUID relatedId) throws BusinessException{
-        updateUser.updateUser(user, relatedId);
     }
 }
