@@ -4,32 +4,53 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
-    e.preventDefault(); 
-    
+    e.preventDefault();
     navigate('/patient');
   };
 
   return (
-    <div className="login-container">
-      <div className="login-card">
-        <h1 className="brand-title">Vitaldent</h1>
-        <p className="subtitle">Bienvenido al portal</p>
-        
-        <form onSubmit={handleLogin}>
-          <div className="input-group">
-            <label>Usuario / Correo</label>
-            <input type="text" placeholder="Ingresa tu credencial" />
+    <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-light">
+      <div className="card shadow border-0 rounded-4 p-4" style={{ maxWidth: '420px', width: '100%' }}>
+        <div className="card-body">
+          {/* Encabezado */}
+          <div className="text-center mb-4">
+            <h2 className="fw-bold text-primary mb-1">Vitaldent</h2>
+            <p className="text-muted small">Bienvenido al portal odontológico</p>
           </div>
-          
-          <div className="input-group">
-            <label>Contraseña</label>
-            <input type="password" placeholder="Ingresa tu contraseña" />
-          </div>
-          
-          <button type="submit" className="btn-primary">
-            Iniciar Sesión
-          </button>
-        </form>
+
+          {/* Formulario */}
+          <form onSubmit={handleLogin}>
+            <div className="mb-3">
+              <label htmlFor="user" className="form-label fw-semibold text-secondary small">
+                Usuario / Correo
+              </label>
+              <input
+                id="user"
+                type="text"
+                className="form-control form-control-lg fs-6"
+                placeholder="Ingresa tu credencial"
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="pass" className="form-label fw-semibold text-secondary small">
+                Contraseña
+              </label>
+              <input
+                id="pass"
+                type="password"
+                className="form-control form-control-lg fs-6"
+                placeholder="Ingresa tu contraseña"
+                required
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary btn-lg w-100 fs-6 fw-semibold shadow-sm">
+              Ingresar
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
