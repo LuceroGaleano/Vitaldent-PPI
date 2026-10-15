@@ -45,6 +45,15 @@ public class InvoicePersistenceAdapter implements InvoicePort {
         return invoices;
     }
 
+        @Override
+    public List<Invoice> findByPatientDocument(String document) {
+        List<Invoice> invoices = new ArrayList<>();
+        for (InvoiceEntity entity : invoiceRepository.findByClinicalRecord_Appointment_Patient_document(document)) {
+            invoices.add(toModel(entity));
+        }
+        return invoices;
+    }
+
     @Override
     public boolean existsById(UUID id) {
         return invoiceRepository.existsById(id);

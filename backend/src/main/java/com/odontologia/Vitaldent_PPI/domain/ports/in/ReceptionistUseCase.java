@@ -34,7 +34,7 @@ public interface ReceptionistUseCase{
 
     Invoice findInvoiceById(UUID id) throws NotFoundException;
     Invoice findInvoiceByClinicalRecordId(UUID idClinicalRecord) throws NotFoundException;
-    List<Invoice> findInvoiceByPatientId(UUID idPatient) throws NotFoundException;
+    List<Invoice> findInvoiceByPatientDocument(String document) throws NotFoundException;
 
     Patient findPatientByDocument(String document) throws NotFoundException;
 

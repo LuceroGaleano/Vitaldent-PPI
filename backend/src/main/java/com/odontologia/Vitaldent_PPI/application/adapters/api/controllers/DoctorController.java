@@ -51,9 +51,8 @@ public class DoctorController {
 
     @GetMapping("/clinical_record/doctor/{documentDoctor}")
     public ResponseEntity<List<ClinicalRecordResponse>> findRecordByDoctorDocument(
-            @PathVariable String documentDoctor, 
-            @RequestParam(required = false) UUID relatedId) {
-        List<ClinicalRecord> records = doctorUseCase.findRecordByDoctorDocument(documentDoctor, relatedId);
+            @PathVariable String documentDoctor) {
+        List<ClinicalRecord> records = doctorUseCase.findRecordByDoctorDocument(documentDoctor);
         List<ClinicalRecordResponse> response = records.stream()
                 .map(this::toClinicalRecordResponse)
                 .toList();

@@ -150,8 +150,8 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
     }
 
     @Override 
-    public List<Invoice> findInvoiceByPatientId(UUID idPatient) throws NotFoundException{
-        return findInvoice.findInvoiceByPatientId(idPatient);
+    public List<Invoice> findInvoiceByPatientDocument(String document) throws NotFoundException{
+        return findInvoice.findInvoiceByPatientDocument(document);
     }
 
     @Override 

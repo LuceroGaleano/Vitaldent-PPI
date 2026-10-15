@@ -1,5 +1,6 @@
 package com.odontologia.Vitaldent_PPI.infrastructure.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -34,36 +35,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authHeader.substring(7);
+        String token = authHeader.substring(7).trim();
 
         try {
-            if (jwtUtil.isTokenValid(token)) {
-                String username = jwtUtil.extractUsername(token);
-                String document = jwtUtil.extractDocument(token);
-                String role = jwtUtil.extractRole(token);
+            Claims claims = jwtUtil.extractAllClaims(token);
+            String username = claims.getSubject();
+            String document = (String) claims.get("document");
+            String role = (String) claims.get("role");
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                username,
-                                null,
-                                List.of(new SimpleGrantedAuthority("ROLE_" + role))
-                        );
-                authentication.setDetails(document);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            username,
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                    );
+            authentication.setDetails(document);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (ExpiredJwtException e) {
-            SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"status\":401,\"message\":\"Token expirado\",\"errors\":null}");
+            writeError(response, "Token expirado");
             return;
-        } catch (JwtException e) {
-            SecurityContextHolder.clearContext();
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write("{\"status\":401,\"message\":\"Token inválido\",\"errors\":null}");
+        } catch (JwtException | IllegalArgumentException e) {
+            writeError(response, "Token inválido");
             return;
         }
+
         filterChain.doFilter(request, response);
+    }
+
+    private void writeError(HttpServletResponse response, String message) throws IOException {
+        SecurityContextHolder.clearContext();
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("{\"status\":401,\"message\":\"" + message + "\",\"errors\":null}");
     }
 }

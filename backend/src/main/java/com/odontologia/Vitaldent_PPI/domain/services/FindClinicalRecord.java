@@ -8,19 +8,15 @@ import org.springframework.stereotype.Service;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
-import com.odontologia.Vitaldent_PPI.domain.models.User;
-import com.odontologia.Vitaldent_PPI.domain.models.enums.RolUser;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.ClinicalRecordPort;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 
 @Service 
 public class FindClinicalRecord {
     private final ClinicalRecordPort clinicalRecordPort;
-    private final UserPort userPort;
 
     public FindClinicalRecord(ClinicalRecordPort clinicalRecordPort, UserPort userPort){
         this.clinicalRecordPort = clinicalRecordPort;
-        this.userPort = userPort;
     }
 
     public ClinicalRecord findRecordById(UUID id) throws NotFoundException{
@@ -39,17 +35,10 @@ public class FindClinicalRecord {
         return clinicalRecord;
     }   
 
-    public List<ClinicalRecord> findRecordByDoctorDocument(String documentDoctor, UUID relatedId) throws NotFoundException, BusinessException {
+    public List<ClinicalRecord> findRecordByDoctorDocument(String documentDoctor) throws NotFoundException, BusinessException {
         List<ClinicalRecord> records = clinicalRecordPort.findByDoctorDocument(documentDoctor);
         if (records == null || records.isEmpty()) {
             throw new NotFoundException("No se encontraron historiales médicos para este doctor");
-        }
-
-        User relatedUser = userPort.findById(relatedId);
-        if(relatedUser.getRol() == RolUser.DOCTOR){
-            if(!relatedUser.getDocument().equals(documentDoctor)){
-                throw new BusinessException("Solo puedes ver tus historias medicas");
-            }
         }
         return records;
     }

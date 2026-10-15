@@ -17,7 +17,7 @@ public interface DoctorUseCase{
     
     List<Appointment> findAppointmentByDoctor(String doctorDcoument) throws NotFoundException, BusinessException;
     
-    List<ClinicalRecord> findRecordByDoctorDocument(String documentDoctor, UUID relatedId) throws NotFoundException, BusinessException;
+    List<ClinicalRecord> findRecordByDoctorDocument(String documentDoctor) throws NotFoundException, BusinessException;
     List<ClinicalRecord> findRecordByPatientDocument(String documentPatient) throws NotFoundException;
 
     Treatment findTreatmentById(UUID id) throws NotFoundException;

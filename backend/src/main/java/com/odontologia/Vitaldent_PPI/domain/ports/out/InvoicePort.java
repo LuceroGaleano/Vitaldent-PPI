@@ -10,6 +10,7 @@ public interface InvoicePort {
     public Invoice findById(UUID id);
     public Invoice findByClinicalRecordId(UUID idClinicalRecord);
     public List<Invoice> findByPatientId(UUID idPatient);
+     public List<Invoice> findByPatientDocument(String documentPatient);
 
     //exists
     public boolean existsById(UUID id);

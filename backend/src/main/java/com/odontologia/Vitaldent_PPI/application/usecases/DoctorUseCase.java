@@ -62,8 +62,8 @@ public class DoctorUseCase implements com.odontologia.Vitaldent_PPI.domain.ports
     }
 
     @Override
-    public List<ClinicalRecord> findRecordByDoctorDocument(String documentDoctor, UUID relatedId) throws NotFoundException, BusinessException{
-        return findClinicalRecord.findRecordByDoctorDocument(documentDoctor, relatedId);
+    public List<ClinicalRecord> findRecordByDoctorDocument(String documentDoctor) throws NotFoundException, BusinessException{
+        return findClinicalRecord.findRecordByDoctorDocument(documentDoctor);
     }
 
     @Override 

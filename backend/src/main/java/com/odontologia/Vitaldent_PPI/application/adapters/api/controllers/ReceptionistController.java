@@ -143,9 +143,9 @@ public class ReceptionistController {
                 receptionistUseCase.findInvoiceByClinicalRecordId(clinicalRecordId)));
     }
 
-    @GetMapping("/invoice/patient/{patientId}")
-    public ResponseEntity<List<InvoiceResponse>> findInvoicesByPatientId(@PathVariable UUID patientId) {
-        return ResponseEntity.ok(receptionistUseCase.findInvoiceByPatientId(patientId).stream()
+    @GetMapping("/invoice/patient/{documentPatient}")
+    public ResponseEntity<List<InvoiceResponse>> findInvoicesByPatientDocument(@PathVariable String documentPatient) {
+        return ResponseEntity.ok(receptionistUseCase.findInvoiceByPatientDocument(documentPatient).stream()
                 .map(this::toInvoiceResponse)
                 .toList());
     }

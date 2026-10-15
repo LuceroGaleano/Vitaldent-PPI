@@ -40,4 +40,12 @@ public class FindInvoice {
         }
         return invoices;
     }
+
+    public List<Invoice> findInvoiceByPatientDocument(String document) throws NotFoundException{
+        List<Invoice> invoices = invoicePort.findByPatientDocument(document);
+        if(invoices == null || invoices.isEmpty()){
+            throw new NotFoundException("El paciente no tiene facturas registradas");
+        }
+        return invoices;
+    }
 }

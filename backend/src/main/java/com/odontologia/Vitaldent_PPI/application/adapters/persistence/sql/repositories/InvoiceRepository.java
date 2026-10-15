@@ -11,4 +11,5 @@ public interface InvoiceRepository extends JpaRepository<InvoiceEntity, UUID> {
     InvoiceEntity findByClinicalRecord_ClinicalRecordId(UUID clinicalRecordId);
 
     List<InvoiceEntity> findByClinicalRecord_Appointment_Patient_PatientId(UUID patientId);
+    List<InvoiceEntity> findByClinicalRecord_Appointment_Patient_document(String document);
 }
