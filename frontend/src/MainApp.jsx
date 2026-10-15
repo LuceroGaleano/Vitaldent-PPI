@@ -1,8 +1,7 @@
 import React from 'react'
-import MainRoutes from './routes/MainRoutes'
-import './Styles.css';
+import {MainRoutes} from './routes/MainRoutes'
 
-export default function MainApp() {
+export const MainApp = () => {
   return (
     <>
       <MainRoutes/>

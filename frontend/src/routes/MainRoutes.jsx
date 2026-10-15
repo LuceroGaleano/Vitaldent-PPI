@@ -5,7 +5,7 @@ import PatientPortal from '../pages/PatientPortal'
 import ReceptionistPortal from '../pages/ReceptionistPortal'
 import OdontologistPortal from '../pages/OdontologistPortal'
 
-export default function MainRoutes() {
+export const MainRoutes = () => {
   return (
     <Routes>
         <Route path="/" element={<Login />} />
@@ -13,7 +13,6 @@ export default function MainRoutes() {
         <Route path="/receptionist" element={<ReceptionistPortal />} />
         <Route path="/odontologist" element={<OdontologistPortal />} />
 
-        {/*PAGINA PREDETERMINADO */}
         <Route path="/*" element={<Navigate to = '/'/>}/>
     </Routes>
   )
