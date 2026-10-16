@@ -1,6 +1,7 @@
 import { useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginReducer, initialState } from '../reduces/LoginReduce';
+import { postFetch } from '../fetchs/PostFetch';
 
 function Login() {
   const[state, dispatch] = useReducer(loginReducer, initialState);
@@ -13,42 +14,40 @@ function Login() {
     });
   };
 
-  const handleLogin = async (e) => {
+  const handleLogin = async(e) =>{
     e.preventDefault();
-    dispatch({type: "LOADING", payload: true});
+    dispatch({type: 'LOADING', payload: true});
 
     try{
-      const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers:{'Content-Type': 'application/json'},
-        body: JSON.stringify({
+      const data = await postFetch(
+        'http://localhost:8080/auth/login',
+        {
           username: state.username,
           password: state.password
-        }),
-      })
-        const data = await response.json();
-        if(!response.ok){
-          throw new Error(data.message || data.error)
         }
+      )
 
-        localStorage.setItem('token', data.token);
-        dispatch({type: "LOADING", payload: false});
-
-        if(data.role == "RECEPTIONIST"){
-          navigate('/receptionist')
-        } else if(data.role == "DOCTOR"){
-           navigate('/odontologist')
-        } else if(data.role == "PATIENT"){
-          navigate('/patient')
-        } else if(data.role == "INVENTORY_MANAGER"){
-          navigate('/inventoryManager')
-        } else{
-          navigate('/')
-        }
-    } catch (err){
-      dispatch({type: "ERROR", payload: err.message});
+      localStorage.setItem('token', data.token);
+      dispatch({ type: 'LOADING', payload: false });
+      if (data.role === 'RECEPTIONIST') {
+        navigate('/receptionist');
+      } else if (data.role === 'DOCTOR') {
+        navigate('/odontologist');
+      } else if (data.role === 'PATIENT') {
+        navigate('/patient');
+      } else if (data.role === 'INVENTORY_MANAGER') {
+        navigate('/inventoryManager');
+      } else {
+        navigate('/');
+      }
+    } catch (error) {
+      dispatch({
+        type: 'ERROR',
+        payload: error.message
+      });
     }
-  };
+  }
+
 
   return (
     <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-light">

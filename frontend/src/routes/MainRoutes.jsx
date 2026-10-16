@@ -4,6 +4,7 @@ import Login from '../pages/Login'
 import PatientPortal from '../pages/PatientPortal'
 import ReceptionistPortal from '../pages/ReceptionistPortal'
 import OdontologistPortal from '../pages/OdontologistPortal'
+import InventoryManagerPortal from '../pages/InventoryManagerPortal'
 
 export const MainRoutes = () => {
   return (
