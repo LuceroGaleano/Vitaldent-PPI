@@ -12,6 +12,7 @@ export const MainRoutes = () => {
         <Route path="/patient" element={<PatientPortal />} />
         <Route path="/receptionist" element={<ReceptionistPortal />} />
         <Route path="/odontologist" element={<OdontologistPortal />} />
+        <Route path="/inventoryManager" element={<InventoryManagerPortal />} />
 
         <Route path="/*" element={<Navigate to = '/'/>}/>
     </Routes>

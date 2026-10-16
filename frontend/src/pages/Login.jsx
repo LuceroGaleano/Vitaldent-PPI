@@ -40,6 +40,8 @@ function Login() {
            navigate('/odontologist')
         } else if(data.role == "PATIENT"){
           navigate('/patient')
+        } else if(data.role == "INVENTORY_MANAGER"){
+          navigate('/inventoryManager')
         } else{
           navigate('/')
         }
