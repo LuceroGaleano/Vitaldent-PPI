@@ -1,11 +1,13 @@
-import { useReducer } from 'react';
+import { useContext, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginReducer, initialState } from '../reduces/LoginReduce';
 import { postFetch } from '../fetchs/PostFetch';
+import { AuthContext } from '../context/AuthContext';
 
 function Login() {
   const[state, dispatch] = useReducer(loginReducer, initialState);
   const navigate = useNavigate();
+  const {auth, setAuth} = useContext(AuthContext);
 
   const handleChange = (e) => {
     dispatch({
@@ -27,7 +29,12 @@ function Login() {
         }
       )
 
-      localStorage.setItem('token', data.token);
+      setAuth({
+        logged: true,
+        user: data.token
+      });
+      
+      localStorage.setItem('auth', auth);
       dispatch({ type: 'LOADING', payload: false });
       if (data.role === 'RECEPTIONIST') {
         navigate('/receptionist');
