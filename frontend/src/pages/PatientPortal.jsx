@@ -61,20 +61,14 @@ export default function PatientPortal() {
     </div>
   );
 }
-
-// ==========================================
-// COMPONENTE: Citas Disponibles
-// ==========================================
+//Funcion para mostrar las citas disponibles
 function CitasDisponibles() {
   const [citas, setCitas] = useState([]);
 
   useEffect(() => {
-    // API: getCitasDisponibles
-    // fetch('http://localhost:8080/api/citas/disponibles')
-    //   .then(res => res.json())
-    //   .then(data => setCitas(data));
+    // aqui va la llamada a la API para obtener las citas disponibles
     
-    // Datos falsos temporales para que puedas diseñar:
+    // Datos falsos temporales para probar la interfaz
     setCitas([
       { id: 1, doctor: 'Dr. Pérez', fecha: '2026-10-25 10:00 AM' },
       { id: 2, doctor: 'Dra. Gómez', fecha: '2026-10-26 02:00 PM' }
@@ -83,7 +77,7 @@ function CitasDisponibles() {
 
   const handleAgendar = (id) => {
     alert(`Llamando API para agendar cita ID: ${id}`);
-    // fetch(`http://localhost:8080/api/citas/agendar/${id}`, { method: 'POST' })
+    // aqui iría la llamada a la API para agendar la cita y luego actualizar el estado de las citas disponibles
   };
 
   return (
@@ -102,79 +96,6 @@ function CitasDisponibles() {
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-
-// ==========================================
-// COMPONENTE: Mis Citas
-// ==========================================
-function MisCitas() {
-  const [misCitas, setMisCitas] = useState([]);
-
-  useEffect(() => {
-    // API: GetAppointment
-    // fetch('http://localhost:8080/api/citas/paciente/1')
-    //   .then(res => res.json())
-    //   .then(data => setMisCitas(data));
-
-    // Datos falsos temporales:
-    setMisCitas([
-      { id: 101, doctor: 'Dr. López', fecha: '2026-10-22 09:00 AM', estado: 'Confirmada' }
-    ]);
-  }, []);
-
-  const handleCancelar = (id) => {
-    alert(`Llamando API para cancelar cita ID: ${id}`);
-    // fetch(`http://localhost:8080/api/citas/cancelar/${id}`, { method: 'DELETE' })
-  };
-
-  return (
-    <div>
-      <h2 className="text-success mb-4">Mis Citas Agendadas</h2>
-      <div className="list-group">
-        {misCitas.map(cita => (
-          <div className="list-group-item d-flex justify-content-between align-items-center p-3 shadow-sm mb-2 border-0 rounded" key={cita.id}>
-            <div>
-              <h5 className="mb-1 text-primary">{cita.doctor}</h5>
-              <small className="text-muted">{cita.fecha}</small>
-            </div>
-            <button className="btn btn-outline-danger" onClick={() => handleCancelar(cita.id)}>Cancelar</button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ==========================================
-// COMPONENTE: Historial Clínico
-// ==========================================
-function HistorialClinico() {
-  const [historial, setHistorial] = useState([]);
-
-  useEffect(() => {
-    // API para traer el historial
-    // fetch('http://localhost:8080/api/historial/paciente/1')
-    
-    // Datos falsos temporales:
-    setHistorial([
-      { id: 1, fecha: '2026-05-10', descripcion: 'Limpieza dental de rutina.' },
-      { id: 2, fecha: '2026-08-15', descripcion: 'Tratamiento de caries en molar superior derecho.' }
-    ]);
-  }, []);
-
-  return (
-    <div>
-      <h2 className="text-success mb-4">Historial Clínico</h2>
-      {historial.map(item => (
-        <div className="card border-success mb-3 shadow-sm" key={item.id}>
-          <div className="card-header bg-success text-white">Fecha: {item.fecha}</div>
-          <div className="card-body">
-            <p className="card-text">{item.descripcion}</p>
-          </div>
-        </div>
-      ))}
     </div>
   );
 }
