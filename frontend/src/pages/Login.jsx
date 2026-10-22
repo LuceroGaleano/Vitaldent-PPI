@@ -1,11 +1,19 @@
 import { useContext, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginReducer, initialState } from '../reduces/LoginReduce';
 import { postFetch } from '../fetchs/PostFetch';
 import { AuthContext } from '../context/AuthContext';
+import { postFetchReduce } from '../reduces/PostFetchReduce';
 
 function Login() {
-  const[state, dispatch] = useReducer(loginReducer, initialState);
+
+  const initialState = {
+  username: '',
+  password: '',
+  loading: false,
+  error: null
+};
+
+  const[state, dispatch] = useReducer(postFetchReduce, initialState);
   const navigate = useNavigate();
   const {auth, setAuth} = useContext(AuthContext);
 

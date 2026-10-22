@@ -45,4 +45,9 @@ public class PatientUseCase implements com.odontologia.Vitaldent_PPI.domain.port
     public void cancelAppointment(UUID idAppointment, UUID relatedId) throws BusinessException{
         cancelAppointment.cancelAppointment(idAppointment, relatedId);
     }
+
+    @Override 
+    public List<Appointment> findByAvaible() throws NotFoundException{
+        return findAppointment.findByAvaible();
+    }
 }

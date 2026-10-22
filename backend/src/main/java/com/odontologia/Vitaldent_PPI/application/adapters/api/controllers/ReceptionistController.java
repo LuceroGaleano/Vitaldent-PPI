@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/receptionist")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ReceptionistController {
     private final ReceptionistUseCase receptionistUseCase;
 

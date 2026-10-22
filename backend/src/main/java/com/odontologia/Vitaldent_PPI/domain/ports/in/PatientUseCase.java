@@ -11,4 +11,5 @@ public interface PatientUseCase{
     List<Appointment> findAppointmentByPatient(String patientDocument) throws NotFoundException;
     void scheduleAppointment(UUID idAppointment, String patientDocument) throws BusinessException;
     void cancelAppointment(UUID idAppointment, UUID relatedId) throws BusinessException;
+    List<Appointment> findByAvaible();
 }

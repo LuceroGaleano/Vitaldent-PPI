@@ -6,7 +6,7 @@ export const AuthProvider = ({children}) => {
         const storageAuth = localStorage.getItem("auth");
         return storageAuth ? JSON.parse(storageAuth) : {
             logged: false,
-            user: {}
+            user: null
         }
     })
 

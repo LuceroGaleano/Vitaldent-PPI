@@ -20,5 +20,6 @@ public class Appointment {
     private LocalTime hour;
     private UUID patientId;
     private UUID doctorId;
+    private String doctorName;
     private AppointmentStatus appointmentStatus;
 }

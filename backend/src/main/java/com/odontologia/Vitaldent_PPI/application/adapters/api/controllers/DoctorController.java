@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/doctor")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DoctorController {
     private final DoctorUseCase doctorUseCase;
     private final UserPort userPort;

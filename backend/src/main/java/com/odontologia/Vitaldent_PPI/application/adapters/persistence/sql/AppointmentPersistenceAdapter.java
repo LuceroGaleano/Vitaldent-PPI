@@ -17,6 +17,7 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.reposi
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
+import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.AppointmentPort;
 
 @Service
@@ -54,6 +55,11 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
             return List.of();
         }
         return toModels(appointmentRepository.findByDoctor_UserId(user.getUserId()));
+    }
+
+    @Override
+    public List<Appointment> findByStatus(AppointmentStatus appointmentStatus) {
+        return toModels(appointmentRepository.findByAppointmentStatus(appointmentStatus));
     }
 
     @Override
@@ -115,6 +121,7 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
         appointment.setAppointmentStatus(entity.getAppointmentStatus());
         appointment.setPatientId(entity.getPatient() == null ? null : entity.getPatient().getPatientId());
         appointment.setDoctorId(entity.getDoctor() == null ? null : entity.getDoctor().getUserId());
+        appointment.setDoctorName(entity.getDoctor() == null ? null : entity.getDoctor().getFullName());
         return appointment;
     }
 
@@ -125,12 +132,12 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
         entity.setAppointmentStatus(appointment.getAppointmentStatus());
         if (appointment.getPatientId() != null) {
             PatientEntity patientEntity = patientRepository.findById(appointment.getPatientId())
-                .orElseThrow(() -> new IllegalArgumentException("No existe el paciente de la cita"));
+                .orElse(null);
             entity.setPatient(patientEntity);
         }
         if (appointment.getDoctorId() != null) {
             UserEntity doctorEntity = userRepository.findById(appointment.getDoctorId())
-                .orElseThrow(() -> new IllegalArgumentException("No existe el doctor de la cita"));
+                .orElse(null);
             entity.setDoctor(doctorEntity);
         }
         return entity;

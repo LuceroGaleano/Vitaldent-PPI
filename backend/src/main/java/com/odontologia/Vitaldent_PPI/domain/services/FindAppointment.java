@@ -10,6 +10,7 @@ import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
+import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 import com.odontologia.Vitaldent_PPI.domain.models.enums.RolUser;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.AppointmentPort;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.PatientPort;
@@ -56,5 +57,17 @@ public class FindAppointment{
         }
 
         return appointmentPort.findByDoctor(user);
+    }
+
+    public List<Appointment> findByAvaible() throws NotFoundException {
+        AppointmentStatus status = AppointmentStatus.AVAILABLE; 
+        
+        List<Appointment> appointments = appointmentPort.findByStatus(status);
+        
+        if (appointments == null || appointments.isEmpty()) {
+            throw new NotFoundException("No se encontraron citas disponibles");
+        }
+        
+        return appointments;
     }
 }
