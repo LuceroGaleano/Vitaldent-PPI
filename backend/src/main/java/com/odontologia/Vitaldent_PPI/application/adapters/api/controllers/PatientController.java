@@ -5,9 +5,11 @@ import java.util.UUID;
 
 
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.AppointmentResponse;
+import com.odontologia.Vitaldent_PPI.application.adapters.api.response.ClinicalRecordResponse;
 import com.odontologia.Vitaldent_PPI.application.usecases.PatientUseCase;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
+import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 
@@ -26,6 +28,16 @@ public class PatientController {
     public PatientController(PatientUseCase patientUseCase, UserPort userPort) {
         this.patientUseCase = patientUseCase;
         this.userPort = userPort;
+    }
+    
+    //-ClinicalRecord-------------------------------------------------------------------
+    @GetMapping("/clinical_record")
+    public ResponseEntity<List<ClinicalRecordResponse>> findRecordsByPatient() {
+        String document = getAuthenticatedUser().getDocument();
+        List<ClinicalRecordResponse> records = patientUseCase.findRecordByPatientDocument(document).stream()
+                .map(this::toClinicalRecordResponse)
+                .toList();
+        return ResponseEntity.ok(records);
     }
 
     //-Appointment-------------------------------------------------------------------
@@ -81,6 +93,17 @@ public class PatientController {
                 appointment.getDoctorId(),
                 appointment.getDoctorName(),
                 appointment.getAppointmentStatus());
+    }
+
+    private ClinicalRecordResponse toClinicalRecordResponse(ClinicalRecord record) {
+        return new ClinicalRecordResponse(
+                record.getClinicalRecordId(),
+                record.getDate(),
+                record.getReasonForConsultation(),
+                record.getRecord(),
+                record.getDiagnostic(),
+                record.getAppointmentId(),
+                record.getTreatmentId());
     }
 
 }

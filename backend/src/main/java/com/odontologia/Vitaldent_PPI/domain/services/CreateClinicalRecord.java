@@ -60,6 +60,10 @@ public class CreateClinicalRecord {
             throw new BusinessException("No se ha encontrado la cita");
         }
 
+        if(appointment.getAppointmentStatus() != AppointmentStatus.SCHEDULED){
+            throw new BusinessException("No se puede crear historial medico para una cita que no esta agendada");
+        }
+
         Treatment treatment = treatmentPort.findById(record.getTreatmentId());
         if(treatment == null){
             throw new BusinessException("No se ha encontrado el tratamiento");

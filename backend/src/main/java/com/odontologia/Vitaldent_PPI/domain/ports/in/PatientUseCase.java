@@ -6,9 +6,11 @@ import java.util.UUID;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
+import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
 
 public interface PatientUseCase{
     List<Appointment> findAppointmentByPatient(String patientDocument) throws NotFoundException;
+    List<ClinicalRecord> findRecordByPatientDocument(String patientDocument) throws NotFoundException;
     void scheduleAppointment(UUID idAppointment, String patientDocument) throws BusinessException;
     void cancelAppointment(UUID idAppointment, UUID relatedId) throws BusinessException;
     List<Appointment> findByAvaible();

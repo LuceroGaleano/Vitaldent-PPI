@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 export function HistorialClinico() {
   const [historial, setHistorial] = useState([]);
 
+
   useEffect(() => {
     // aqui va la llamada a la API para obtener el historial clínico del paciente
     

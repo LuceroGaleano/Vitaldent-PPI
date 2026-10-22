@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
+import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
 import com.odontologia.Vitaldent_PPI.domain.services.CancelAppointment;
 import com.odontologia.Vitaldent_PPI.domain.services.FindAppointment;
+import com.odontologia.Vitaldent_PPI.domain.services.FindClinicalRecord;
 import com.odontologia.Vitaldent_PPI.domain.services.ScheduleAppointment;
 
 
@@ -21,14 +23,22 @@ public class PatientUseCase implements com.odontologia.Vitaldent_PPI.domain.port
 
     private final CancelAppointment cancelAppointment;
 
+    private final FindClinicalRecord findClinicalRecord;
 
     public PatientUseCase(FindAppointment findAppointment,
         ScheduleAppointment scheduleAppointment,
-        CancelAppointment cancelAppointment
+        CancelAppointment cancelAppointment,
+        FindClinicalRecord findClinicalRecord
     ){
         this.findAppointment = findAppointment;
         this.scheduleAppointment = scheduleAppointment;
         this.cancelAppointment = cancelAppointment;
+        this.findClinicalRecord = findClinicalRecord;
+    }
+
+    @Override
+    public List<ClinicalRecord> findRecordByPatientDocument(String patientDocument) throws NotFoundException {
+        return findClinicalRecord.findRecordByPatientDocument(patientDocument);
     }
 
     @Override
