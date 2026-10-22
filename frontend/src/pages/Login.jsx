@@ -55,14 +55,13 @@ function Login() {
     }
   }
 
-
   return (
     <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-light">
       <div className="card shadow border-0 rounded-4 p-4" style={{ maxWidth: '420px', width: '100%' }}>
         <div className="card-body">
           {/* Encabezado */}
           <div className="text-center mb-4">
-            <h2 className="fw-bold text-primary mb-1">Vitaldent</h2>
+            <h2 className="fw-bold text-success mb-1">Vitaldent</h2>
             <p className="text-muted small">Bienvenido al portal odontológico</p>
           </div>
 
@@ -106,7 +105,7 @@ function Login() {
               />
             </div>
 
-            <button type="submit" className="btn btn-primary btn-lg w-100 fs-6 fw-semibold shadow-sm">
+            <button type="submit" className="btn btn-success btn-lg w-100 fs-6 fw-semibold shadow-sm">
               Ingresar
             </button>
           </form>
