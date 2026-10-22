@@ -1,17 +1,44 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer, useContext } from 'react'
+import { getFetch } from '../../fetchs/GetFetch';
+import { AuthContext } from '../../context/AuthContext';
+import { postFetchReduce } from '../../reduces/PostFetchReduce';
+
+
+const initialState = {
+  loading: false,
+  error: null
+};
 
 export function HistorialClinico() {
   const [historial, setHistorial] = useState([]);
+  const { auth } = useContext(AuthContext);
+  const [state, dispatch] = useReducer(postFetchReduce, initialState);
 
+  const agregarHistoriales = async () =>{
+    dispatch({type: 'LOANDING', payload: true});
 
+    try{
+      const data = await getFetch(
+        'http://localhost:8080/patient/clinical_record',
+        auth.user
+      );
+
+      dispatch({type: 'LOANDING', payload: false});
+      const historiasMapeadas = data.map((item) => ({
+        id: item.clinicalRecordId,
+        fecha: item.date,
+        descripcion: item.diagnostic
+      }));
+      setHistorial(historiasMapeadas);
+    } catch (error) {
+      dispatch({
+        type: 'ERROR',
+        payload: error.message
+      });
+    }
+  }
   useEffect(() => {
-    // aqui va la llamada a la API para obtener el historial clínico del paciente
-    
-    // Datos falsos temporales:
-    setHistorial([
-      { id: 1, fecha: '2026-05-10', descripcion: 'Limpieza dental de rutina.' },
-      { id: 2, fecha: '2026-08-15', descripcion: 'Tratamiento de caries en molar superior derecho.' }
-    ]);
+    agregarHistoriales();
   }, []);
 
   return (

@@ -26,7 +26,7 @@ export function CitasDisponibles() {
       );
 
       dispatch({ type: 'LOANDING', payload: false });
-      console.log(data)
+
       const citasMapeadas = data.map((item) => ({
         id: item.appointmentId,
         doctor: item.doctorName,
