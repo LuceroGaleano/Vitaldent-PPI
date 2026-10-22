@@ -184,6 +184,7 @@ public class DoctorController {
             appointment.getHour(),
             appointment.getPatientId(),
             appointment.getDoctorId(),
+            appointment.getDoctorName(),
             appointment.getAppointmentStatus()
         );
     }

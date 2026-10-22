@@ -12,5 +12,6 @@ public record AppointmentResponse(
     LocalTime hour,
     UUID patientId,
     UUID doctorId,
+    String doctorName,
     AppointmentStatus appointmentStatus
 ) {}

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-import com.odontologia.Vitaldent_PPI.application.adapters.api.response.AvailableAppointmentResponse;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.AppointmentResponse;
 import com.odontologia.Vitaldent_PPI.application.usecases.PatientUseCase;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -40,9 +39,9 @@ public class PatientController {
     }
 
     @GetMapping("/appointment/available")
-    public ResponseEntity<List<AvailableAppointmentResponse>> findAvailableAppointments() {
-        List<AvailableAppointmentResponse> appointments = patientUseCase.findByAvaible().stream()
-                .map(this::toAvailableAppointmentResponse)
+    public ResponseEntity<List<AppointmentResponse>> findAvailableAppointments() {
+        List<AppointmentResponse> appointments = patientUseCase.findByAvaible().stream()
+                .map(this::toAppointmentResponse)
                 .toList();
         return ResponseEntity.ok(appointments);
     }
@@ -80,14 +79,6 @@ public class PatientController {
                 appointment.getHour(),
                 appointment.getPatientId(),
                 appointment.getDoctorId(),
-                appointment.getAppointmentStatus());
-    }
-
-    private AvailableAppointmentResponse toAvailableAppointmentResponse(Appointment appointment) {
-        return new AvailableAppointmentResponse(
-                appointment.getAppointmentId(),
-                appointment.getDate(),
-                appointment.getHour(),
                 appointment.getDoctorName(),
                 appointment.getAppointmentStatus());
     }

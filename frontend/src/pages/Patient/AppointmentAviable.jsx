@@ -2,22 +2,14 @@ import React, { useState, useEffect, useReducer, useContext } from 'react'
 import { getFetch } from '../../fetchs/GetFetch';
 import { AuthContext } from '../../context/AuthContext';
 import { patchFetch } from '../../fetchs/PatchFetch';
+import { postFetchReduce } from '../../reduces/PostFetchReduce';
+
 
 const initialState = {
   loading: false,
   error: null
 };
 
-const postFetchReduce = (state, action) => {
-  switch (action.type) {
-    case 'LOANDING':
-      return { ...state, loading: action.payload };
-    case 'ERROR':
-      return { ...state, error: action.payload, loading: false };
-    default:
-      return state;
-  }
-};
 
 export function CitasDisponibles() {
   const [citas, setCitas] = useState([]);
@@ -34,11 +26,11 @@ export function CitasDisponibles() {
       );
 
       dispatch({ type: 'LOANDING', payload: false });
-
+      console.log(data)
       const citasMapeadas = data.map((item) => ({
         id: item.appointmentId,
         doctor: item.doctorName,
-        fecha: item.date
+        fecha: item.date + " " + item.hour
       }));
 
       setCitas(citasMapeadas);
