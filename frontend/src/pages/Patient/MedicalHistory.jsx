@@ -39,7 +39,7 @@ export function HistorialClinico() {
   }
   useEffect(() => {
     agregarHistoriales();
-  }, []);
+  }, [historial]);
 
   return (
     <div>

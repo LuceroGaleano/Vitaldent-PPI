@@ -23,7 +23,6 @@ export function MisCitas() {
         auth.user
       );
       dispatch({type: 'LOANDING', payload: false})
-      console.log(data)
 
       const citasMapeadas = data.map((item) => ({
         id: item.appointmentId,
@@ -41,7 +40,7 @@ export function MisCitas() {
   }
   useEffect(() => {
     agregarMisCitas();
-  }, []);
+  }, [misCitas]);
 
   const handleCancelar = async (id) => {
     dispatch({type: 'LOANDING', payload:true})
@@ -52,14 +51,13 @@ export function MisCitas() {
       )
 
 
-     setCitas((citasActuales) =>
+     setMisCitas((citasActuales) =>
           citasActuales.filter((cita) => cita.id !== id)
       );
     } catch (error) {
             dispatch({ type: 'ERROR', payload: error.message });
     } finally {
       dispatch({ type: 'LOANDING', payload: false });
-      agregarMisCitas();
     }
   };
 
