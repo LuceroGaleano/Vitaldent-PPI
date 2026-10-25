@@ -1,5 +1,5 @@
 import {useState, useEffect, useContext} from 'react';
-import {authContext} from '../context/authContext';
+import {AuthContext} from './context/AuthContext';
 import {useNavigate} from 'react-router-dom';
 
 function OdontologistPortal() {
