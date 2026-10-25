@@ -1,5 +1,5 @@
-import { useContext, useReducer, useEffect, useContext } from "react";
-import { AuthContext } from "./context/AuthContext";
+import { useContext, useReducer, useEffect, useState } from "react";
+import { AuthContext } from '../context/AuthContext';
 import {postFetchReduce } from "../reduces/PostFetchReduce";
 import { postFetch } from "../fetchs/PostFetch";
 import { useNavigate } from "react-router-dom";
@@ -37,7 +37,8 @@ function ReceptionistPortal() {
     { id: 'eliminarUsuario', label: 'Eliminar Usuario' },
     { id: 'verHistorial', label: 'Ver Historial' },
     { id: 'crearPago', label: 'Crear Pago' },
-    { id: 'verPagos', label: 'Ver Pagos' }
+    { id: 'verPagos', label: 'Ver Pagos' },
+    { id: 'gestionarCitasPaciente', label: 'Gestionar Citas Paciente' }
   ];
 
   const [state, dispatch] = useReducer(postFetchReduce, initialState);
@@ -106,6 +107,7 @@ function ReceptionistPortal() {
         {activeView === 'verHistorial' && <VerHistorial />}
         {activeView === 'crearPago' && <CrearPago />}
         {activeView === 'verPagos' && <VerPagos />}
+        {activeView === 'gestionarCitasPaciente' && <GestionarCitasPaciente />}
       </div>
     </div>
   );
@@ -277,7 +279,7 @@ function VerHistorial() {
   return (
     <div>
       <h2 className="text-success mb-4">Todos los Historiales</h2>
-      <p className="text-muted">Aquí irá la tabla general de historiales consultando la API[cite: 23].</p>
+      <p className="text-muted">Aquí irá la tabla general de historiales consultando la API.</p>
     </div>
   );
 }
@@ -311,7 +313,7 @@ function VerPagos() {
   return (
     <div>
       <h2 className="text-success mb-4">Listado de Pagos / Facturas</h2>
-      <p className="text-muted">Lista consumida desde la API Get Pagos[cite: 24].</p>
+      <p className="text-muted">Lista consumida desde la API Get Pagos.</p>
     </div>
   );
 }
