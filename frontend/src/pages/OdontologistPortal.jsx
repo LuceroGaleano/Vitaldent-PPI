@@ -2,7 +2,7 @@ import {useState, useEffect, useContext} from 'react';
 import {authContext} from '../context/authContext';
 import {useNavigate} from 'react-router-dom';
 
-export default function OdontologistPortal() {
+function OdontologistPortal() {
   const [activeView, setActiveView] = useState('citas');
   const { setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -229,3 +229,5 @@ function VerTratamientos() {
     </div>
   );
 }
+
+export default OdontologistPortal;
