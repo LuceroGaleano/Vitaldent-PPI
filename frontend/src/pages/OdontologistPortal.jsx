@@ -108,6 +108,7 @@ function MisCitasDoctor() {
     </div>
   );
 }
+
 // Componente para crear un historial clínico
 function CrearHistorial() {
   const handleSubmit = (e) => {
@@ -130,6 +131,101 @@ function CrearHistorial() {
         </div>
         <button type="submit" className="btn btn-success">Guardar Historial</button>
       </form>
+    </div>
+  );
+}
+
+// Componente para buscar un historial clínico
+function BuscarHistorial() {
+  const [resultados, setResultados] = useState([]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // aqui va la API GET Buscar historial por documento
+    setResultados([
+      { id: 1, fecha: '2026-10-01', observaciones: 'Revisión general ok.' }
+    ]);
+  };
+
+  return (
+    <div>
+      <h2 className="text-success mb-4">Buscar Historial</h2>
+      <form onSubmit={handleSearch} className="d-flex gap-2 mb-4" style={{ maxWidth: '400px' }}>
+        <input type="text" className="form-control" placeholder="Documento del paciente" required />
+        <button type="submit" className="btn btn-primary">Buscar</button>
+      </form>
+
+      {resultados.length > 0 && (
+        <div className="list-group">
+          {resultados.map(res => (
+            <div className="list-group-item shadow-sm mb-2 border-0 rounded" key={res.id}>
+              <h6 className="text-success">Fecha: {res.fecha}</h6>
+              <p className="mb-2">{res.observaciones}</p>
+              <button className="btn btn-sm btn-outline-success">Actualizar</button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Componente para crear un nuevo tratamiento
+function CrearTratamiento() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert('Llamando API para crear tratamiento'); 
+    // aqui va la API POST Tratamiento
+  };
+
+  return (
+    <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '600px' }}>
+      <h2 className="text-success mb-4">Crear Nuevo Tratamiento</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="form-label fw-bold">Nombre del Tratamiento</label>
+          <input type="text" className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label className="form-label fw-bold">Costo Estimado</label>
+          <input type="number" className="form-control" required />
+        </div>
+        <button type="submit" className="btn btn-success">Crear</button>
+      </form>
+    </div>
+  );
+}
+
+// Componente para ver la lista de tratamientos
+function VerTratamientos() {
+  const [tratamientos, setTratamientos] = useState([]);
+
+  useEffect(() => {
+    // aqui va la API GET Lista de Tratamientos
+
+    // Simulación de datos de ejemplo
+    setTratamientos([
+      { id: 1, nombre: 'Ortodoncia Básica', costo: 1500000 },
+      { id: 2, nombre: 'Limpieza Profunda', costo: 120000 }
+    ]);
+  }, []);
+
+  return (
+    <div>
+      <h2 className="text-success mb-4">Lista de Tratamientos</h2>
+      <div className="row">
+        {tratamientos.map(t => (
+          <div className="col-md-6 mb-3" key={t.id}>
+            <div className="card shadow-sm border-0">
+              <div className="card-body">
+                <h5 className="card-title text-primary">{t.nombre}</h5>
+                <p className="card-text text-muted">Costo: ${t.costo}</p>
+                <button className="btn btn-outline-success btn-sm">Actualizar</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
