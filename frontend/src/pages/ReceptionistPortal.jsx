@@ -242,7 +242,7 @@ function EliminarUsuario() {
     e.preventDefault();
     //aqui va la API GET Buscar usuario por documento
 
-    
+
     // Simulando API GET para buscar usuario por documento
     setUsuario({ id: 99, nombre: 'Luis F.', rol: 'PACIENTE', documento: '112233' });
   };
@@ -269,4 +269,39 @@ function EliminarUsuario() {
     </div>
   );
 }
+
+//componente para ver historial
+function VerHistorial() {
+  // aqui va la API GET Lista de Historiales
+
+  return (
+    <div>
+      <h2 className="text-success mb-4">Todos los Historiales</h2>
+      <p className="text-muted">Aquí irá la tabla general de historiales consultando la API[cite: 23].</p>
+    </div>
+  );
+}
+
+//componente para crear pago
+function CrearPago() {
+  // aqui va la API POST para crear pago
+
+  return (
+    <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '600px' }}>
+      <h2 className="text-success mb-4">Registrar Pago</h2>
+      <form>
+        <div className="mb-3">
+          <label className="form-label fw-bold">ID del Tratamiento / Cita</label>
+          <input type="text" className="form-control" required />
+        </div>
+        <div className="mb-3">
+          <label className="form-label fw-bold">Monto a Pagar</label>
+          <input type="number" className="form-control" required />
+        </div>
+        <button type="button" className="btn btn-success" onClick={() => alert('Generando factura...')}>Crear Pago</button>
+      </form>
+    </div>
+  );
+}
+
 export default ReceptionistPortal;
