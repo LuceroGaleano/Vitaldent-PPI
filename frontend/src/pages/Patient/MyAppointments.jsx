@@ -38,6 +38,7 @@ export function MisCitas() {
       })
     }
   }
+  
   useEffect(() => {
     agregarMisCitas();
   }, [misCitas]);
