@@ -15,7 +15,7 @@ function Login() {
 
   const[state, dispatch] = useReducer(postFetchReduce, initialState);
   const navigate = useNavigate();
-  const {auth, setAuth} = useContext(AuthContext);
+  const {setAuth} = useContext(AuthContext);
 
   const handleChange = (e) => {
     dispatch({
@@ -42,7 +42,6 @@ function Login() {
         user: data.token
       });
       
-      localStorage.setItem('auth', auth);
       dispatch({ type: 'LOADING', payload: false });
       if (data.role === 'RECEPTIONIST') {
         navigate('/receptionist');

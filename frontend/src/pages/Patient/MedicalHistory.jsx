@@ -44,6 +44,11 @@ export function HistorialClinico() {
   return (
     <div>
       <h2 className="text-success mb-4">Historial Clínico</h2>
+      {state.error && (
+        <div className="alert alert-danger py-2 small text-center" role="alert">
+           {state.error}
+        </div>
+      )}
       {historial.map(item => (
         <div className="card border-success mb-3 shadow-sm" key={item.id}>
           <div className="card-header bg-success text-white">Fecha: {item.fecha}</div>

@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-// componente para actualizar un item
+
 function UpdateItem() {
   const { state } = useLocation();
   const item = state?.item;
@@ -26,9 +26,13 @@ function UpdateItem() {
             <label className="form-label fw-bold">Cantidad en Stock</label>
             <input type="number" className="form-control" defaultValue={item.cantidad} required />
           </div>
-          <div className="mb-3">
-            <label className="form-label fw-bold">Proveedor / Marca</label>
-            <input type="text" className="form-control" defaultValue={item.proveedor} required />
+          <div clasName = "mb-3">
+            <label className="form-label fw-bold">Activado</label>
+            <select class="form-control" id="exampleFormControlSelect2">
+              <option>Eligue uno</option>
+              <option value="true">Activado</option>
+              <option value="false">Desactivado</option>
+            </select>
           </div>
           <button type="submit" className="btn btn-success">Guardar Cambios</button>
         </form>
