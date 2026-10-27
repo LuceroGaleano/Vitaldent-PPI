@@ -10,6 +10,7 @@ const initialState = {
 };
 
 function ViewItems() {
+  
   const { onUpdateClick } = useOutletContext();
   const [items, setItems] = useState([]);
   const{auth} = useContext(AuthContext);
@@ -28,7 +29,8 @@ function ViewItems() {
       const items = data.map((item) => ({
         id: item.itemId,
         nombre: item.name,
-        stock: item.stock
+        stock: item.stock,
+        active: item.active
       }))
       setItems(items)
     } catch(error){
@@ -54,8 +56,7 @@ function ViewItems() {
             <div className="card shadow-sm border-0">
               <div className="card-body">
                 <h5 className="card-title text-primary">{item.nombre}</h5>
-                <p className="card-text text-muted mb-1">Stock: {item.cantidad} unidades</p>
-                <p className="card-text text-muted">Proveedor: {item.proveedor}</p>
+                <p className="card-text text-muted mb-1">Stock: {item.stock} unidades</p>
                 <button
                   className="btn btn-outline-success btn-sm"
                   onClick={() => onUpdateClick(item)}

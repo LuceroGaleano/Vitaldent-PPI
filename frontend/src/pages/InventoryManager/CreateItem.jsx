@@ -2,18 +2,20 @@ import { useContext, useReducer } from "react";
 import { postFetchReduce } from "../../reduces/PostFetchReduce";
 import { AuthContext } from "../../context/AuthContext";
 import { postFetch } from "../../fetchs/PostFetch";
+import { useNavigate } from "react-router-dom";
 
-// compente para crear un item
+
 function CreateItem() {
 
   const initialState ={
     name: '',
     stock:'',
-    active:true,
+    active:''
   };
   
   const[state,dispatch] = useReducer(postFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) =>{
       dispatch({
@@ -27,17 +29,17 @@ function CreateItem() {
     dispatch({type: 'LOANDING', payload: true});
 
     try{
-      const data = await postFetch(
+      await postFetch(
         'http://localhost:8080/inventory_manager/item',
-        {name: state.name,
+        { name: state.name,
           stock: state.stock,
           active: true
         },
         auth.user
       )
 
-
       dispatch({type: 'LOANDING', payload: false})
+      navigate('/inventoryManager/viewItems')
     } catch(error){
       dispatch({type: 'ERROR', payload: error.message})
     } 

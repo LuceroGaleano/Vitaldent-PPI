@@ -1,9 +1,11 @@
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
+import { ItemContext } from '../../context/ItemContext';
 import { useNavigate, Outlet } from 'react-router-dom';
 
 function InventoryManagerPortal() {
   const { setAuth } = useContext(AuthContext);
+  const { setItem } = useContext(ItemContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -11,9 +13,10 @@ function InventoryManagerPortal() {
     navigate('/');
   };
 
-  // Función para ir a la vista de actualización con un item preseleccionado
+  // Funcion para pasar de ViewItem
   const goToUpdate = (item) => {
-    navigate('/inventoryManager/updateItem', { state: { item } });
+    setItem(item);
+    navigate('/inventoryManager/updateItem');
   };
 
   return (

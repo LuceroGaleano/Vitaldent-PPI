@@ -16,6 +16,7 @@ import ViewTreatments from '../pages/Odontologist/ViewTreatments'
 import ViewItems from '../pages/InventoryManager/ViewItems'
 import CreateItem from '../pages/InventoryManager/CreateItem'
 import UpdateItem from '../pages/InventoryManager/UpdateItem'
+import { ItemProvider } from '../context/ItemProvider'
 
 export const MainRoutes = () => {
   return (
@@ -36,7 +37,10 @@ export const MainRoutes = () => {
             <Route path="createTreatment" element={<CreateTreatment />} />
             <Route path="viewTreatments" element={<ViewTreatments />} />
         </Route>
-        <Route path="/inventoryManager" element={<InventoryManagerPortal />}>
+        <Route path="/inventoryManager" element={
+            <ItemProvider>
+                <InventoryManagerPortal />
+            </ItemProvider>}>
             <Route index element={<Navigate to="viewItems" replace />} />
             <Route path="viewItems" element={<ViewItems />} />
             <Route path="createItem" element={<CreateItem />} />
