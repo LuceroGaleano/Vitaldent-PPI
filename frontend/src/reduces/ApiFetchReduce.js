@@ -1,4 +1,4 @@
-export const postFetchReduce = (state, action = {}) => {
+export const apiFetchReduce = (state, action = {}) => {
   switch (action.type) {
     case 'OK':
       return {

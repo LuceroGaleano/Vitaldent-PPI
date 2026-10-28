@@ -2,7 +2,7 @@ import { useContext, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { postFetch } from '../fetchs/PostFetch';
 import { AuthContext } from '../context/AuthContext';
-import { postFetchReduce } from '../reduces/PostFetchReduce';
+import { apiFetchReduce } from '../reduces/ApiFetchReduce';
 
 function Login() {
 
@@ -13,7 +13,7 @@ function Login() {
   error: null
 };
 
-  const[state, dispatch] = useReducer(postFetchReduce, initialState);
+  const[state, dispatch] = useReducer(apiFetchReduce, initialState);
   const navigate = useNavigate();
   const {setAuth} = useContext(AuthContext);
 

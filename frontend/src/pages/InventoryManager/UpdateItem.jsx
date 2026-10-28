@@ -1,6 +1,6 @@
 import { useContext, useReducer } from 'react';
 import { ItemContext } from '../../context/ItemContext';
-import { postFetchReduce } from '../../reduces/PostFetchReduce';
+import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 import { AuthContext } from '../../context/AuthContext';
 import { putFetch } from '../../fetchs/PutFetch';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ function UpdateItem() {
     stock:item?.stock,
     active: item?.active
   };
-  const[state, dispatch] = useReducer(postFetchReduce, initialState);
+  const[state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
   const navigate = useNavigate();
 

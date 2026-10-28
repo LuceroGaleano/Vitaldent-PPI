@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer, useContext } from 'react'
 import { getFetch } from '../../fetchs/GetFetch';
 import { AuthContext } from '../../context/AuthContext';
-import { postFetchReduce } from '../../reduces/PostFetchReduce';
+import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 
 
 const initialState = {
@@ -12,7 +12,7 @@ const initialState = {
 export function HistorialClinico() {
   const [historial, setHistorial] = useState([]);
   const { auth } = useContext(AuthContext);
-  const [state, dispatch] = useReducer(postFetchReduce, initialState);
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
 
   const agregarHistoriales = async () =>{
     dispatch({type: 'LOANDING', payload: true});

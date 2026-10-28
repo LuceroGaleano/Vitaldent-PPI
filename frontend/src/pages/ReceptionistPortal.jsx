@@ -1,6 +1,6 @@
 import { useContext, useReducer, useEffect, useState } from "react";
 import { AuthContext } from '../context/AuthContext';
-import {postFetchReduce } from "../reduces/PostFetchReduce";
+import { apiFetchReduce } from "../reduces/ApiFetchReduce";
 import { postFetch } from "../fetchs/PostFetch";
 import { useNavigate } from "react-router-dom";
 
@@ -41,7 +41,7 @@ function ReceptionistPortal() {
     { id: 'gestionarCitasPaciente', label: 'Gestionar Citas Paciente' }
   ];
 
-  const [state, dispatch] = useReducer(postFetchReduce, initialState);
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
 
   const agregarUsuario = async() =>{
     dispatch({type: 'LOANDING', payloand:true});

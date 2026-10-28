@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer, useContext } from 'react'
 import { getFetch } from '../../fetchs/GetFetch';
 import { AuthContext } from '../../context/AuthContext';
-import { postFetchReduce } from '../../reduces/PostFetchReduce';
+import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 import { patchFetch } from '../../fetchs/PatchFetch';
 
 
@@ -13,7 +13,7 @@ const initialState = {
 export function MisCitas() {
   const [misCitas, setMisCitas] = useState([]);
     const { auth } = useContext(AuthContext);
-    const [state, dispatch] = useReducer(postFetchReduce, initialState);
+    const [state, dispatch] = useReducer(apiFetchReduce, initialState);
 
   const agregarMisCitas = async() =>{
     dispatch({type: 'LOANDING', payload:true})

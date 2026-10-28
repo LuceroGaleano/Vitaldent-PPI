@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer, useContext } from 'react'
 import { getFetch } from '../../fetchs/GetFetch';
 import { AuthContext } from '../../context/AuthContext';
 import { patchFetch } from '../../fetchs/PatchFetch';
-import { postFetchReduce } from '../../reduces/PostFetchReduce';
+import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 
 
 const initialState = {
@@ -14,7 +14,7 @@ const initialState = {
 export function CitasDisponibles() {
   const [citas, setCitas] = useState([]);
   const { auth } = useContext(AuthContext);
-  const [state, dispatch] = useReducer(postFetchReduce, initialState);
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
 
   const agregarCitas = async () => {
     dispatch({ type: 'LOANDING', payload: true });

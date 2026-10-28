@@ -1,22 +1,60 @@
-import { useState } from 'react';
+import { useContext, useReducer, useState } from 'react';
+import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
+import { AuthContext } from '../../context/AuthContext';
+import { getFetch } from '../../fetchs/GetFetch';
 
-// Componente para buscar un historial clínico
+const initialState = {
+  loading: true,
+  error: null,
+  document: ''
+}
+
 function SearchMedicalHistory() {
   const [resultados, setResultados] = useState([]);
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const {auth} = useContext(AuthContext);
 
-  const handleSearch = (e) => {
+  
+  const handleChange = (e) =>{
+      dispatch({
+      type: 'OK',
+      payload: { field: e.target.name, value: e.target.value }
+      });
+  };
+
+  const handleSearch = async (e) => {
     e.preventDefault();
-    // aqui va la API GET Buscar historial por documento
-    setResultados([
-      { id: 1, fecha: '2026-10-01', observaciones: 'Revisión general ok.' }
-    ]);
+    dispatch({type: 'LOADING', payload: true});
+    try {
+      const data = await getFetch(
+        `http://localhost:8080/doctor/clinical_record/patient/${state.document}`,
+        auth.user
+      );
+
+      setResultados(data.map((record) => ({
+        id: record.clinicalRecordId,
+        fecha: record.date,
+        razon: record.reasonForConsultation,
+        observaciones: record.diagnostic
+      })));
+      dispatch({type: 'LOADING', payload: false});
+    } catch(error) {
+      dispatch({type: 'ERROR', payload: error});
+    }
   };
 
   return (
     <div>
       <h2 className="text-success mb-4">Buscar Historial</h2>
+
+      {state.error && (
+        <div className="alert alert-danger py-2 small text-center" role="alert">
+           {state.error.message}
+        </div>
+      )}
+      
       <form onSubmit={handleSearch} className="d-flex gap-2 mb-4" style={{ maxWidth: '400px' }}>
-        <input type="text" className="form-control" placeholder="Documento del paciente" required />
+        <input type="text" className="form-control" id="document" name="document" value={state.document} onChange={handleChange} placeholder="Documento del paciente" required />
         <button type="submit" className="btn btn-primary">Buscar</button>
       </form>
 
@@ -25,8 +63,8 @@ function SearchMedicalHistory() {
           {resultados.map(res => (
             <div className="list-group-item shadow-sm mb-2 border-0 rounded" key={res.id}>
               <h6 className="text-success">Fecha: {res.fecha}</h6>
-              <p className="mb-2">{res.observaciones}</p>
-              <button className="btn btn-sm btn-outline-success">Actualizar</button>
+              <p className="mb-2">Razon de la consulta: {res.razon}</p>
+              <p className="mb-2">Diagnostico: {res.observaciones}</p>
             </div>
           ))}
         </div>

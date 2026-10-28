@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react';
 
-// Componente para ver la lista de tratamientos
+const initialState = {
+  loading: true,
+  error: null,
+  document: ''
+}
 function ViewTreatments() {
   const [tratamientos, setTratamientos] = useState([]);
+
 
   useEffect(() => {
     // aqui va la API GET Lista de Tratamientos

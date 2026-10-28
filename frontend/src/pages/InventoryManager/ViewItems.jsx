@@ -1,7 +1,7 @@
 import { useOutletContext } from 'react-router-dom';
 import { useContext, useEffect, useReducer, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { postFetchReduce } from '../../reduces/PostFetchReduce';
+import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 import { getFetch } from '../../fetchs/GetFetch';
 
 const initialState = {
@@ -14,7 +14,7 @@ function ViewItems() {
   const { onUpdateClick } = useOutletContext();
   const [items, setItems] = useState([]);
   const{auth} = useContext(AuthContext);
-  const[state, dispatch] = useReducer(postFetchReduce, initialState);
+  const[state, dispatch] = useReducer(apiFetchReduce, initialState);
 
   const agregarItems = async() =>{
     dispatch({type:'LOADING', paylaod: true});

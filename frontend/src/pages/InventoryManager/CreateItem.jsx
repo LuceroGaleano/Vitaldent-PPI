@@ -1,5 +1,5 @@
 import { useContext, useReducer } from "react";
-import { postFetchReduce } from "../../reduces/PostFetchReduce";
+import { apiFetchReduce } from "../../reduces/ApiFetchReduce";
 import { AuthContext } from "../../context/AuthContext";
 import { postFetch } from "../../fetchs/PostFetch";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ function CreateItem() {
     active:''
   };
   
-  const[state,dispatch] = useReducer(postFetchReduce, initialState);
+  const[state,dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -25,7 +25,6 @@ function CreateItem() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     dispatch({type: 'LOANDING', payload: true});
 
     try{
