@@ -41,7 +41,7 @@ export function MisCitas() {
   
   useEffect(() => {
     agregarMisCitas();
-  }, [misCitas]);
+  }, []);
 
   const handleCancelar = async (id) => {
     dispatch({type: 'LOANDING', payload:true})

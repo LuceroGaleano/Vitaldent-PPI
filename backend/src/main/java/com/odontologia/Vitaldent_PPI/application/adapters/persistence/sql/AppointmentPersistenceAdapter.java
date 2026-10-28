@@ -120,6 +120,8 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
         appointment.setHour(entity.getHour());
         appointment.setAppointmentStatus(entity.getAppointmentStatus());
         appointment.setPatientId(entity.getPatient() == null ? null : entity.getPatient().getPatientId());
+        appointment.setPatientName(entity.getPatient() == null ? null : entity.getPatient().getFullName());
+        appointment.setPatientDocument(entity.getPatient() == null ? null : entity.getPatient().getDocument());
         appointment.setDoctorId(entity.getDoctor() == null ? null : entity.getDoctor().getUserId());
         appointment.setDoctorName(entity.getDoctor() == null ? null : entity.getDoctor().getFullName());
         return appointment;

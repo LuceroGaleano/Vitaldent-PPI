@@ -17,7 +17,7 @@ function ViewItems() {
   const[state, dispatch] = useReducer(postFetchReduce, initialState);
 
   const agregarItems = async() =>{
-    dispatch({type:'LOANDING', paylaod: true});
+    dispatch({type:'LOADING', paylaod: true});
 
     try{
       const data = await getFetch(
@@ -25,7 +25,8 @@ function ViewItems() {
         auth.user
       )
        
-      dispatch({type:'LOANDING', paylaod: false})
+      dispatch({type:'LOADING', paylaod: false})
+      console.log(data)
       const items = data.map((item) => ({
         id: item.itemId,
         nombre: item.name,
@@ -40,7 +41,7 @@ function ViewItems() {
 
   useEffect(() => {
     agregarItems();
-  }, [items]);
+  }, []);
 
   return (
     <div>

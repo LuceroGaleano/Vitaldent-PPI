@@ -90,6 +90,8 @@ public class PatientController {
                 appointment.getDate(),
                 appointment.getHour(),
                 appointment.getPatientId(),
+                appointment.getPatientName(),
+                appointment.getPatientDocument(),
                 appointment.getDoctorId(),
                 appointment.getDoctorName(),
                 appointment.getAppointmentStatus());

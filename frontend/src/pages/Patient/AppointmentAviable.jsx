@@ -44,7 +44,7 @@ export function CitasDisponibles() {
 
   useEffect(() => {
     agregarCitas();
-  }, [citas]);
+  }, []);
 
     const handleAgendar = async (id) => {
         dispatch({ type: 'LOANDING', payload: true });

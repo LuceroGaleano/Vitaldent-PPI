@@ -39,7 +39,8 @@ function Login() {
 
       setAuth({
         logged: true,
-        user: data.token
+        user: data.token,
+        document: data.document
       });
       
       dispatch({ type: 'LOADING', payload: false });

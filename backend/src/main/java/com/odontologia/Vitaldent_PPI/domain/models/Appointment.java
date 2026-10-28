@@ -19,6 +19,8 @@ public class Appointment {
     private LocalDate date;
     private LocalTime hour;
     private UUID patientId;
+    private String patientName;
+    private String patientDocument;
     private UUID doctorId;
     private String doctorName;
     private AppointmentStatus appointmentStatus;
