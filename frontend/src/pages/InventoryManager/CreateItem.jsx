@@ -25,7 +25,8 @@ function CreateItem() {
   }
 
   const handleSubmit = async (e) => {
-    dispatch({type: 'LOANDING', payload: true});
+    e.preventDefault();
+    dispatch({type: 'LOADING', payload: true});
 
     try{
       await postFetch(

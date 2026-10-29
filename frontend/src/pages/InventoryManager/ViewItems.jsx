@@ -26,7 +26,6 @@ function ViewItems() {
       )
        
       dispatch({type:'LOADING', paylaod: false})
-      console.log(data)
       const items = data.map((item) => ({
         id: item.itemId,
         nombre: item.name,

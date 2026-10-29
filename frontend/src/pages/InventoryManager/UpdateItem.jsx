@@ -28,7 +28,7 @@ function UpdateItem() {
   
   const handleSubmit =  async (event) => {
     event.preventDefault();
-    dispatch({type: 'LOANDING', payload: true});
+    dispatch({type: 'LOADING', payload: true});
 
     try{
       await putFetch(
@@ -39,7 +39,7 @@ function UpdateItem() {
         },
         auth.user
       )
-      dispatch({type: 'LOANDING', payload: false})
+      dispatch({type: 'LOADING', payload: false})
       navigate('/inventoryManager/viewItems')
     } catch(error){
       dispatch({type: 'ERROR', payload: error.message})
