@@ -56,6 +56,12 @@ function CreateMedicalHistory() {
   return (
     <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '600px' }}>
       <h2 className="text-success mb-4">Crear Historial Clínico</h2>
+      {state.error && (
+        <div className="alert alert-danger py-2 small text-center" role="alert">
+          {state.error}
+        </div>
+      )}
+      
       {appointment ? (
         treatment ? (
           <form onSubmit={handleSubmit}>

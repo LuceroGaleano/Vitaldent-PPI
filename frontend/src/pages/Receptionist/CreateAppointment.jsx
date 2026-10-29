@@ -36,7 +36,6 @@ function CreateAppointment() {
         },
         auth.user
       )
-      console.log(data)
 
       dispatch({type:'LOADING', payload: false});
       navigate('/receptionist/viewAppointments');
