@@ -17,6 +17,8 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
     @EntityGraph(attributePaths = {"patient", "doctor"})
     Optional<AppointmentEntity> findById(UUID appointmentId);
 
+    List<AppointmentEntity> findAll();
+
     @EntityGraph(attributePaths = {"patient", "doctor"})
     List<AppointmentEntity> findByPatient_PatientId(UUID patientId);
 

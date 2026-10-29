@@ -27,6 +27,7 @@ public interface ReceptionistUseCase{
     
     Appointment findAppointmentById(UUID id) throws NotFoundException;
     List<Appointment> findAppointmentByPatient(String patientDocument) throws NotFoundException;
+    List<Appointment> findAll() throws NotFoundException;
 
     ClinicalRecord findRecordById(UUID id) throws NotFoundException;
     ClinicalRecord findRecordByAppointmentID(UUID idAppointment) throws NotFoundException;

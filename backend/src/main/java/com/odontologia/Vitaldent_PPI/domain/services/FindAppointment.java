@@ -38,6 +38,14 @@ public class FindAppointment{
         return appointment;
     }
 
+    public List<Appointment> findAll() throws NotFoundException{
+        List<Appointment> appointments = appointmentPort.findAll();
+        if(appointments == null){
+            throw new NotFoundException("No existen citas");
+        }
+        return appointments;
+    }
+
     public List<Appointment> findAppointmentByPatient(String patientDocument) throws NotFoundException{
         Patient patient = patientPort.findByDocument(patientDocument);
         if(patient == null){

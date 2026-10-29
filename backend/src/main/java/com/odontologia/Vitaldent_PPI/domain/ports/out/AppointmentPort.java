@@ -13,6 +13,7 @@ import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 public interface AppointmentPort{
     //find
     public Appointment findById(UUID appointmentId);
+    public List<Appointment> findAll();
     public List<Appointment> findByPatient(Patient patient);
     public List<Appointment> findByDoctor(User user);
     public List<Appointment> findByStatus(AppointmentStatus appointmentStatus);

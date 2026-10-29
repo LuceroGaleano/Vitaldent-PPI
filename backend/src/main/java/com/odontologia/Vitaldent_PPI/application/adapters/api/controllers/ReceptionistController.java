@@ -50,6 +50,13 @@ public class ReceptionistController {
         return ResponseEntity.status(HttpStatus.CREATED).body(toAppointmentResponse(appointment));
     }
 
+    @GetMapping("/appointment")
+    public ResponseEntity<List<AppointmentResponse>> findAppointmentAll() {
+        return ResponseEntity.ok(receptionistUseCase.findAll().stream()
+                .map(this::toAppointmentResponse)
+                .toList());
+    }
+
     @GetMapping("/appointment/{id}")
     public ResponseEntity<AppointmentResponse> findAppointmentById(@PathVariable UUID id) {
         return ResponseEntity.ok(toAppointmentResponse(receptionistUseCase.findAppointmentById(id)));

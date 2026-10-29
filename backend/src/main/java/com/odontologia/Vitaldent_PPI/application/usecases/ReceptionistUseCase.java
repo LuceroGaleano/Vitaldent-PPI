@@ -115,6 +115,11 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
     }
 
     @Override 
+    public List<Appointment> findAll() throws NotFoundException{
+        return findAppointment.findAll();
+    }
+
+    @Override 
     public Appointment findAppointmentById(UUID id) throws NotFoundException{
         return findAppointment.findAppointmentById(id);
     }

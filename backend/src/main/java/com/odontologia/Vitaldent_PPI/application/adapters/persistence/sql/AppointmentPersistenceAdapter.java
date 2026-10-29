@@ -41,6 +41,11 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
         return toModel(appointmentRepository.findById(appointmentId).orElse(null));
     }
 
+    @Override 
+    public List<Appointment> findAll(){
+        return toModels(appointmentRepository.findAll());
+    }
+
     @Override
     public List<Appointment> findByPatient(Patient patient) {
         if (patient == null || patient.getPatientId() == null) {
