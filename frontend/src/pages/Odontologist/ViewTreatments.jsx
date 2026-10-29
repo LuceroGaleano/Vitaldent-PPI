@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
+import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
+import { AuthContext } from '../../context/AuthContext';
+import { getFetch } from '../../fetchs/GetFetch';
 
 const initialState = {
   loading: true,
@@ -7,16 +10,31 @@ const initialState = {
 }
 function ViewTreatments() {
   const [tratamientos, setTratamientos] = useState([]);
+    const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+    const {auth} = useContext(AuthContext);
+
+    const agregarTratamientos = async() =>{
+      dispatch({type: 'LOADING', payload: true});
+      try{
+        const data = await getFetch('http://localhost:8080/doctor/treatment', auth.user);
+        
+        dispatch({type: 'LOADING', payload: false});
+        const tratamientos = data.map((tratamiento) => ({
+          id: tratamiento.treatamentId, 
+          nombre: tratamiento.name,
+          costo: tratamiento.cost,
+          descripcion: tratamiento.description
+        }));
+
+        setTratamientos(tratamientos);
+      } catch(error){
+        dispatch({type: 'ERROR', payload: error});
+      }
+    }
 
 
   useEffect(() => {
-    // aqui va la API GET Lista de Tratamientos
-
-    // Simulación de datos de ejemplo
-    setTratamientos([
-      { id: 1, nombre: 'Ortodoncia Básica', costo: 1500000 },
-      { id: 2, nombre: 'Limpieza Profunda', costo: 120000 }
-    ]);
+    agregarTratamientos();
   }, []);
 
   return (
@@ -28,6 +46,7 @@ function ViewTreatments() {
             <div className="card shadow-sm border-0">
               <div className="card-body">
                 <h5 className="card-title text-primary">{t.nombre}</h5>
+                <p className="card-text text-muted">Descripcion: {t.descripcion}</p>
                 <p className="card-text text-muted">Costo: ${t.costo}</p>
                 <button className="btn btn-outline-success btn-sm">Actualizar</button>
               </div>

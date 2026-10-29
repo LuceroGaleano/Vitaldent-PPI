@@ -23,7 +23,7 @@ function SearchMedicalHistory() {
   };
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     dispatch({type: 'LOADING', payload: true});
     try {
       const data = await getFetch(
@@ -31,13 +31,15 @@ function SearchMedicalHistory() {
         auth.user
       );
 
-      setResultados(data.map((record) => ({
+      dispatch({type: 'LOADING', payload: false});
+      const historiales = data.map((record) => ({
         id: record.clinicalRecordId,
         fecha: record.date,
         razon: record.reasonForConsultation,
         observaciones: record.diagnostic
-      })));
-      dispatch({type: 'LOADING', payload: false});
+      }));
+
+      setResultados(historiales);
     } catch(error) {
       dispatch({type: 'ERROR', payload: error});
     }
