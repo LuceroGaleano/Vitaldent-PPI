@@ -16,9 +16,20 @@ import ViewTreatments from '../pages/Odontologist/ViewTreatments'
 import ViewItems from '../pages/InventoryManager/ViewItems'
 import CreateItem from '../pages/InventoryManager/CreateItem'
 import UpdateItem from '../pages/InventoryManager/UpdateItem'
+import CreateAppointment from '../pages/Receptionist/CreateAppointment'
+import ViewAppointments from '../pages/Receptionist/ViewAppointments'
+import CreatePatient from '../pages/Receptionist/CreatePatient'
+import CreateUser from '../pages/Receptionist/CreateUser'
+import DeleteUser from '../pages/Receptionist/DeleteUser'
+import ViewMedicalHistory from '../pages/Receptionist/ViewMedicalHistory'
+import CreatePayment from '../pages/Receptionist/CreatePayment'
+import ViewPayments from '../pages/Receptionist/ViewPayments'
+import ViewInvoices from '../pages/Receptionist/ViewInvoices'
+import ManagePatientAppointments from '../pages/Receptionist/ManagePatientAppointments'
 import { ItemProvider } from '../context/ItemProvider'
 import { AppointmentProvider } from '../context/AppointmentProvider'
 import { TreatmentProvider } from '../context/TreatmentProvider'
+import { InvoiceProvider } from '../context/InvoiceProvider'
 
 export const MainRoutes = () => {
   return (
@@ -30,7 +41,22 @@ export const MainRoutes = () => {
             <Route path="misCitas" element={<MisCitas />} />
             <Route path="historialMedico" element={<HistorialClinico />} />
         </Route>
-        <Route path="/receptionist" element={<ReceptionistPortal />} />
+        <Route path="/receptionist" element={
+        <InvoiceProvider>
+            <ReceptionistPortal />
+        </InvoiceProvider>}>
+            <Route index element={<Navigate to="createAppointment" replace />} />
+            <Route path="createAppointment" element={<CreateAppointment />} />
+            <Route path="viewAppointments" element={<ViewAppointments />} />
+            <Route path="createPatient" element={<CreatePatient />} />
+            <Route path="createUser" element={<CreateUser />} />
+            <Route path="deleteUser" element={<DeleteUser />} />
+            <Route path="viewMedicalHistory" element={<ViewMedicalHistory />} />
+            <Route path="createPayment" element={<CreatePayment />} />
+            <Route path="viewPayments" element={<ViewPayments />} />
+            <Route path="viewInvoices" element={<ViewInvoices />} />
+            <Route path="managePatientAppointments" element={<ManagePatientAppointments />} />
+        </Route>
         <Route path="/odontologist" element=
         {<AppointmentProvider>
             <TreatmentProvider>

@@ -1,19 +1,11 @@
-import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import CreateAppointment from './CreateAppointment';
-import ViewAppointments from './ViewAppointments';
-import CreatePatient from './CreatePatient';
-import CreateUser from './CreateUser';
-import DeleteUser from './DeleteUser';
-import ViewMedicalHistory from './ViewMedicalHistory';
-import CreatePayment from './CreatePayment';
-import ViewPayments from './ViewPayments';
-import ManagePatientAppointments from './ManagePatientAppointments';
+import { InoviceContext } from '../../context/InvoiceContext';
 
 function ReceptionistPortal() {
-  const [activeView, setActiveView] = useState('crearCita');
   const { setAuth } = useContext(AuthContext);
+  const {setInvoice} = useContext(InoviceContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -21,29 +13,11 @@ function ReceptionistPortal() {
     navigate('/');
   };
 
-  const navItems = [
-    { id: 'crearCita', label: 'Crear Cita' },
-    { id: 'verCitas', label: 'Ver Citas' },
-    { id: 'crearPaciente', label: 'Crear Paciente' },
-    { id: 'crearUsuario', label: 'Crear Usuario' },
-    { id: 'eliminarUsuario', label: 'Eliminar Usuario' },
-    { id: 'verHistorial', label: 'Ver Historial' },
-    { id: 'crearPago', label: 'Crear Pago' },
-    { id: 'verPagos', label: 'Ver Pagos' },
-    { id: 'gestionarCitasPaciente', label: 'Gestionar Citas Paciente' }
-  ];
+    const goToInovice= (invoice) => {
+      setInvoice(invoice);
+      navigate('/receptionist/viewPayments');
+    };
 
-  const views = {
-    crearCita: <CreateAppointment />,
-    verCitas: <ViewAppointments />,
-    crearPaciente: <CreatePatient />,
-    crearUsuario: <CreateUser />,
-    eliminarUsuario: <DeleteUser />,
-    verHistorial: <ViewMedicalHistory />,
-    crearPago: <CreatePayment />,
-    verPagos: <ViewPayments />,
-    gestionarCitasPaciente: <ManagePatientAppointments />
-  };
 
   return (
     <div className="d-flex min-vh-100 bg-light">
@@ -52,16 +26,56 @@ function ReceptionistPortal() {
         <p className="small mb-4">Portal Recepcionista</p>
 
         <ul className="nav flex-column gap-2 mb-auto overflow-auto">
-          {navItems.map(item => (
-            <li className="nav-item" key={item.id}>
-              <button
-                className={`btn w-100 text-start ${activeView === item.id ? 'btn-light text-success fw-bold' : 'btn-success text-white'}`}
-                onClick={() => setActiveView(item.id)}
-              >
-                {item.label}
-              </button>
-            </li>
-          ))}
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/createAppointment')}>
+              Crear Cita
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/viewAppointments')}>
+              Ver Citas
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/createPatient')}>
+              Crear Paciente
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/createUser')}>
+              Crear Usuario
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/deleteUser')}>
+              Eliminar Usuario
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/viewMedicalHistory')}>
+              Ver Historial
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/createPayment')}>
+              Crear Pago
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/viewPayments')}>
+              Ver Pagos
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/viewInvoices')}>
+              Ver Facturas
+            </button>
+          </li>
+          <li className="nav-item">
+            <button className="btn btn-success w-100 text-start text-white" onClick={() => navigate('/receptionist/managePatientAppointments')}>
+              Gestionar Citas Paciente
+            </button>
+          </li>
         </ul>
 
         <div className="mt-4">
@@ -70,7 +84,7 @@ function ReceptionistPortal() {
       </div>
 
       <div className="flex-grow-1 p-5 overflow-auto" style={{ maxHeight: '100vh' }}>
-        {views[activeView]}
+        <Outlet  context={{onInvoiceClick: goToInovice}}/>
       </div>
     </div>
   );
