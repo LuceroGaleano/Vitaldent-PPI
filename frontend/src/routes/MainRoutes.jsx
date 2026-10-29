@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Login from '../pages/Login'
-import ReceptionistPortal from '../pages/ReceptionistPortal'
+import ReceptionistPortal from '../pages/Receptionist/ReceptionistPortal'
 import OdontologistPortal from '../pages/Odontologist/OdontologistPortal'
 import InventoryManagerPortal from '../pages/InventoryManager/InventoryManagerPortal'
 import CitasDisponibles from '../pages/Patient/AppointmentAviable'
