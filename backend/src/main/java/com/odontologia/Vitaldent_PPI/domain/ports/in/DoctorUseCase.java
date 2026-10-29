@@ -7,6 +7,7 @@ import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
+import com.odontologia.Vitaldent_PPI.domain.models.Item;
 import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 
 public interface DoctorUseCase{
@@ -22,6 +23,8 @@ public interface DoctorUseCase{
 
     Treatment findTreatmentById(UUID id) throws NotFoundException;
     List<Treatment> findTreatmentAll() throws NotFoundException;
+
+    List<Item> findItemAll() throws NotFoundException;
 
     void updateTreatment(Treatment treatment) throws BusinessException;
 

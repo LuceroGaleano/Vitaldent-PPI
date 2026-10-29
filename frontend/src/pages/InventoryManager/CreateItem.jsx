@@ -52,6 +52,7 @@ function CreateItem() {
           {state.error}
         </div>
       )}
+      
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label fw-bold">Nombre del Item</label>

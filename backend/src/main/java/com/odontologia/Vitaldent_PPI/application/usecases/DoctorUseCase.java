@@ -9,11 +9,13 @@ import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.NotFoundException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
+import com.odontologia.Vitaldent_PPI.domain.models.Item;
 import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 import com.odontologia.Vitaldent_PPI.domain.services.CreateClinicalRecord;
 import com.odontologia.Vitaldent_PPI.domain.services.CreateTreatment;
 import com.odontologia.Vitaldent_PPI.domain.services.FindAppointment;
 import com.odontologia.Vitaldent_PPI.domain.services.FindClinicalRecord;
+import com.odontologia.Vitaldent_PPI.domain.services.FindItem;
 import com.odontologia.Vitaldent_PPI.domain.services.FindTreatment;
 import com.odontologia.Vitaldent_PPI.domain.services.UpdateTreatment;
 
@@ -29,6 +31,8 @@ public class DoctorUseCase implements com.odontologia.Vitaldent_PPI.domain.ports
 
     private final FindTreatment findTreatment;
 
+    private final FindItem findItem;
+
     private final UpdateTreatment updateTreatment;
 
     public DoctorUseCase(CreateClinicalRecord createClinicalRecord,
@@ -36,6 +40,7 @@ public class DoctorUseCase implements com.odontologia.Vitaldent_PPI.domain.ports
         FindAppointment findAppointment,
         FindClinicalRecord findClinicalRecord,
         FindTreatment findTreatment,
+        FindItem findItem,
         UpdateTreatment updateTreatment
     ){
         this.createClinicalRecord = createClinicalRecord;
@@ -43,6 +48,7 @@ public class DoctorUseCase implements com.odontologia.Vitaldent_PPI.domain.ports
         this.findAppointment = findAppointment;
         this.findClinicalRecord = findClinicalRecord;
         this.findTreatment = findTreatment;
+        this.findItem = findItem;
         this.updateTreatment = updateTreatment;
     }
 
@@ -80,6 +86,11 @@ public class DoctorUseCase implements com.odontologia.Vitaldent_PPI.domain.ports
     public List<Treatment> findTreatmentAll() throws NotFoundException{
         return findTreatment.findTreatmentAll();
     }
+
+    @Override 
+     public List<Item> findItemAll() throws NotFoundException{
+        return findItem.findItemAll();
+     }
 
     @Override 
     public void updateTreatment(Treatment treatment) throws BusinessException{

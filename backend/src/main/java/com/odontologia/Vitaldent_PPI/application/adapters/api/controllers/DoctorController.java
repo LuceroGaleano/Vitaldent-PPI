@@ -9,11 +9,13 @@ import com.odontologia.Vitaldent_PPI.application.adapters.api.request.TreatmentP
 import com.odontologia.Vitaldent_PPI.application.adapters.api.request.TreatmentItemRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.AppointmentResponse;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.ClinicalRecordResponse;
+import com.odontologia.Vitaldent_PPI.application.adapters.api.response.ItemResponse;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.TreatmentItemResponse;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.TreatmentResponse;
 import com.odontologia.Vitaldent_PPI.application.usecases.DoctorUseCase;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
+import com.odontologia.Vitaldent_PPI.domain.models.Item;
 import com.odontologia.Vitaldent_PPI.domain.models.Treatment;
 import com.odontologia.Vitaldent_PPI.domain.models.TreatmentItem;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
@@ -130,6 +132,14 @@ public class DoctorController {
         return ResponseEntity.ok(response);
     }
 
+    //-Item-------------------------------------------------------------------
+    @GetMapping("/item")
+    public ResponseEntity<List<ItemResponse>> findItemAll() {
+        return ResponseEntity.ok(doctorUseCase.findItemAll().stream()
+                .map(this::toItemResponse)
+                .toList());
+    }
+
     // -Mappers-------------------------------------------------------------------
     private ClinicalRecord toClinical(ClinicalRecordRequest req) {
         ClinicalRecord clinical = new ClinicalRecord();
@@ -204,5 +214,14 @@ public class DoctorController {
                 item.getTreatmentId(),
                 item.getItemId(),
                 item.getQuantityUsed());
+    }
+
+    private ItemResponse toItemResponse(Item item) {
+        return new ItemResponse(
+            item.getItemId(),
+            item.getName(),
+            item.getStock(),
+            item.isActive(),
+            item.getInventoryId());
     }
 }
