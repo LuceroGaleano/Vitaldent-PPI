@@ -88,13 +88,18 @@ function CreateTreatment() {
     <>
     <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '600px' }}>
       <h2 className="text-success mb-4">Crear Nuevo Tratamiento</h2>
+      {state.error && (
+        <div className="alert alert-danger py-2 small text-center" role="alert">
+          {state.error}
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label fw-bold">Nombre del Tratamiento</label>
           <input type="text" className="form-control" id="name" name="name" value={state.name} onChange = {handleChange} required />
         </div>
         <div className="mb-3">
-          <label className="form-label fw-bold">Descripciond el tratamiento</label>
+          <label className="form-label fw-bold">Descripcion del tratamiento</label>
           <textarea type="text" className="form-control" id="description" name="description" value={state.description} onChange = {handleChange} required />
         </div>
         <div className="mb-3">

@@ -17,6 +17,8 @@ import ViewItems from '../pages/InventoryManager/ViewItems'
 import CreateItem from '../pages/InventoryManager/CreateItem'
 import UpdateItem from '../pages/InventoryManager/UpdateItem'
 import { ItemProvider } from '../context/ItemProvider'
+import { AppointmentProvider } from '../context/AppointmentProvider'
+import { TreatmentProvider } from '../context/TreatmentProvider'
 
 export const MainRoutes = () => {
   return (
@@ -29,7 +31,12 @@ export const MainRoutes = () => {
             <Route path="historialMedico" element={<HistorialClinico />} />
         </Route>
         <Route path="/receptionist" element={<ReceptionistPortal />} />
-        <Route path="/odontologist" element={<OdontologistPortal />}>
+        <Route path="/odontologist" element=
+        {<AppointmentProvider>
+            <TreatmentProvider>
+                <OdontologistPortal />
+            </TreatmentProvider>
+        </AppointmentProvider>}>
             <Route index element={<Navigate to="appointments" replace />} />
             <Route path="appointments" element={<DoctorAppointments />} />
             <Route path="createMedicalHistory" element={<CreateMedicalHistory />} />

@@ -107,11 +107,12 @@ public class CreateClinicalRecord {
             }
         }
 
-        appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
         record.setDate(LocalDate.now());
         record.setAppointmentId(appointment.getAppointmentId());
         record.setTreatmentId(treatment.getTreatamentId());
+        appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
         ClinicalRecord savedRecord = clinicalRecordPort.save(record);
+        appointmentPort.update(appointment);
 
         createInvoice.createInvoiceForClinicalRecord(savedRecord.getClinicalRecordId());
 

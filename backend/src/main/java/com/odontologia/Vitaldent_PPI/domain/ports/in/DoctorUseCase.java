@@ -25,6 +25,7 @@ public interface DoctorUseCase{
     List<Treatment> findTreatmentAll() throws NotFoundException;
 
     List<Item> findItemAll() throws NotFoundException;
+    Item findItemById(UUID id) throws NotFoundException;
 
     void updateTreatment(Treatment treatment) throws BusinessException;
 

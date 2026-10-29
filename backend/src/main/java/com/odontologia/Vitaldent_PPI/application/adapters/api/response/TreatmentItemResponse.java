@@ -6,5 +6,6 @@ public record TreatmentItemResponse(
     UUID treatmentItemId,
     UUID treatmentId,
     UUID itemId,
+    String itemName,
     int quantityUsed
 ) {}

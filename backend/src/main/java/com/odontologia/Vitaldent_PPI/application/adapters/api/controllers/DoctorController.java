@@ -213,6 +213,7 @@ public class DoctorController {
                 item.getTreatmentItemId(),
                 item.getTreatmentId(),
                 item.getItemId(),
+                doctorUseCase.findItemById(item.getItemId()).getName(),
                 item.getQuantityUsed());
     }
 

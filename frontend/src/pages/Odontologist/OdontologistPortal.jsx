@@ -1,10 +1,25 @@
 import {useContext} from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import {useNavigate, Outlet} from 'react-router-dom';
+import { AppointmentContext } from '../../context/AppointmentContext';
+import { TreatmentContext } from '../../context/TreatmentContext';
 
 function OdontologistPortal() {
   const { setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
+  const {setAppointment} = useContext(AppointmentContext);
+  const {setTreatment} = useContext(TreatmentContext);
+
+    const goToAppointment= (appointment) => {
+      setAppointment(appointment);
+      navigate('/odontologist/createMedicalHistory');
+    };
+
+    const goToTreatment= (treatment) => {
+      setTreatment(treatment);
+      navigate('/odontologist/createMedicalHistory');
+    };
+
 
   const handleLogout = () => {
     setAuth({ logged: false, user: null });
@@ -68,7 +83,7 @@ function OdontologistPortal() {
 
       {/* Contenido Principal */}
       <div className="flex-grow-1 p-5 overflow-auto">
-        <Outlet />
+        <Outlet context={{onAppointmentClick: goToAppointment, onTreatmentClick: goToTreatment}} />
       </div>
     </div>
   );

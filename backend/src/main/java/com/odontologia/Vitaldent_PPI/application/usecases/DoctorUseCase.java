@@ -92,8 +92,13 @@ public class DoctorUseCase implements com.odontologia.Vitaldent_PPI.domain.ports
         return findItem.findItemAll();
      }
 
-    @Override 
-    public void updateTreatment(Treatment treatment) throws BusinessException{
-        updateTreatment.updateTreatment(treatment);
+     @Override
+     public Item findItemById(UUID id) throws NotFoundException {
+         return findItem.findItemById(id);
+     }
+
+     @Override 
+     public void updateTreatment(Treatment treatment) throws BusinessException{
+         updateTreatment.updateTreatment(treatment);
     }
 }

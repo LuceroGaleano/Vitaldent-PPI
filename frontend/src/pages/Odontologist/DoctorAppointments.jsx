@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useReducer, useState } from 'react'
 import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 import { AuthContext } from '../../context/AuthContext';
 import { getFetch } from '../../fetchs/GetFetch';
+import { useOutletContext } from 'react-router-dom';
 
 const initialState = {
   loading: false,
@@ -9,7 +10,7 @@ const initialState = {
 }
 function DoctorAppointments() {
 
-
+  const { onAppointmentClick } = useOutletContext();
   const [citas, setCitas] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
@@ -21,13 +22,15 @@ function DoctorAppointments() {
         `http://localhost:8080/doctor/appointment/doctor/${auth.document}`,
         auth.user
       )
-
+      
         dispatch({type: 'LOADING', payload: false})
+        console.log(data)
         const citasDoctor = data.map((cita) => ({
           id: cita.appointmentId,
           paciente: cita.patientName ?? 'Sin paciente',
           documento: cita.patientDocument ?? 'Sin documento',
-          fecha: cita.date + " - " + cita.hour
+          fecha: cita.date + " - " + cita.hour,
+          status: cita.appointmentStatus
         }));
 
         setCitas(citasDoctor)
@@ -54,6 +57,16 @@ function DoctorAppointments() {
             <h5 className="mb-1 text-primary">Paciente: {cita.paciente}</h5>
             <p className="mb-1 text-muted">Documento: {cita.documento}</p>
             <small className="fw-bold text-secondary">{cita.fecha}</small>
+            <div className="mt-2">
+              {cita.status === 'COMPLETED' ? (
+                <p className="card-text text-muted mb-1" key={cita.id}>Cita atendida</p>
+              ) :<button
+                    className="btn btn-outline-success btn-sm"
+                    onClick={() => onAppointmentClick(cita)}
+                    >
+                    Crear Historial
+                  </button>}
+            </div>
           </div>
         ))}
       </div>
