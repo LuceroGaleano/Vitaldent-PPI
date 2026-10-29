@@ -195,7 +195,8 @@ public class ReceptionistController {
         Appointment appointment = new Appointment();
         appointment.setDate(request.getDate());
         appointment.setHour(request.getHour());
-        appointment.setDoctorId(request.getDoctorId());
+        appointment.setDoctorId(
+                receptionistUseCase.findUserByDocument(request.getDoctorDocument()).getUserId());
         appointment.setPatientId(request.getPatientId());
         appointment.setAppointmentStatus(request.getAppointmentStatus());
         return appointment;

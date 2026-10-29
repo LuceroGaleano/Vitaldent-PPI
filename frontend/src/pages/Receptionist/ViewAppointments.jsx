@@ -26,7 +26,7 @@ function ViewAppointments() {
         dispatch({type: 'LOADING', payload: false});
         const citasResultado = data.map((cita) => ({
           id: cita.appointmentId,
-          paciente: cita.patientName,
+          paciente: cita.patientName ?? 'Sin paciente',
           doctor: cita.doctorName,
           fecha: cita.date + " - " + cita.hour
         }));

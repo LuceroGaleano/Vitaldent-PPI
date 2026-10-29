@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +24,8 @@ public class AppointmentRequest {
 
     private UUID patientId;
 
-    @NotNull(message = "El doctor es obligatorio")
-    private UUID doctorId;
+    @NotBlank(message = "El documento del doctor es obligatorio")
+    private String doctorDocument;
 
     private AppointmentStatus appointmentStatus;
 }

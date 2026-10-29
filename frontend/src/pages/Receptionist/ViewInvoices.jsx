@@ -49,7 +49,7 @@ function ViewInovices() {
 
   return (
     <div>
-      <h2 className="text-success mb-4">Lista de Pagos</h2>
+      <h2 className="text-success mb-4">Lista de Facturas</h2>
 
       {state.error && (
         <div className="alert alert-danger py-2 small text-center" role="alert">
