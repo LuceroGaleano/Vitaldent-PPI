@@ -27,7 +27,8 @@ export function MisCitas() {
       const citasMapeadas = data.map((item) => ({
         id: item.appointmentId,
         doctor: item.doctorName,
-        fecha: item.date + " " + item.hour
+        fecha: item.date + " " + item.hour,
+        status: item.appointmentStatus
       }));
 
       setMisCitas(citasMapeadas);
@@ -77,7 +78,11 @@ export function MisCitas() {
               <h5 className="mb-1 text-primary">{cita.doctor}</h5>
               <small className="text-muted">{cita.fecha}</small>
             </div>
-            <button className="btn btn-outline-danger" onClick={() => handleCancelar(cita.id)}>Cancelar</button>
+            {cita.status === 'COMPLETED' ? (
+               <p className="card-text text-muted">Cita Atendida</p>
+            ):(
+              <button className="btn btn-outline-danger" onClick={() => handleCancelar(cita.id)}>Cancelar</button>
+            )}
           </div>
         ))}
       </div>
