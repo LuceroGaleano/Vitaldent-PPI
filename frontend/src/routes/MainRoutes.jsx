@@ -43,7 +43,9 @@ export const MainRoutes = () => {
         </Route>
         <Route path="/receptionist" element={
         <InvoiceProvider>
-            <ReceptionistPortal />
+            <PatientProvider>
+                <ReceptionistPortal />
+            </PatientProvider>
         </InvoiceProvider>}>
             <Route index element={<Navigate to="createAppointment" replace />} />
             <Route path="createAppointment" element={<CreateAppointment />} />

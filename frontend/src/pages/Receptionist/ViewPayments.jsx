@@ -36,7 +36,7 @@ function ViewPayments() {
         setResultados(pagos);
         dispatch({type: 'LOADING', payload: false});
       } catch(error) {
-        dispatch({type: 'ERROR', payload: error});
+        dispatch({type: 'ERROR', payload: error.message});
       }
     };
 
@@ -56,7 +56,7 @@ function ViewPayments() {
       <>  
         {state.error && (
           <div className="alert alert-danger py-2 small text-center" role="alert">
-            {state.error.message}
+            {state.error}
           </div>
         )}
 
@@ -66,7 +66,7 @@ function ViewPayments() {
               <div className="card shadow-sm border-0">
                 <div className="card-body">
                   <h5 className="card-title text-primary">Fecha: {res.fecha}</h5>
-                  <p className="card-text text-muted mb-1">Monto: {res.monto}</p>
+                  <p className="card-text text-muted mb-1">Monto: ${Number(res.monto).toLocaleString('es-CO')}</p>
                   <p className="card-text text-muted">Método de pago: {res.metodo}</p>
                 </div>
               </div>

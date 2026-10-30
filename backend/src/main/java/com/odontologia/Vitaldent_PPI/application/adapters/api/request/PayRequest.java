@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import com.odontologia.Vitaldent_PPI.domain.models.enums.MethodPayment;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -21,8 +23,8 @@ public class PayRequest {
     @PastOrPresent(message = "La fecha del pago no puede ser futura")
     private LocalDate date;
 
-    @NotBlank(message = "El método de pago es obligatorio")
-    private String methodPayment;
+    @NotNull(message = "El método de pago es obligatorio")
+    private MethodPayment methodPayment;
 
     @NotBlank(message = "El estado del pago es obligatorio")
     private String state;

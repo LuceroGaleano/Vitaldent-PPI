@@ -2,6 +2,7 @@ import { useContext, useEffect, useReducer, useState } from 'react';
 import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 import { AuthContext } from '../../context/AuthContext';
 import { getFetch } from '../../fetchs/GetFetch';
+import { patchFetch } from '../../fetchs/PatchFetch';
 
 const initialState = {
   loading: true,
@@ -13,6 +14,23 @@ function ViewAppointments() {
     const[citas, setCitas] = useState([]);
     const [state, dispatch] = useReducer(apiFetchReduce, initialState);
     const {auth} = useContext(AuthContext);
+
+    const cerrarCita = async (id) => {
+        dispatch({ type: 'LOADING', payload: true });
+
+        try {
+            await patchFetch(
+            `http://localhost:8080/receptionist/appointment/${id}/close`,
+            auth.user
+            );
+
+            window.location.reload();
+        } catch (error) {
+            dispatch({ type: 'ERROR', payload: error.message });
+        } finally {
+            dispatch({ type: 'LOADING', payload: false });
+        }
+    }
 
   
     const agregarCitas = async () => {
@@ -28,18 +46,19 @@ function ViewAppointments() {
           id: cita.appointmentId,
           paciente: cita.patientName ?? 'Sin paciente',
           doctor: cita.doctorName,
-          fecha: cita.date + " - " + cita.hour
+          fecha: cita.date + " - " + cita.hour,
+          status: cita.appointmentStatus
         }));
 
         setCitas(citasResultado);
       } catch(error) {
-        dispatch({type: 'ERROR', payload: error});
+        dispatch({type: 'ERROR', payload: error.message});
       }
     };
 
      useEffect(() => {
        agregarCitas();
-     }, []);
+     }, [state]);
 
   return (
     <div>
@@ -57,7 +76,10 @@ function ViewAppointments() {
                 <h5 className="card-title text-primary">{cita.paciente}</h5>
                 <p className="card-text text-muted mb-1">Doctor: {cita.doctor}</p>
                 <p className="card-text text-muted">{cita.fecha}</p>
-                <button className="btn btn-outline-danger btn-sm">Cancelar</button>
+                <p className="card-text text-muted">{cita.status}</p>
+                {cita.status == 'AVAILABLE' ? (
+                  <button className="btn btn-outline-danger btn-sm" onClick={() => cerrarCita(cita.id)}>Cancelar</button>
+                ) : null}
               </div>
             </div>
           </div>

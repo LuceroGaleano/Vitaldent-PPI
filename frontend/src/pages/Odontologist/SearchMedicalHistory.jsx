@@ -41,7 +41,7 @@ function SearchMedicalHistory() {
 
       setResultados(historiales);
     } catch(error) {
-      dispatch({type: 'ERROR', payload: error});
+      dispatch({type: 'ERROR', payload: error.message});
     }
   };
 
@@ -51,7 +51,7 @@ function SearchMedicalHistory() {
 
       {state.error && (
         <div className="alert alert-danger py-2 small text-center" role="alert">
-           {state.error.message}
+           {state.error}
         </div>
       )}
       

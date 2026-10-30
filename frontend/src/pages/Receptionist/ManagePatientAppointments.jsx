@@ -1,18 +1,33 @@
 import { useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
+import { getFetch } from '../../fetchs/GetFetch';
 
 function ManagePatientAppointments() {
-  const [documento, setDocumento] = useState('');
   const [paciente, setPaciente] = useState(null);
+  const { onPatientClick} = useOutletContext();
 
-  const buscarPaciente = (e) => {
-    //aqui va la API GET para buscar el paciente por documento
-    e.preventDefault();
-    setPaciente({
-      // Simulación de datos del paciente encontrado
-      nombre: 'Juan Pérez',
-      documento,
-      citas: [{ id: 1, fecha: '2026-10-30 10:00 AM', doctor: 'Dr. Gómez' }]
-    });
+  const buscarPaciente = async (e) => {
+   e.preventDefault()
+    dispatch({type: 'LOADING', payload: true});
+    try {
+      const data = await getFetch(
+        `http://localhost:8080/receptionist/patient/${state.document}`,
+        auth.user
+      );
+
+      dispatch({type: 'LOADING', payload: false});
+      
+      const facturas = data.map((factura) => ({
+        id: factura.invoiceId,
+        amount: factura.total,
+        date: factura.date,
+        isPaid: factura.isPaid
+      }));
+
+      setResultados(facturas);
+    } catch(error) {
+      dispatch({type: 'ERROR', payload: error.message});
+    }
   };
 
   const handleAgendar = (e) => {
@@ -35,8 +50,7 @@ function ManagePatientAppointments() {
           type="text"
           className="form-control"
           placeholder="Documento del paciente..."
-          value={documento}
-          onChange={(e) => setDocumento(e.target.value)}
+          id="document" name="document" value={state.document} onChange={handleChange}
           required
         />
         <button type="submit" className="btn btn-primary">Buscar</button>

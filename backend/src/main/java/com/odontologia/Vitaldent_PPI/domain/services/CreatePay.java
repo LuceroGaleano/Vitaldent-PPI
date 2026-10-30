@@ -31,6 +31,10 @@ public class CreatePay {
             throw new BusinessException("El monto a pagar debe ser mayor a cero");
         }
 
+        if (pay.getMethodPayment() == null) {
+            throw new BusinessException("El método de pago es obligatorio");
+        }
+
         if (pay.getInvoiceId() == null) {
             throw new BusinessException("La factura asociada es obligatoria");
         }

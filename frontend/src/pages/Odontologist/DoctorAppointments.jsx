@@ -35,7 +35,7 @@ function DoctorAppointments() {
 
         setCitas(citasDoctor)
     } catch(error){
-      dispatch({type: 'ERROR', payload: error})
+      dispatch({type: 'ERROR', payload: error.message})
     } 
   }, [auth.document, auth.user]);
 
@@ -48,7 +48,7 @@ function DoctorAppointments() {
       <h2 className="text-success mb-4">Mis Citas Agendadas</h2>
       {state.error && (
         <div className="alert alert-danger" role="alert">
-          {state.error.message}
+          {state.error}
         </div>
       )}
       <div className="list-group">

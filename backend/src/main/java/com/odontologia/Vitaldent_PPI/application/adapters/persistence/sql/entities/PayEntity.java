@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import com.odontologia.Vitaldent_PPI.domain.models.enums.MethodPayment;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,7 +34,7 @@ public class PayEntity {
     private LocalDate date;
 
     @Column(name = "method_payment")
-    private String methodPayment;
+    private MethodPayment methodPayment;
 
     @Column(name = "state")
     private String state;

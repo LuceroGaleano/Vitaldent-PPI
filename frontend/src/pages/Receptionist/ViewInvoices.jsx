@@ -11,7 +11,7 @@ const initialState = {
 }
 7
 function ViewInovices() {
-  const { onInvoiceClick } = useOutletContext();
+  const { onInvoiceClick, onCreatePayClick } = useOutletContext();
   const [resultados, setResultados] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
@@ -37,13 +37,14 @@ function ViewInovices() {
       
       const facturas = data.map((factura) => ({
         id: factura.invoiceId,
+        amount: factura.total,
         date: factura.date,
         isPaid: factura.isPaid
       }));
 
       setResultados(facturas);
     } catch(error) {
-      dispatch({type: 'ERROR', payload: error});
+      dispatch({type: 'ERROR', payload: error.message});
     }
   };
 
@@ -53,7 +54,7 @@ function ViewInovices() {
 
       {state.error && (
         <div className="alert alert-danger py-2 small text-center" role="alert">
-           {state.error.message}
+           {state.error}
         </div>
       )}
       
@@ -67,14 +68,20 @@ function ViewInovices() {
           {resultados.map(res => (
             <div className="list-group-item shadow-sm mb-2 border-0 rounded" key={res.id}>
               <h6 className="text-success">Fecha: {res.date}</h6>
+              <p className="mb-2">Costo: ${res.amount.toLocaleString('es-CO')}</p>
               {res.isPaid ? (
                 <span className="badge bg-success-subtle text-success border border-success-subtle p-2 mb-2">
                   Factura Pagada
                 </span>
               ) : (
-                <span className="badge bg-danger-subtle text-danger border border-danger-subtle p-2 mb-2">
-                  Factura Sin pagar
-                </span>
+                  <div className = "mt-2">
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => onCreatePayClick(res)}
+                      >
+                      Realizar Pago
+                    </button>
+                  </div>
               )}
                   <div className = "mt-2">
                     <button

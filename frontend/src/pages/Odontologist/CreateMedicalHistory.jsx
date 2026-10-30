@@ -49,7 +49,7 @@ function CreateMedicalHistory() {
       dispatch({type:'LOADING', payload: false});
       navigate('/odontologist/appointments');
     } catch(error){
-        dispatch({type:'ERROR', payload: error})
+        dispatch({type:'ERROR', payload: error.message})
     }
   };
 

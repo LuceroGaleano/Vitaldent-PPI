@@ -16,7 +16,6 @@ export function MisCitas() {
     const [state, dispatch] = useReducer(apiFetchReduce, initialState);
 
   const agregarMisCitas = async() =>{
-    e.preventDefault();
     dispatch({type: 'LOANDING', payload:true})
     try{
       const data = await getFetch(

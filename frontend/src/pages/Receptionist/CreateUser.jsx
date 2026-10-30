@@ -94,6 +94,7 @@ function CreateUser() {
         <div className="mb-3">
           <label className="form-label fw-bold">Rol</label>
           <select className="form-select" id="rol" name="rol" value={state.rol} onChange={handleChange} required>
+            <option value="" disabled>Selecciona un rol</option>
             <option value="DOCTOR">Odontólogo</option>
             <option value="INVENTORY_MANAGER">Gestor de Inventario</option>
           </select>

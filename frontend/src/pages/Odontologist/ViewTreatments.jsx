@@ -35,7 +35,7 @@ function ViewTreatments() {
 
         setTratamientos(tratamientos);
       } catch(error){
-        dispatch({type: 'ERROR', payload: error});
+        dispatch({type: 'ERROR', payload: error.message});
       }
     }
 

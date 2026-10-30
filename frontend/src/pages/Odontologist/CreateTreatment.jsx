@@ -45,7 +45,7 @@ function CreateTreatment() {
         }))
         setItems(items)
       } catch(error){
-        dispatch({type:'ERROR', payload: error})
+        dispatch({type:'ERROR', payload: error.message})
       }
     }
   
@@ -80,7 +80,7 @@ function CreateTreatment() {
       dispatch({type: 'LOADING', payload: false});
       navigate('/odontologist/viewTreatments');
     } catch(error){
-        dispatch({type:'ERROR', payload: error})
+        dispatch({type:'ERROR', payload: error.message})
     }
   };
 

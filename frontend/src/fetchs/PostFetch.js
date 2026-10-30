@@ -13,11 +13,12 @@ export const postFetch = async (url, body, token = null) => {
     body: JSON.stringify(body)
   });
 
-  const data = await response.json();
+  const responseText = await response.text();
+  const data = responseText ? JSON.parse(responseText) : null;
 
   if (!response.ok) {
     throw new Error(
-      data.message || data.error || `Error HTTP ${response.status}`
+      data?.message || data?.error || `Error HTTP ${response.status}`
     );
   }
 

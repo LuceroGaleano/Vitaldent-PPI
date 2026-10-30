@@ -12,15 +12,12 @@ export const patchFetch = async (url, token = null) => {
     headers,
   });
 
-  if (response.status === 204) {
-    return null;
-  }
-
-  const data = await response.json();
+  const responseText = await response.text();
+  const data = responseText ? JSON.parse(responseText) : null;
 
   if (!response.ok) {
     throw new Error(
-      data.message || data.error || `Error HTTP ${response.status}`
+      data?.message || data?.error || `Error HTTP ${response.status}`
     );
   }
 

@@ -5,8 +5,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const initialState = {
-  date: '',
-  hour: '',
+  dateAndHour: '',
   doctorDocument: '',
   loading: false,
   error: null
@@ -28,7 +27,7 @@ function CreateAppointment() {
     dispatch({type:'LOADING', payload: true});
     try{
       const [date, time] = state.dateAndHour.split('T');
-      const data = await postFetch('http://localhost:8080/receptionist/appointment',
+       await postFetch('http://localhost:8080/receptionist/appointment',
         {
           date: date,
           hour: time,
@@ -40,13 +39,18 @@ function CreateAppointment() {
       dispatch({type:'LOADING', payload: false});
       navigate('/receptionist/viewAppointments');
     } catch(error){
-        dispatch({type:'ERROR', payload: error})
+        dispatch({type:'ERROR', payload: error.message})
     }
   };
 
   return (
     <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '600px' }}>
       <h2 className="text-success mb-4">Crear Cita</h2>
+      {state.error && (
+        <div className="alert alert-danger py-2 small text-center" role="alert">
+          {state.error}
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label className="form-label fw-bold" htmlFor="doctorDocument">Documento del Doctor</label>
