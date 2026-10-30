@@ -58,7 +58,7 @@ function ViewAppointments() {
 
      useEffect(() => {
        agregarCitas();
-     }, [state]);
+     }, []);
 
   return (
     <div>

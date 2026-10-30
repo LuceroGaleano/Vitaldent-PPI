@@ -79,7 +79,7 @@ export function CitasDisponibles() {
               <div className="card-body">
                 <h5 className="card-title text-primary">{cita.doctor}</h5>
                 <p className="card-text text-muted">{cita.fecha}</p>
-                <button className="btn btn-success" onClick={() => handleAgendar(cita.id)}>Agendar (Schedule)</button>
+                <button className="btn btn-success" onClick={() => handleAgendar(cita.id)}>Agendar</button>
               </div>
             </div>
           </div>

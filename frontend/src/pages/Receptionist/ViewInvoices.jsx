@@ -9,7 +9,7 @@ const initialState = {
   error: null,
   document: ''
 }
-7
+
 function ViewInovices() {
   const { onInvoiceClick, onCreatePayClick } = useOutletContext();
   const [resultados, setResultados] = useState([]);

@@ -42,11 +42,10 @@ export const MainRoutes = () => {
             <Route path="historialMedico" element={<HistorialClinico />} />
         </Route>
         <Route path="/receptionist" element={
-        <InvoiceProvider>
-            <PatientProvider>
-                <ReceptionistPortal />
-            </PatientProvider>
-        </InvoiceProvider>}>
+          <InvoiceProvider>
+            <ReceptionistPortal />
+          </InvoiceProvider>
+        }>
             <Route index element={<Navigate to="createAppointment" replace />} />
             <Route path="createAppointment" element={<CreateAppointment />} />
             <Route path="viewAppointments" element={<ViewAppointments />} />

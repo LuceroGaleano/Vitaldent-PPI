@@ -1,46 +1,139 @@
-import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useContext, useReducer, useState } from 'react';
 import { getFetch } from '../../fetchs/GetFetch';
+import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
+import { AuthContext } from '../../context/AuthContext';
+import { patchFetch } from '../../fetchs/PatchFetch';
 
+const initialState = {
+  loading: true,
+  error: null,
+  document: ''
+}
 function ManagePatientAppointments() {
   const [paciente, setPaciente] = useState(null);
-  const { onPatientClick} = useOutletContext();
+  const [citasDisponibles, setCitasDisponibles] = useState([])
+  const [citasPaciente, setCitasPaciente] = useState([])
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const {auth} = useContext(AuthContext);
+
+  const handleChange = (e) =>{
+      dispatch({
+      type: 'OK',
+      payload: { field: e.target.name, value: e.target.value }
+      });
+  };
 
   const buscarPaciente = async (e) => {
    e.preventDefault()
     dispatch({type: 'LOADING', payload: true});
     try {
-      const data = await getFetch(
+      const pacienteEncontrado = await getFetch(
         `http://localhost:8080/receptionist/patient/${state.document}`,
         auth.user
       );
 
-      dispatch({type: 'LOADING', payload: false});
-      
-      const facturas = data.map((factura) => ({
-        id: factura.invoiceId,
-        amount: factura.total,
-        date: factura.date,
-        isPaid: factura.isPaid
-      }));
 
-      setResultados(facturas);
+
+      setPaciente(pacienteEncontrado);
+      dispatch({type: 'LOADING', payload: false});
+
+      await buscarCitasDisponibles();
+      await buscarCitasPaciente(pacienteEncontrado.document);
     } catch(error) {
       dispatch({type: 'ERROR', payload: error.message});
     }
   };
 
-  const handleAgendar = (e) => {
-    e.preventDefault();
-    //aqui va la API POST para agendar nueva cita al paciente
-    alert('Llamando API para agendar nueva cita al paciente (POST)');
-  };
+  const buscarCitasDisponibles = async() =>{
+      dispatch({type: 'LOADING', payload: true});
+      try {
+        const data = await getFetch(
+          `http://localhost:8080/receptionist/appointment`,
+          auth.user
+        );
 
-  const handleCancelar = (id) => {
-    //aqui va la API DELETE o PUT para cancelar la cita
-    alert(`Llamando API para cancelar la cita ID: ${id} (DELETE/PUT)`);
-  };
+        dispatch({type: 'LOADING', payload: false});
+        const citasResultado = data
+          .filter((cita) => cita.appointmentStatus === 'AVAILABLE')
+          .map((cita) => ({
+            id: cita.appointmentId,
+            paciente: cita.patientName ?? 'Sin paciente',
+            doctor: cita.doctorName,
+            fecha: cita.date + " - " + cita.hour,
+            status: cita.appointmentStatus
+          }));
 
+
+        setCitasDisponibles(citasResultado);
+      } catch(error) {
+        dispatch({type: 'ERROR', payload: error.message});
+      }
+    };
+
+    const buscarCitasPaciente = async(document) => {
+      dispatch({type: 'LOADING', payload: true});
+      try {
+        const data = await getFetch(
+          `http://localhost:8080/receptionist/appointment/patient/${document}`,
+          auth.user
+        );
+
+        dispatch({type: 'LOADING', payload: false});
+        const citasResultadoPaciente = data
+          .filter((cita) => cita.appointmentStatus === 'SCHEDULED')
+          .map((cita) => ({
+            id: cita.appointmentId,
+            paciente: cita.patientName ?? 'Sin paciente',
+            doctor: cita.doctorName,
+            fecha: cita.date + " - " + cita.hour,
+            status: cita.appointmentStatus
+          }));
+
+
+        setCitasPaciente(citasResultadoPaciente)
+      } catch(error) {
+        dispatch({type: 'ERROR', payload: error.message});
+      }
+    }
+
+    const handleAgendar = async (id, document) => {
+        dispatch({ type: 'LOANDING', payload: true });
+        try {
+            await patchFetch(
+            `http://localhost:8080/receptionist/appointment/${id}/${document}/schedule`,
+            auth.user
+            );
+
+            setCitasDisponibles((citasDisponibles) =>
+              citasDisponibles.filter((cita) => cita.id !== id)
+            );
+            await buscarCitasPaciente(paciente.document);
+        } catch (error) {
+            dispatch({ type: 'ERROR', payload: error.message });
+        } finally {
+            dispatch({ type: 'LOANDING', payload: false });
+        }
+    };
+
+  const handleCancelar = async (id, document) => {
+        dispatch({ type: 'LOANDING', payload: true });
+        try {
+            await patchFetch(
+            `http://localhost:8080/receptionist/appointment/${id}/cancel`,
+            auth.user
+            );
+
+            setCitasDisponibles((citasDisponibles) =>
+              citasDisponibles.filter((cita) => cita.id !== id)
+            );
+            await buscarCitasPaciente(document);
+            await buscarCitasDisponibles();
+        } catch (error) {
+            dispatch({ type: 'ERROR', payload: error.message });
+        } finally {
+            dispatch({ type: 'LOANDING', payload: false });
+        }
+  };
   return (
     <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '700px' }}>
       <h2 className="text-success mb-4">Gestión de Citas por Paciente</h2>
@@ -56,53 +149,73 @@ function ManagePatientAppointments() {
         <button type="submit" className="btn btn-primary">Buscar</button>
       </form>
 
+      {state.error && (
+        <div className="alert alert-danger py-2" role="alert">
+          {state.error}
+        </div>
+      )}
+
       {paciente && (
         <>
           <div className="alert alert-success mb-4">
-            Paciente encontrado: <strong>{paciente.nombre}</strong>
+            Paciente encontrado: <strong>{paciente.fullName}</strong>
           </div>
-
-          <div className="row">
-            <div className="col-md-6 border-end">
-              <h5 className="text-success mb-3">Agendar Cita</h5>
-              <form onSubmit={handleAgendar}>
-                <div className="mb-3">
-                  <label className="form-label fw-bold small">Doctor Asignado</label>
-                  <select className="form-select form-select-sm" required>
-                    <option>Dr. Gómez</option>
-                    <option>Dra. Galeano</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label fw-bold small">Fecha y Hora</label>
-                  <input type="datetime-local" className="form-control form-control-sm" required />
-                </div>
-                <button type="submit" className="btn btn-success btn-sm w-100">Agendar Cita</button>
-              </form>
-            </div>
-
-            <div className="col-md-6">
-              <h5 className="text-success mb-3">Citas Actuales</h5>
-              {paciente.citas.length > 0 ? (
-                <ul className="list-group list-group-flush">
-                  {paciente.citas.map(cita => (
-                    <li key={cita.id} className="list-group-item px-0 d-flex justify-content-between align-items-center">
-                      <div>
-                        <small className="d-block fw-bold text-primary">{cita.doctor}</small>
-                        <small className="text-muted">{cita.fecha}</small>
+          <div className="mt-3">
+            <div className="row">
+              <div className="col-12">
+                <h5 className="text-success mb-3">Citas Disponibles</h5>
+                {citasDisponibles?.length > 0 ? (
+                  <div className="row">
+                    {citasDisponibles.map(cita => (
+                      <div className="col-md-6 mb-3" key={cita.id}>
+                        <div className="card shadow-sm border-0">
+                          <div className="card-body">
+                            <h5 className="card-title text-primary">{cita.paciente}</h5>
+                            <p className="card-text text-muted mb-1">Doctor: {cita.doctor}</p>
+                            <p className="card-text text-muted">{cita.fecha}</p>
+                            {cita.status == 'AVAILABLE' ? (
+                              <button className="btn btn-success" onClick={() => handleAgendar(cita.id, paciente.document)} >Agendar</button>
+                            ) : null}
+                          </div>
+                        </div>
                       </div>
-                      <button
-                        className="btn btn-outline-danger btn-sm"
-                        onClick={() => handleCancelar(cita.id)}
-                      >
-                        Cancelar
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="small text-muted">No tiene citas agendadas.</p>
-              )}
+                    ))}
+                  </div>
+                ) : (
+                  <p className="small text-muted">No tiene citas agendadas.</p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="row">
+              <div className="col-12">
+                <h5 className="text-success mb-3">Citas del Paciente</h5>
+                {citasPaciente.length > 0 ? (
+                  <div className="row">
+                    {citasPaciente.map(cita => (
+                      <div className="col-md-6 mb-3" key={cita.id}>
+                        <div className="card shadow-sm border-0">
+                          <div className="card-body">
+                            <h5 className="card-title text-primary">{cita.paciente}</h5>
+                            <p className="card-text text-muted mb-1">Doctor: {cita.doctor}</p>
+                            <p className="card-text text-muted">{cita.fecha}</p>
+                            <p className="card-text text-muted">{cita.status}</p>
+                            <button
+                              className="btn btn-outline-danger"
+                              onClick={() => handleCancelar(cita.id, paciente.document)}
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="small text-muted">El paciente no tiene citas agendadas.</p>
+                )}
+              </div>
             </div>
           </div>
         </>
@@ -110,5 +223,6 @@ function ManagePatientAppointments() {
     </div>
   );
 }
+
 
 export default ManagePatientAppointments;

@@ -2,12 +2,10 @@ import { useContext } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { InoviceContext } from '../../context/InvoiceContext';
-import { PatientContext } from '../../context/PatientContext';
 
 function ReceptionistPortal() {
   const { setAuth } = useContext(AuthContext);
   const {setInvoice} = useContext(InoviceContext);
-  const {setPatient} = useContext(PatientContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -24,11 +22,6 @@ function ReceptionistPortal() {
       setInvoice(invoice);
       navigate('/receptionist/createPayment');
     };
-
-    const goToPatient= (patient) => {
-      setPatient(patient);
-    };
-
 
   return (
     <div className="d-flex min-vh-100 bg-light">
@@ -95,7 +88,7 @@ function ReceptionistPortal() {
       </div>
 
       <div className="flex-grow-1 p-5 overflow-auto" style={{ maxHeight: '100vh' }}>
-        <Outlet  context={{onInvoiceClick: goToInovice, onCreatePayClick: goToCreatePay, onPatientClick: goToPatient}}/>
+        <Outlet context={{onInvoiceClick: goToInovice, onCreatePayClick: goToCreatePay}}/>
       </div>
     </div>
   );
