@@ -82,7 +82,15 @@ function UpdateUser() {
       )
 
       dispatch({type:'LOADING', payload: false});
-      navigate('/patient/citasDisponibles');
+      if(state.rol === 'PATIENT'){
+        navigate('/patient/citasDisponibles');
+      } else if(state.rol === 'INVENTORY_MANAGER'){
+        navigate('/inventoryManager/viewItems')
+      } else if(state.rol === 'RECEPTIONIST'){
+        navigate('/receptionist/createAppointment')
+      } else if(state.rol === "DOCTOR"){
+        navigate('/odontologist/appointments')
+      }
     } catch(error){
         dispatch({type:'ERROR', payload: error.message})
     }
@@ -129,10 +137,12 @@ function UpdateUser() {
           <select className="form-select" id="rol" name="rol" value={state.rol} onChange={handleChange} disabled>
             <option value="" disabled>Selecciona un rol</option>
             <option value="DOCTOR">Odontólogo</option>
+            <option value="RECEPTIONIST">Recepcionista</option>
             <option value="INVENTORY_MANAGER">Gestor de Inventario</option>
+            <option value="PATIENT">Paciente</option>
           </select>
         </div>
-        <button type="submit" className="btn btn-success">Crear Usuario</button>
+        <button type="submit" className="btn btn-success">Actualizar Usuario</button>
       </form>
       {state.error && (
         <div className="alert alert-danger py-2 small text-center" role="alert">

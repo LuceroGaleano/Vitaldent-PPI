@@ -83,6 +83,7 @@ function ReceptionistPortal() {
         </ul>
 
         <div className="mt-4">
+          <button className="btn btn-outline-light w-100 mb-2" onClick={() => navigate('/receptionist/actualizarUsuario')}>Actualizar Perfil</button>
           <button className="btn btn-danger w-100" onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       </div>

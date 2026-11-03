@@ -97,6 +97,7 @@ function CreateUser() {
             <option value="" disabled>Selecciona un rol</option>
             <option value="DOCTOR">Odontólogo</option>
             <option value="INVENTORY_MANAGER">Gestor de Inventario</option>
+            <option value="RECEPTIONIST">Recepcionista</option>
           </select>
         </div>
         <button type="submit" className="btn btn-success">Crear Usuario</button>
