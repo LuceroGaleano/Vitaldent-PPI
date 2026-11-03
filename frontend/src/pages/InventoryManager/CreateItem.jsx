@@ -38,7 +38,7 @@ function CreateItem() {
         auth.user
       )
 
-      dispatch({type: 'LOANDING', payload: false})
+      dispatch({type: 'LOADING', payload: false})
       navigate('/inventoryManager/viewItems')
     } catch(error){
       dispatch({type: 'ERROR', payload: error.message})

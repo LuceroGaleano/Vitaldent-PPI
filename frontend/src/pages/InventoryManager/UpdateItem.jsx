@@ -10,7 +10,7 @@ function UpdateItem() {
   const { item } = useContext(ItemContext);
   
   const initialState ={
-    name: item?.nombre,
+    name: item?.name,
     stock:item?.stock,
     active: item?.active
   };
@@ -71,7 +71,7 @@ function UpdateItem() {
           <div className = "mb-3">
             <label className="form-label fw-bold">Activado/Desactivado</label>
             <select className="form-control" id="active" name="active" value={state.active} onChange = {handleChange} >
-              <option>Eligue uno</option>
+              <option>Elige uno</option>
               <option value="true">Activado</option>
               <option value="false">Desactivado</option>
             </select>

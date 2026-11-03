@@ -14,16 +14,16 @@ import com.odontologia.Vitaldent_PPI.domain.ports.out.AppointmentPort;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 
 @Service 
-public class CreateAppoitment {
+public class CreateAppointment {
     private final AppointmentPort appointmentPort;
     private final UserPort userPort;
 
-    public CreateAppoitment(AppointmentPort appointmentPort, UserPort userPort){
+    public CreateAppointment(AppointmentPort appointmentPort, UserPort userPort){
         this.appointmentPort = appointmentPort;
         this.userPort = userPort;
     }
 
-    public void createAppoitment(Appointment appointment) throws BusinessException{
+    public void createAppointment(Appointment appointment) throws BusinessException{
         if(appointment == null){
             throw new BusinessException("No se encuentra la cita");
         }

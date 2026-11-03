@@ -46,7 +46,7 @@ public class ReceptionistController {
     public ResponseEntity<AppointmentResponse> createAppointment(
             @Valid @RequestBody AppointmentRequest request) {
         Appointment appointment = toAppointment(request);
-        receptionistUseCase.createAppoitment(appointment);
+        receptionistUseCase.createAppointment(appointment);
         return ResponseEntity.status(HttpStatus.CREATED).body(toAppointmentResponse(appointment));
     }
 

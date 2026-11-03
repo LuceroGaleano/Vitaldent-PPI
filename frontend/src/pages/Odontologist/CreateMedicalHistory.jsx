@@ -66,22 +66,22 @@ function CreateMedicalHistory() {
         treatment ? (
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label className="form-label fw-bold">Razon de la consulta</label>
+              <label className="form-label fw-bold">Razón de la consulta</label>
               <input type="text" className="form-control" id="reason" name="reason" value={state.reason} onChange={handleChange} required />
             </div>
             <div className="mb-3">
-              <label className="form-label fw-bold">Nota clinical</label>
+              <label className="form-label fw-bold">Nota clínica</label>
               <input type="text" className="form-control" id="record" name="record" value={state.record} onChange={handleChange} required />
             </div>
             <div className="mb-3">
-              <label className="form-label fw-bold">Diagnostico</label>
+              <label className="form-label fw-bold">Diagnóstico</label>
               <textarea className="form-control" rows="4" id="diagnostic" name="diagnostic" value={state.diagnostic} onChange={handleChange} required></textarea>
             </div>
             <button type="submit" className="btn btn-success">Guardar Historial</button>
           </form>
         ) : (
           <div className="alert alert-warning">
-              Cita seleccionada con exito del paciente: {appointment.paciente}.<br/>
+              Cita seleccionada con éxito del paciente: {appointment.patient}.<br/>
               Ahora selecciona un tratamiento desde "Ver Tratamientos".
           </div>
         )

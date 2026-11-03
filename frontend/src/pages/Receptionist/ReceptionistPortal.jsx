@@ -1,11 +1,11 @@
 import { useContext } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { InoviceContext } from '../../context/InvoiceContext';
+import { InvoiceContext } from '../../context/InvoiceContext';
 
 function ReceptionistPortal() {
   const { setAuth } = useContext(AuthContext);
-  const {setInvoice} = useContext(InoviceContext);
+  const {setInvoice} = useContext(InvoiceContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -13,7 +13,7 @@ function ReceptionistPortal() {
     navigate('/');
   };
 
-    const goToInovice= (invoice) => {
+    const goToInvoice = (invoice) => {
       setInvoice(invoice);
       navigate('/receptionist/viewPayments');
     };
@@ -88,7 +88,7 @@ function ReceptionistPortal() {
       </div>
 
       <div className="flex-grow-1 p-5 overflow-auto" style={{ maxHeight: '100vh' }}>
-        <Outlet context={{onInvoiceClick: goToInovice, onCreatePayClick: goToCreatePay}}/>
+        <Outlet context={{onInvoiceClick: goToInvoice, onCreatePayClick: goToCreatePay}}/>
       </div>
     </div>
   );

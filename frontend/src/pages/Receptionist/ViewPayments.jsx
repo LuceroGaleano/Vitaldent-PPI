@@ -2,7 +2,7 @@ import { useContext, useEffect, useReducer, useState } from 'react';
 import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 import { AuthContext } from '../../context/AuthContext';
 import { getFetch } from '../../fetchs/GetFetch';
-import { InoviceContext } from '../../context/InvoiceContext';
+import { InvoiceContext } from '../../context/InvoiceContext';
 
 const initialState = {
   loading: true,
@@ -11,14 +11,14 @@ const initialState = {
 }
 
 function ViewPayments() {
-  const [resultados, setResultados] = useState([]);
+  const [paymentResults, setPaymentResults] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
-  const {invoice} = useContext(InoviceContext)
+  const {invoice} = useContext(InvoiceContext)
 
 
 
-    const agregarPagos = async () => {
+    const loadPayments = async () => {
       dispatch({type: 'LOADING', payload: true});
       try {
         const data = await getFetch(
@@ -26,14 +26,14 @@ function ViewPayments() {
           auth.user
         );
 
-        const pagos = data.map((pago) => ({
-          id: pago.payId,
-          fecha: pago.date,
-          monto: pago.amount,
-          metodo: pago.methodPayment
+        const payments = data.map((payment) => ({
+          id: payment.payId,
+          date: payment.date,
+          amount: payment.amount,
+          paymentMethod: payment.methodPayment
         }));
 
-        setResultados(pagos);
+        setPaymentResults(payments);
         dispatch({type: 'LOADING', payload: false});
       } catch(error) {
         dispatch({type: 'ERROR', payload: error.message});
@@ -41,7 +41,7 @@ function ViewPayments() {
     };
 
   useEffect(() => {
-    agregarPagos();
+    loadPayments();
   },[])
 
   return (
@@ -61,13 +61,13 @@ function ViewPayments() {
         )}
 
         <div className="row">
-          {resultados.length > 0 && resultados.map(res => (
-            <div className="col-md-6 mb-3" key={res.id}>
+          {paymentResults.length > 0 && paymentResults.map(payment => (
+            <div className="col-md-6 mb-3" key={payment.id}>
               <div className="card shadow-sm border-0">
                 <div className="card-body">
-                  <h5 className="card-title text-primary">Fecha: {res.fecha}</h5>
-                  <p className="card-text text-muted mb-1">Monto: ${Number(res.monto).toLocaleString('es-CO')}</p>
-                  <p className="card-text text-muted">Método de pago: {res.metodo}</p>
+                  <h5 className="card-title text-primary">Fecha: {payment.date}</h5>
+                  <p className="card-text text-muted mb-1">Monto: ${Number(payment.amount).toLocaleString('es-CO')}</p>
+                  <p className="card-text text-muted">Método de pago: {payment.paymentMethod}</p>
                 </div>
               </div>
             </div>

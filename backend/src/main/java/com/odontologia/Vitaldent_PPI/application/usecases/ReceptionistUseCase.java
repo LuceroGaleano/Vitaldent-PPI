@@ -15,7 +15,7 @@ import com.odontologia.Vitaldent_PPI.domain.models.Pay;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
 import com.odontologia.Vitaldent_PPI.domain.services.CancelAppointment;
 import com.odontologia.Vitaldent_PPI.domain.services.CloseAppointment;
-import com.odontologia.Vitaldent_PPI.domain.services.CreateAppoitment;
+import com.odontologia.Vitaldent_PPI.domain.services.CreateAppointment;
 import com.odontologia.Vitaldent_PPI.domain.services.CreatePatient;
 import com.odontologia.Vitaldent_PPI.domain.services.CreatePay;
 import com.odontologia.Vitaldent_PPI.domain.services.CreateUser;
@@ -30,7 +30,7 @@ import com.odontologia.Vitaldent_PPI.domain.services.ScheduleAppointment;
 
 @Service
 public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domain.ports.in.ReceptionistUseCase{
-    private final CreateAppoitment createAppoitment;
+    private final CreateAppointment createAppointment;
 
     private final CreatePatient createPatient;
 
@@ -58,7 +58,7 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
 
     private final CloseAppointment closeAppointment;
 
-    public ReceptionistUseCase(CreateAppoitment createAppoitment,
+    public ReceptionistUseCase(CreateAppointment createAppointment,
         CreatePatient createPatient,
         CreateUser createUser,
         CreatePay createPay,
@@ -73,7 +73,7 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
         CancelAppointment cancelAppointment,
         CloseAppointment closeAppointment
     ){
-        this.createAppoitment = createAppoitment;
+        this.createAppointment = createAppointment;
         this.createPatient = createPatient;
         this.createPay = createPay;
         this.deleteUser = deleteUser;
@@ -90,8 +90,8 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
     }
 
     @Override
-    public void createAppoitment(Appointment appointment) throws BusinessException{
-        createAppoitment.createAppoitment(appointment);
+    public void createAppointment(Appointment appointment) throws BusinessException{
+        createAppointment.createAppointment(appointment);
     }
 
     @Override 

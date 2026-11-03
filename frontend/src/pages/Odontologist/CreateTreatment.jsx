@@ -17,17 +17,17 @@ const initialState = {
 // Componente para crear un nuevo tratamiento
 function CreateTreatment() {
   const [items,setItems] = useState([]);
-  const[itemAgregados, setItemsAgregados] =useState([]);
+  const[selectedItems, setSelectedItems] =useState([]);
   const{auth} = useContext(AuthContext);
   const[state, dispatch] = useReducer(apiFetchReduce, initialState);
   const navigate = useNavigate();
 
-  const verItem = (item) => {
-    setItemsAgregados([...itemAgregados, item]);
+  const addSelectedItem = (item) => {
+    setSelectedItems([...selectedItems, item]);
   }
 
-  //Extrar items
-  const agregarItems = async() =>{
+  // Load items
+  const loadItems = async() =>{
       dispatch({type:'LOADING', payload: true});
   
       try{
@@ -37,20 +37,20 @@ function CreateTreatment() {
         )
          
         dispatch({type:'LOADING', payload: false})
-        const items = data.map((item) => ({
+        const mappedItems = data.map((item) => ({
           id: item.itemId,
-          nombre: item.name,
+          name: item.name,
           stock: item.stock,
           active: item.active
         }))
-        setItems(items)
+        setItems(mappedItems)
       } catch(error){
         dispatch({type:'ERROR', payload: error.message})
       }
     }
   
     useEffect(() => {
-      agregarItems();
+      loadItems();
     }, []);
 
   const handleChange = (e) => {
@@ -63,7 +63,7 @@ function CreateTreatment() {
   const handleSubmit = async(e) => {
     e.preventDefault();
     dispatch({type: 'LOADING', payload: true});
-    const itemsEntregar = itemAgregados.map((item) => ({
+    const itemsToSend = selectedItems.map((item) => ({
       itemId: item.id,
       quantityUsed: 1
     }))
@@ -73,7 +73,7 @@ function CreateTreatment() {
         { name: state.name,
           description: state.description,
           cost: state.cost,
-          treatmentItems: itemsEntregar
+          treatmentItems: itemsToSend
         },
         auth.user
       )
@@ -99,7 +99,7 @@ function CreateTreatment() {
           <input type="text" className="form-control" id="name" name="name" value={state.name} onChange = {handleChange} required />
         </div>
         <div className="mb-3">
-          <label className="form-label fw-bold">Descripcion del tratamiento</label>
+          <label className="form-label fw-bold">Descripción del tratamiento</label>
           <textarea type="text" className="form-control" id="description" name="description" value={state.description} onChange = {handleChange} required />
         </div>
         <div className="mb-3">
@@ -108,9 +108,9 @@ function CreateTreatment() {
         </div>
          <div className="mb-3">
           <label className="form-label fw-bold">Items Agregados</label>
-          {itemAgregados.length ?
-           itemAgregados.map(item => (
-            <p className="card-text text-muted mb-1" key={item.id}>{item.nombre}</p>
+          {selectedItems.length ?
+           selectedItems.map(item => (
+            <p className="card-text text-muted mb-1" key={item.id}>{item.name}</p>
            )): <p className="card-text text-muted mb-1">No hay items agregados</p>}
         </div>
         <button type="submit" className="btn btn-success">Crear</button>
@@ -123,11 +123,11 @@ function CreateTreatment() {
           <div className="col-md-6 mb-3" key={item.id}>
             <div className="card shadow-sm border-0">
               <div className="card-body">
-                <h5 className="card-title text-primary">{item.nombre}</h5>
+                <h5 className="card-title text-primary">{item.name}</h5>
                 <p className="card-text text-muted mb-1">Stock: {item.stock} unidades</p>
                 <button
                   className="btn btn-outline-success btn-sm"
-                  onClick={() => verItem(item)}
+                  onClick={() => addSelectedItem(item)}
                 >
                   Agregar
                 </button>

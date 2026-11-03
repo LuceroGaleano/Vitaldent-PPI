@@ -11,11 +11,11 @@ const initialState = {
 function DoctorAppointments() {
 
   const { onAppointmentClick } = useOutletContext();
-  const [citas, setCitas] = useState([]);
+  const [appointments, setAppointments] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
 
-  const agregarCita = useCallback(async() =>{
+  const loadAppointments = useCallback(async() =>{
     dispatch({type: 'LOADING', payload: true});
     try{
       const data = await getFetch(
@@ -25,23 +25,23 @@ function DoctorAppointments() {
       
         dispatch({type: 'LOADING', payload: false})
         console.log(data)
-        const citasDoctor = data.map((cita) => ({
-          id: cita.appointmentId,
-          paciente: cita.patientName ?? 'Sin paciente',
-          documento: cita.patientDocument ?? 'Sin documento',
-          fecha: cita.date + " - " + cita.hour,
-          status: cita.appointmentStatus
+        const mappedAppointments = data.map((appointment) => ({
+          id: appointment.appointmentId,
+          patient: appointment.patientName ?? 'Sin paciente',
+          document: appointment.patientDocument ?? 'Sin documento',
+          date: appointment.date + " - " + appointment.hour,
+          status: appointment.appointmentStatus
         }));
 
-        setCitas(citasDoctor)
+        setAppointments(mappedAppointments)
     } catch(error){
       dispatch({type: 'ERROR', payload: error.message})
     } 
   }, [auth.document, auth.user]);
 
   useEffect(() => {
-    agregarCita();
-  }, [agregarCita]);
+    loadAppointments();
+  }, [loadAppointments]);
 
   return (
     <div>
@@ -52,17 +52,17 @@ function DoctorAppointments() {
         </div>
       )}
       <div className="list-group">
-        {citas.map(cita => (
-          <div className="list-group-item p-3 shadow-sm mb-2 border-0 rounded" key={cita.id}>
-            <h5 className="mb-1 text-primary">Paciente: {cita.paciente}</h5>
-            <p className="mb-1 text-muted">Documento: {cita.documento}</p>
-            <small className="fw-bold text-secondary">{cita.fecha}</small>
+        {appointments.map(appointment => (
+          <div className="list-group-item p-3 shadow-sm mb-2 border-0 rounded" key={appointment.id}>
+            <h5 className="mb-1 text-primary">Paciente: {appointment.patient}</h5>
+            <p className="mb-1 text-muted">Documento: {appointment.document}</p>
+            <small className="fw-bold text-secondary">{appointment.date}</small>
             <div className="mt-2">
-              {cita.status === 'COMPLETED' ? (
-                <p className="card-text text-muted mb-1" key={cita.id}>Cita atendida</p>
+              {appointment.status === 'COMPLETED' ? (
+                <p className="card-text text-muted mb-1" key={appointment.id}>Cita atendida</p>
               ) :<button
                     className="btn btn-outline-success btn-sm"
-                    onClick={() => onAppointmentClick(cita)}
+                    onClick={() => onAppointmentClick(appointment)}
                     >
                     Crear Historial
                   </button>}

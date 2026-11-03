@@ -9,7 +9,7 @@ const initialState = {
   document: ''
 }
 function ViewMedicalHistory() {
-  const [resultados, setResultados] = useState([]);
+  const [results, setResults] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
 
@@ -31,14 +31,14 @@ function ViewMedicalHistory() {
       );
 
       dispatch({type: 'LOADING', payload: false});
-      const historiales = data.map((record) => ({
+      const clinicalHistory = data.map((record) => ({
         id: record.clinicalRecordId,
-        fecha: record.date,
-        razon: record.reasonForConsultation,
-        observaciones: record.diagnostic
+        date: record.date,
+        reason: record.reasonForConsultation,
+        diagnosis: record.diagnostic
       }));
 
-      setResultados(historiales);
+      setResults(clinicalHistory);
     } catch(error) {
       dispatch({type: 'ERROR', payload: error.message});
     }
@@ -59,13 +59,13 @@ function ViewMedicalHistory() {
         <button type="submit" className="btn btn-primary">Buscar</button>
       </form>
 
-      {resultados.length > 0 && (
+      {results.length > 0 && (
         <div className="list-group">
-          {resultados.map(res => (
-            <div className="list-group-item shadow-sm mb-2 border-0 rounded" key={res.id}>
-              <h6 className="text-success">Fecha: {res.fecha}</h6>
-              <p className="mb-2">Razon de la consulta: {res.razon}</p>
-              <p className="mb-2">Diagnostico: {res.observaciones}</p>
+          {results.map(record => (
+            <div className="list-group-item shadow-sm mb-2 border-0 rounded" key={record.id}>
+              <h6 className="text-success">Fecha: {record.date}</h6>
+              <p className="mb-2">Razón de la consulta: {record.reason}</p>
+              <p className="mb-2">Diagnóstico: {record.diagnosis}</p>
             </div>
           ))}
         </div>

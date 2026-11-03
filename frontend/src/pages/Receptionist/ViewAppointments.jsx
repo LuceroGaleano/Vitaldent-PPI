@@ -11,11 +11,11 @@ const initialState = {
 }
 function ViewAppointments() {
 
-    const[citas, setCitas] = useState([]);
+    const[appointments, setAppointments] = useState([]);
     const [state, dispatch] = useReducer(apiFetchReduce, initialState);
     const {auth} = useContext(AuthContext);
 
-    const cerrarCita = async (id) => {
+    const closeAppointment = async (id) => {
         dispatch({ type: 'LOADING', payload: true });
 
         try {
@@ -33,7 +33,7 @@ function ViewAppointments() {
     }
 
   
-    const agregarCitas = async () => {
+    const loadAppointments = async () => {
       dispatch({type: 'LOADING', payload: true});
       try {
         const data = await getFetch(
@@ -42,22 +42,22 @@ function ViewAppointments() {
         );
 
         dispatch({type: 'LOADING', payload: false});
-        const citasResultado = data.map((cita) => ({
-          id: cita.appointmentId,
-          paciente: cita.patientName ?? 'Sin paciente',
-          doctor: cita.doctorName,
-          fecha: cita.date + " - " + cita.hour,
-          status: cita.appointmentStatus
+        const mappedAppointments = data.map((appointment) => ({
+          id: appointment.appointmentId,
+          patient: appointment.patientName ?? 'Sin paciente',
+          doctor: appointment.doctorName,
+          date: appointment.date + " - " + appointment.hour,
+          status: appointment.appointmentStatus
         }));
 
-        setCitas(citasResultado);
+        setAppointments(mappedAppointments);
       } catch(error) {
         dispatch({type: 'ERROR', payload: error.message});
       }
     };
 
      useEffect(() => {
-       agregarCitas();
+       loadAppointments();
      }, []);
 
   return (
@@ -69,16 +69,16 @@ function ViewAppointments() {
             </div>
           )}
       <div className="row">
-        {citas.map(cita => (
-          <div className="col-md-6 mb-3" key={cita.id}>
+        {appointments.map(appointment => (
+          <div className="col-md-6 mb-3" key={appointment.id}>
             <div className="card shadow-sm border-0">
               <div className="card-body">
-                <h5 className="card-title text-primary">{cita.paciente}</h5>
-                <p className="card-text text-muted mb-1">Doctor: {cita.doctor}</p>
-                <p className="card-text text-muted">{cita.fecha}</p>
-                <p className="card-text text-muted">{cita.status}</p>
-                {cita.status == 'AVAILABLE' ? (
-                  <button className="btn btn-outline-danger btn-sm" onClick={() => cerrarCita(cita.id)}>Cancelar</button>
+                <h5 className="card-title text-primary">{appointment.patient}</h5>
+                <p className="card-text text-muted mb-1">Doctor: {appointment.doctor}</p>
+                <p className="card-text text-muted">{appointment.date}</p>
+                <p className="card-text text-muted">{appointment.status}</p>
+                {appointment.status == 'AVAILABLE' ? (
+                  <button className="btn btn-outline-danger btn-sm" onClick={() => closeAppointment(appointment.id)}>Cancelar</button>
                 ) : null}
               </div>
             </div>

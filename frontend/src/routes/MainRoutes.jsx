@@ -4,9 +4,9 @@ import Login from '../pages/Login'
 import ReceptionistPortal from '../pages/Receptionist/ReceptionistPortal'
 import OdontologistPortal from '../pages/Odontologist/OdontologistPortal'
 import InventoryManagerPortal from '../pages/InventoryManager/InventoryManagerPortal'
-import CitasDisponibles from '../pages/Patient/AppointmentAviable'
-import HistorialClinico from '../pages/Patient/MedicalHistory'
-import MisCitas from '../pages/Patient/MyAppointments'
+import AvailableAppointments from '../pages/Patient/AppointmentAviable'
+import PatientClinicalHistory from '../pages/Patient/MedicalHistory'
+import MyAppointments from '../pages/Patient/MyAppointments'
 import PatientPortal from '../pages/Patient/PatientPortal'
 import DoctorAppointments from '../pages/Odontologist/DoctorAppointments'
 import CreateMedicalHistory from '../pages/Odontologist/CreateMedicalHistory'
@@ -36,10 +36,10 @@ export const MainRoutes = () => {
     <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/patient" element={<PatientPortal />}>
-            <Route indext element = {<Navigate to = "citasDisponibles" replace/>}/>
-            <Route path="citasDisponibles" element={<CitasDisponibles />} />
-            <Route path="misCitas" element={<MisCitas />} />
-            <Route path="historialMedico" element={<HistorialClinico />} />
+            <Route index element = {<Navigate to = "citasDisponibles" replace/>}/>
+            <Route path="citasDisponibles" element={<AvailableAppointments />} />
+            <Route path="misCitas" element={<MyAppointments />} />
+            <Route path="historialMedico" element={<PatientClinicalHistory />} />
         </Route>
         <Route path="/receptionist" element={
           <InvoiceProvider>
@@ -81,9 +81,9 @@ export const MainRoutes = () => {
             <Route path="updateItem" element={<UpdateItem />} />
         </Route>
 
-        <Route path="/citasDisponibles" element={<CitasDisponibles />} />
-        <Route path="/historialMedico" element={<HistorialClinico />} />
-        <Route path="/misCitas" element={<MisCitas />} />
+        <Route path="/citasDisponibles" element={<AvailableAppointments />} />
+        <Route path="/historialMedico" element={<PatientClinicalHistory />} />
+        <Route path="/misCitas" element={<MyAppointments />} />
 
         <Route path="/*" element={<Navigate to = '/'/>}/>
     </Routes>

@@ -8,7 +8,7 @@ import com.odontologia.Vitaldent_PPI.domain.models.ClinicalRecord;
 public interface ClinicalRecordPort {
     //find
     public ClinicalRecord findById(UUID id);
-    public ClinicalRecord findByAppointmentID(UUID idAppoitment);
+    public ClinicalRecord findByAppointmentID(UUID idAppointment);
     public List<ClinicalRecord> findByDoctorDocument(String doctorDocument);
     public List<ClinicalRecord> findByPatientDocument(String patientDocument);
 

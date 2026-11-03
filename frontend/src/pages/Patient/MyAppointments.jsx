@@ -10,28 +10,28 @@ const initialState = {
   error: null
 }
 
-export function MisCitas() {
-  const [misCitas, setMisCitas] = useState([]);
+export function MyAppointments() {
+  const [myAppointments, setMyAppointments] = useState([]);
     const { auth } = useContext(AuthContext);
     const [state, dispatch] = useReducer(apiFetchReduce, initialState);
 
-  const agregarMisCitas = async() =>{
-    dispatch({type: 'LOANDING', payload:true})
+  const loadMyAppointments = async() =>{
+    dispatch({type: 'LOADING', payload:true})
     try{
       const data = await getFetch(
         'http://localhost:8080/patient/appointment',
         auth.user
       );
-      dispatch({type: 'LOANDING', payload: false})
+      dispatch({type: 'LOADING', payload: false})
 
-      const citasMapeadas = data.map((item) => ({
+      const mappedAppointments = data.map((item) => ({
         id: item.appointmentId,
         doctor: item.doctorName,
-        fecha: item.date + " " + item.hour,
+        date: item.date + " " + item.hour,
         status: item.appointmentStatus
       }));
 
-      setMisCitas(citasMapeadas);
+      setMyAppointments(mappedAppointments);
     } catch (error){
       dispatch({
         type: 'ERROR',
@@ -41,11 +41,11 @@ export function MisCitas() {
   }
   
   useEffect(() => {
-    agregarMisCitas();
+    loadMyAppointments();
   }, []);
 
-  const handleCancelar = async (id) => {
-    dispatch({type: 'LOANDING', payload:true})
+  const cancelAppointment = async (id) => {
+    dispatch({type: 'LOADING', payload:true})
     try{
       await patchFetch(
         `http://localhost:8080/patient/appointment/${id}/cancel`,
@@ -53,13 +53,13 @@ export function MisCitas() {
       )
 
 
-     setMisCitas((citasActuales) =>
-          citasActuales.filter((cita) => cita.id !== id)
+     setMyAppointments((currentAppointments) =>
+          currentAppointments.filter((appointment) => appointment.id !== id)
       );
     } catch (error) {
             dispatch({ type: 'ERROR', payload: error.message });
     } finally {
-      dispatch({ type: 'LOANDING', payload: false });
+      dispatch({ type: 'LOADING', payload: false });
     }
   };
 
@@ -72,16 +72,16 @@ export function MisCitas() {
               {state.error}
             </div>
           )}
-        {misCitas.map(cita => (
-          <div className="list-group-item d-flex justify-content-between align-items-center p-3 shadow-sm mb-2 border-0 rounded" key={cita.id}>
+        {myAppointments.map(appointment => (
+          <div className="list-group-item d-flex justify-content-between align-items-center p-3 shadow-sm mb-2 border-0 rounded" key={appointment.id}>
             <div>
-              <h5 className="mb-1 text-primary">{cita.doctor}</h5>
-              <small className="text-muted">{cita.fecha}</small>
+              <h5 className="mb-1 text-primary">{appointment.doctor}</h5>
+              <small className="text-muted">{appointment.date}</small>
             </div>
-            {cita.status === 'COMPLETED' ? (
+            {appointment.status === 'COMPLETED' ? (
                <p className="card-text text-muted">Cita Atendida</p>
             ):(
-              <button className="btn btn-outline-danger" onClick={() => handleCancelar(cita.id)}>Cancelar</button>
+              <button className="btn btn-outline-danger" onClick={() => cancelAppointment(appointment.id)}>Cancelar</button>
             )}
           </div>
         ))}
@@ -90,4 +90,4 @@ export function MisCitas() {
   );
 }
 
-export default MisCitas;
+export default MyAppointments;

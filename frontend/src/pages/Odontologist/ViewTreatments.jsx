@@ -15,25 +15,25 @@ function ViewTreatments() {
     const { onTreatmentClick } = useOutletContext();
     const{appointment} = useContext(AppointmentContext);
     const{treatment} = useContext(TreatmentContext);
-    const [tratamientos, setTratamientos] = useState([]);
+    const [treatments, setTreatments] = useState([]);
     const [state, dispatch] = useReducer(apiFetchReduce, initialState);
     const {auth} = useContext(AuthContext);
 
-    const agregarTratamientos = async() =>{
+    const loadTreatments = async() =>{
       dispatch({type: 'LOADING', payload: true});
       try{
         const data = await getFetch('http://localhost:8080/doctor/treatment', auth.user);
         
         dispatch({type: 'LOADING', payload: false});
-        const tratamientos = data.map((tratamiento) => ({
-          id: tratamiento.treatamentId, 
-          nombre: tratamiento.name,
-          costo: tratamiento.cost,
-          descripcion: tratamiento.description,
-          items: tratamiento.treatmentItems
+        const mappedTreatments = data.map((treatment) => ({
+          id: treatment.treatamentId, 
+          name: treatment.name,
+          cost: treatment.cost,
+          description: treatment.description,
+          items: treatment.treatmentItems
         }));
 
-        setTratamientos(tratamientos);
+        setTreatments(mappedTreatments);
       } catch(error){
         dispatch({type: 'ERROR', payload: error.message});
       }
@@ -41,7 +41,7 @@ function ViewTreatments() {
 
 
   useEffect(() => {
-    agregarTratamientos();
+    loadTreatments();
   }, []);
 
   return (
@@ -53,22 +53,22 @@ function ViewTreatments() {
         </div>
       )}
       <div className="row">
-        {tratamientos.map(t => (
-          <div className="col-md-6 mb-3" key={t.id}>
+        {treatments.map(treatmentRecord => (
+          <div className="col-md-6 mb-3" key={treatmentRecord.id}>
             <div className="card shadow-sm border-0">
               <div className="card-body">
-                <h5 className="card-title text-primary">{t.nombre}</h5>
-                <p className="card-text text-muted">Descripcion: {t.descripcion}</p>
-                <p className="card-text text-muted">Costo: ${t.costo}</p>
+                <h5 className="card-title text-primary">{treatmentRecord.name}</h5>
+                <p className="card-text text-muted">Descripción: {treatmentRecord.description}</p>
+                <p className="card-text text-muted">Costo: ${treatmentRecord.cost}</p>
                 <p className="card-text text-muted fw-bold">Items:</p>
-                {t.items.map((item) =>(
+                {treatmentRecord.items.map((item) =>(
                   <p className="card-text text-muted mb-1" key={item.itemId}>{item.itemName}</p>
                 ))}
                 {appointment && !treatment? (
                   <div className = "mt-2">
                     <button
                       className="btn btn-outline-success btn-sm"
-                      onClick={() => onTreatmentClick(t)}
+                      onClick={() => onTreatmentClick(treatmentRecord)}
                       >
                       Agregar Historial
                     </button>

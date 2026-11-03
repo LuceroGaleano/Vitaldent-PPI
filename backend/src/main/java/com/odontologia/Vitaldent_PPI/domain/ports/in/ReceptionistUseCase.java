@@ -13,7 +13,7 @@ import com.odontologia.Vitaldent_PPI.domain.models.Pay;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
 
 public interface ReceptionistUseCase{
-    void createAppoitment(Appointment appointment) throws BusinessException;
+    void createAppointment(Appointment appointment) throws BusinessException;
 
     void createPatient(Patient patient) throws BusinessException;
 

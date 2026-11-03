@@ -16,8 +16,8 @@ function ViewItems() {
   const{auth} = useContext(AuthContext);
   const[state, dispatch] = useReducer(apiFetchReduce, initialState);
 
-  const agregarItems = async() =>{
-    dispatch({type:'LOADING', paylaod: true});
+  const loadItems = async() =>{
+    dispatch({type:'LOADING', payload: true});
 
     try{
       const data = await getFetch(
@@ -25,21 +25,21 @@ function ViewItems() {
         auth.user
       )
        
-      dispatch({type:'LOADING', paylaod: false})
-      const items = data.map((item) => ({
+      dispatch({type:'LOADING', payload: false})
+      const mappedItems = data.map((item) => ({
         id: item.itemId,
-        nombre: item.name,
+        name: item.name,
         stock: item.stock,
         active: item.active
       }))
-      setItems(items)
+      setItems(mappedItems)
     } catch(error){
-      dispatch({type:'ERROR', paylaod: error})
+      dispatch({type:'ERROR', payload: error.message})
     }
   }
 
   useEffect(() => {
-    agregarItems();
+    loadItems();
   }, []);
 
   return (
@@ -55,7 +55,7 @@ function ViewItems() {
           <div className="col-md-6 mb-3" key={item.id}>
             <div className="card shadow-sm border-0">
               <div className="card-body">
-                <h5 className="card-title text-primary">{item.nombre}</h5>
+                <h5 className="card-title text-primary">{item.name}</h5>
                 <p className="card-text text-muted mb-1">Stock: {item.stock} unidades</p>
                 <button
                   className="btn btn-outline-success btn-sm"

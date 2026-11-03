@@ -1,6 +1,6 @@
 import { useContext, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
-import { InoviceContext } from "../../context/InvoiceContext";
+import { InvoiceContext } from "../../context/InvoiceContext";
 import { AuthContext } from "../../context/AuthContext";
 import { apiFetchReduce } from "../../reduces/ApiFetchReduce";
 import { postFetch } from "../../fetchs/PostFetch";
@@ -12,7 +12,7 @@ const initialState = {
   error: null
 };
 function CreatePayment() {
-  const {invoice} = useContext(InoviceContext)
+  const {invoice} = useContext(InvoiceContext)
     const[state, dispatch] = useReducer(apiFetchReduce, initialState)
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -64,7 +64,7 @@ function CreatePayment() {
               <input type="text" className="form-control" id="amount" name="amount" value={state.amount} onChange={handleChange} required />
             </div>
             <div className="mb-3">
-              <label className="form-label fw-bold">Metodo de pago</label>
+              <label className="form-label fw-bold">Método de pago</label>
               <select className="form-select" id="methodPayment" name="methodPayment" value={state.methodPayment} onChange={handleChange} required>
                 <option value="" disabled>Selecciona el método de pago</option>
                 <option value="CARD">Card</option>

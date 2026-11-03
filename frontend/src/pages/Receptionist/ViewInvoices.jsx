@@ -10,9 +10,9 @@ const initialState = {
   document: ''
 }
 
-function ViewInovices() {
+function ViewInvoices() {
   const { onInvoiceClick, onCreatePayClick } = useOutletContext();
-  const [resultados, setResultados] = useState([]);
+  const [invoices, setInvoices] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
 
@@ -35,14 +35,14 @@ function ViewInovices() {
 
       dispatch({type: 'LOADING', payload: false});
       
-      const facturas = data.map((factura) => ({
-        id: factura.invoiceId,
-        amount: factura.total,
-        date: factura.date,
-        isPaid: factura.isPaid
+      const mappedInvoices = data.map((invoice) => ({
+        id: invoice.invoiceId,
+        amount: invoice.total,
+        date: invoice.date,
+        isPaid: invoice.isPaid
       }));
 
-      setResultados(facturas);
+      setInvoices(mappedInvoices);
     } catch(error) {
       dispatch({type: 'ERROR', payload: error.message});
     }
@@ -63,9 +63,9 @@ function ViewInovices() {
         <button type="submit" className="btn btn-primary">Buscar</button>
       </form>
 
-      {resultados.length > 0 && (
+      {invoices.length > 0 && (
         <div className="list-group">
-          {resultados.map(res => (
+          {invoices.map(res => (
             <div className="list-group-item shadow-sm mb-2 border-0 rounded" key={res.id}>
               <h6 className="text-success">Fecha: {res.date}</h6>
               <p className="mb-2">Costo: ${res.amount.toLocaleString('es-CO')}</p>
@@ -100,4 +100,4 @@ function ViewInovices() {
   );
 }
 
-export default ViewInovices;
+export default ViewInvoices;

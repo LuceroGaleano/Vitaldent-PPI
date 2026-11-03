@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { InoviceContext } from './InvoiceContext';
+import { InvoiceContext } from './InvoiceContext';
 
 
 export const InvoiceProvider = ({children}) =>{
     const [invoice, setInvoice] = useState(null);
 
     return (
-        <InoviceContext.Provider value={{ invoice, setInvoice }}>
+        <InvoiceContext.Provider value={{ invoice, setInvoice }}>
         {children}
-        </InoviceContext.Provider>
+        </InvoiceContext.Provider>
     );
 }

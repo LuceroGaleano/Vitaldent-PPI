@@ -11,13 +11,13 @@ const initialState = {
 };
 
 
-export function CitasDisponibles() {
-  const [citas, setCitas] = useState([]);
+export function AvailableAppointments() {
+  const [appointments, setAppointments] = useState([]);
   const { auth } = useContext(AuthContext);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
 
-  const agregarCitas = async () => {
-    dispatch({ type: 'LOANDING', payload: true });
+  const loadAvailableAppointments = async () => {
+    dispatch({ type: 'LOADING', payload: true });
 
     try {
       const data = await getFetch(
@@ -25,15 +25,15 @@ export function CitasDisponibles() {
         auth.user
       );
 
-      dispatch({ type: 'LOANDING', payload: false });
+      dispatch({ type: 'LOADING', payload: false });
 
-      const citasMapeadas = data.map((item) => ({
+      const mappedAppointments = data.map((item) => ({
         id: item.appointmentId,
         doctor: item.doctorName,
-        fecha: item.date + " " + item.hour
+        date: item.date + " " + item.hour
       }));
 
-      setCitas(citasMapeadas);
+      setAppointments(mappedAppointments);
     } catch (error) {
       dispatch({
         type: 'ERROR',
@@ -43,11 +43,11 @@ export function CitasDisponibles() {
   };
 
   useEffect(() => {
-    agregarCitas();
+    loadAvailableAppointments();
   }, []);
 
-    const handleAgendar = async (id) => {
-        dispatch({ type: 'LOANDING', payload: true });
+    const scheduleAppointment = async (id) => {
+        dispatch({ type: 'LOADING', payload: true });
 
         try {
             await patchFetch(
@@ -55,13 +55,13 @@ export function CitasDisponibles() {
             auth.user
             );
 
-            setCitas((citasActuales) =>
-              citasActuales.filter((cita) => cita.id !== id)
+            setAppointments((currentAppointments) =>
+              currentAppointments.filter((appointment) => appointment.id !== id)
             );
         } catch (error) {
             dispatch({ type: 'ERROR', payload: error.message });
         } finally {
-            dispatch({ type: 'LOANDING', payload: false });
+            dispatch({ type: 'LOADING', payload: false });
         }
     };
   return (
@@ -73,13 +73,13 @@ export function CitasDisponibles() {
               {state.error}
             </div>
           )}
-        {citas.map(cita => (
-          <div className="col-md-6 mb-3" key={cita.id}>
+        {appointments.map(appointment => (
+          <div className="col-md-6 mb-3" key={appointment.id}>
             <div className="card shadow-sm border-0">
               <div className="card-body">
-                <h5 className="card-title text-primary">{cita.doctor}</h5>
-                <p className="card-text text-muted">{cita.fecha}</p>
-                <button className="btn btn-success" onClick={() => handleAgendar(cita.id)}>Agendar</button>
+                <h5 className="card-title text-primary">{appointment.doctor}</h5>
+                <p className="card-text text-muted">{appointment.date}</p>
+                <button className="btn btn-success" onClick={() => scheduleAppointment(appointment.id)}>Agendar</button>
               </div>
             </div>
           </div>
@@ -89,4 +89,4 @@ export function CitasDisponibles() {
   );
 }
 
-export default CitasDisponibles;
+export default AvailableAppointments;

@@ -9,13 +9,13 @@ const initialState = {
   error: null
 };
 
-export function HistorialClinico() {
-  const [historial, setHistorial] = useState([]);
+export function PatientClinicalHistory() {
+  const [clinicalHistory, setClinicalHistory] = useState([]);
   const { auth } = useContext(AuthContext);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
 
-  const agregarHistoriales = async () =>{
-    dispatch({type: 'LOANDING', payload: true});
+  const loadClinicalHistory = async () =>{
+    dispatch({type: 'LOADING', payload: true});
 
     try{
       const data = await getFetch(
@@ -23,13 +23,13 @@ export function HistorialClinico() {
         auth.user
       );
 
-      dispatch({type: 'LOANDING', payload: false});
-      const historiasMapeadas = data.map((item) => ({
+      dispatch({type: 'LOADING', payload: false});
+      const mappedHistory = data.map((item) => ({
         id: item.clinicalRecordId,
-        fecha: item.date,
-        descripcion: item.diagnostic
+        date: item.date,
+        description: item.diagnostic
       }));
-      setHistorial(historiasMapeadas);
+      setClinicalHistory(mappedHistory);
     } catch (error) {
       dispatch({
         type: 'ERROR',
@@ -38,8 +38,8 @@ export function HistorialClinico() {
     }
   }
   useEffect(() => {
-    agregarHistoriales();
-  }, [historial]);
+    loadClinicalHistory();
+  }, [clinicalHistory]);
 
   return (
     <div>
@@ -49,11 +49,11 @@ export function HistorialClinico() {
            {state.error}
         </div>
       )}
-      {historial.map(item => (
+      {clinicalHistory.map(item => (
         <div className="card border-success mb-3 shadow-sm" key={item.id}>
-          <div className="card-header bg-success text-white">Fecha: {item.fecha}</div>
+          <div className="card-header bg-success text-white">Fecha: {item.date}</div>
           <div className="card-body">
-            <p className="card-text">{item.descripcion}</p>
+            <p className="card-text">{item.description}</p>
           </div>
         </div>
       ))}
@@ -61,4 +61,4 @@ export function HistorialClinico() {
   );
 }
 
-export default HistorialClinico;
+export default PatientClinicalHistory;

@@ -1,3 +1,3 @@
 import { createContext } from "react";
 
-export const InoviceContext = createContext();
+export const InvoiceContext = createContext();

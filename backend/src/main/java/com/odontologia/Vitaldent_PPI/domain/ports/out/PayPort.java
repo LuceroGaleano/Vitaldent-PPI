@@ -8,7 +8,7 @@ import com.odontologia.Vitaldent_PPI.domain.models.Pay;
 public interface PayPort {
     //find
     public Pay findById(UUID id);
-    public List<Pay> findByInvoiceId(UUID idInovice);
+    public List<Pay> findByInvoiceId(UUID idInvoice);
     
     //exists
     public boolean existsById(UUID id);
