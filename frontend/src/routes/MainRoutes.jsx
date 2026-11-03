@@ -30,16 +30,19 @@ import { ItemProvider } from '../context/ItemProvider'
 import { AppointmentProvider } from '../context/AppointmentProvider'
 import { TreatmentProvider } from '../context/TreatmentProvider'
 import { InvoiceProvider } from '../context/InvoiceProvider'
+import UpdateUser from '../pages/UpdateUser'
 
 export const MainRoutes = () => {
   return (
     <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/actualizarUsuario" element={<Navigate to="/patient/actualizarUsuario" replace />} />
         <Route path="/patient" element={<PatientPortal />}>
             <Route index element = {<Navigate to = "citasDisponibles" replace/>}/>
             <Route path="citasDisponibles" element={<AvailableAppointments />} />
             <Route path="misCitas" element={<MyAppointments />} />
             <Route path="historialMedico" element={<PatientClinicalHistory />} />
+            <Route path="actualizarUsuario" element={<UpdateUser />} />
         </Route>
         <Route path="/receptionist" element={
           <InvoiceProvider>
@@ -57,6 +60,7 @@ export const MainRoutes = () => {
             <Route path="viewPayments" element={<ViewPayments />} />
             <Route path="viewInvoices" element={<ViewInvoices />} />
             <Route path="managePatientAppointments" element={<ManagePatientAppointments />} />
+            <Route path="actualizarUsuario" element={<UpdateUser />} />
         </Route>
         <Route path="/odontologist" element=
         {<AppointmentProvider>
@@ -70,6 +74,7 @@ export const MainRoutes = () => {
             <Route path="searchMedicalHistory" element={<SearchMedicalHistory />} />
             <Route path="createTreatment" element={<CreateTreatment />} />
             <Route path="viewTreatments" element={<ViewTreatments />} />
+            <Route path="actualizarUsuario" element={<UpdateUser />} />
         </Route>
         <Route path="/inventoryManager" element={
             <ItemProvider>
@@ -79,6 +84,7 @@ export const MainRoutes = () => {
             <Route path="viewItems" element={<ViewItems />} />
             <Route path="createItem" element={<CreateItem />} />
             <Route path="updateItem" element={<UpdateItem />} />
+            <Route path="actualizarUsuario" element={<UpdateUser />} />
         </Route>
 
         <Route path="/citasDisponibles" element={<AvailableAppointments />} />

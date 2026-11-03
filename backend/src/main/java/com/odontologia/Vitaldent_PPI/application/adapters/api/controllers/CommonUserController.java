@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +29,7 @@ public class CommonUserController {
         this.userPort = userPort;
     }
 
-    @PutMapping("/profile")
+    @PutMapping ("/profile")
     public ResponseEntity<UserResponse> updateProfile(@Valid @RequestBody UserRequest request) {
         User authenticatedUser = getAuthenticatedUser();
         User user = toUser(request);
@@ -37,6 +39,11 @@ public class CommonUserController {
         user.setPatientId(authenticatedUser.getPatientId());
         commonUserUseCase.updateUser(user, authenticatedUser.getUserId());
         return ResponseEntity.ok(toUserResponse(user));
+    }
+
+    @GetMapping("/user/{document}")
+    public ResponseEntity<UserResponse> findUserByDodcument(@PathVariable String document) {
+        return ResponseEntity.ok(toUserResponse(commonUserUseCase.findUserByDocument(document)));
     }
 
     private User getAuthenticatedUser() {
@@ -68,7 +75,7 @@ public class CommonUserController {
 
     private UserResponse toUserResponse(User user) {
         return new UserResponse(
-                user.getUserId(), user.getUserName(), user.getFullName(), user.getDocument(),
+                user.getUserId(), user.getUserName(), user.getFullName(), user.getPassword(), user.getDocument(),
                 user.getEmail(), user.getPhone(), user.getAddress(), user.getBirthDate(),
                 user.getRol(), user.getPatientId());
     }

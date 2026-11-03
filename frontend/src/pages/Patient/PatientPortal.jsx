@@ -45,12 +45,11 @@ export default function PatientPortal() {
         </ul>
 
         <div className="mt-auto pt-5">
-          <button className="btn btn-outline-light w-100 mb-2">Actualizar Perfil</button>
+          <button className="btn btn-outline-light w-100 mb-2" onClick={() => navigate('/patient/actualizarUsuario')}>Actualizar Perfil</button>
           <button className="btn btn-danger w-100" onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       </div>
 
-      {/* Contenido Dinámico */}
       <div className="flex-grow-1 p-5">
         <Outlet />
       </div>

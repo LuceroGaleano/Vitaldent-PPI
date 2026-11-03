@@ -17,6 +17,13 @@ export const apiFetchReduce = (state, action = {}) => {
         loading: false,
         error: action.payload
       };
+    case 'SET_USER':
+      return{
+        ...state,
+        ...action.payload,
+        loanding: false,
+        errro: null
+      }
     default:
       return state;
   }

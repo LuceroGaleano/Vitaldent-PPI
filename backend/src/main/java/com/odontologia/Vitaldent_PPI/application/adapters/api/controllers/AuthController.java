@@ -33,4 +33,5 @@ public class AuthController {
         String role = jwtUtil.extractRole(token);
         return ResponseEntity.ok(new LoginResponse(token, document, role));
     }
+
 }
