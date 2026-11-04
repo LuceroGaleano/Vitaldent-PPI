@@ -1,6 +1,6 @@
 package com.odontologia.Vitaldent_PPI.application.adapters.api.controllers;
 
-import com.odontologia.Vitaldent_PPI.application.adapters.api.request.UserRequest;
+import com.odontologia.Vitaldent_PPI.application.adapters.api.request.UserUpdateRequest;
 import com.odontologia.Vitaldent_PPI.application.adapters.api.response.UserResponse;
 import com.odontologia.Vitaldent_PPI.application.usecases.CommonUserUseCase;
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -30,7 +30,7 @@ public class CommonUserController {
     }
 
     @PutMapping ("/profile")
-    public ResponseEntity<UserResponse> updateProfile(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> updateProfile(@Valid @RequestBody UserUpdateRequest request) {
         User authenticatedUser = getAuthenticatedUser();
         User user = toUser(request);
         user.setUserId(authenticatedUser.getUserId());
@@ -58,7 +58,7 @@ public class CommonUserController {
         return user;
     }
 
-    private User toUser(UserRequest request) {
+    private User toUser(UserUpdateRequest request) {
         User user = new User();
         user.setUserName(request.getUserName());
         user.setPassword(request.getPassword());
@@ -75,7 +75,7 @@ public class CommonUserController {
 
     private UserResponse toUserResponse(User user) {
         return new UserResponse(
-                user.getUserId(), user.getUserName(), user.getFullName(), user.getPassword(), user.getDocument(),
+                user.getUserId(), user.getUserName(), user.getFullName(), user.getDocument(),
                 user.getEmail(), user.getPhone(), user.getAddress(), user.getBirthDate(),
                 user.getRol(), user.getPatientId());
     }

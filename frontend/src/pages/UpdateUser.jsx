@@ -71,12 +71,12 @@ function UpdateUser() {
           userName: state.userName,
           fullName: state.fullName,
           document: state.document,
-          password: state.password,
           email: state.email,
           phone: state.phone,
           address: state.address,
           birthDate: state.birthDate,
-          rol: state.rol
+          rol: state.rol,
+          ...(state.password ? { password: state.password } : {})
         },
         auth.user
       )
@@ -125,8 +125,8 @@ function UpdateUser() {
           <input type="text" className="form-control" id="userName" name="userName" value={state.userName} onChange={handleChange} required />
         </div>
         <div className="mb-3">
-          <label className="form-label fw-bold">Password</label>
-          <input type="password" className="form-control" id="password" name="password" value={state.password} onChange={handleChange} required />
+          <label className="form-label fw-bold" htmlFor="password">Nueva contraseña (opcional)</label>
+          <input type="password" className="form-control" id="password" name="password" value={state.password} onChange={handleChange} autoComplete="new-password" />
         </div>
         <div className="mb-3">
           <label className="form-label fw-bold">Fecha de Nacimiento</label>

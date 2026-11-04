@@ -259,7 +259,7 @@ public class ReceptionistController {
 
     private UserResponse toUserResponse(User user) {
         return new UserResponse(
-                user.getUserId(), user.getUserName(), user.getFullName(), user.getPassword(), user.getDocument(),
+                user.getUserId(), user.getUserName(), user.getFullName(), user.getDocument(),
                 user.getEmail(), user.getPhone(), user.getAddress(), user.getBirthDate(),
                 user.getRol(), user.getPatientId());
     }

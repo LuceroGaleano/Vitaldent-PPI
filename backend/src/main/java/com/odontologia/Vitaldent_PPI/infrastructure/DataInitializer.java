@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entities.InventoryEntity;
@@ -17,10 +18,13 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final InventoryRepository inventoryRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(UserRepository userRepository, InventoryRepository inventoryRepository) {
+    public DataInitializer(UserRepository userRepository, InventoryRepository inventoryRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.inventoryRepository = inventoryRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -28,7 +32,7 @@ public class DataInitializer implements CommandLineRunner {
         if (userRepository.count() == 0) {
             UserEntity user = new UserEntity();
             user.setUserName("recepcion");
-            user.setPassword("123456");
+            user.setPassword(passwordEncoder.encode("123456"));
             user.setFullName("Recepcionista Prueba");
             user.setDocument("1000000001");
             user.setEmail("recepcion@test.com");

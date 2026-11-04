@@ -1,5 +1,6 @@
 package com.odontologia.Vitaldent_PPI.domain.services;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -13,10 +14,12 @@ import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 public class CreatePatient {
     private final PatientPort patientPort;
     private final UserPort userPort;
+    private final PasswordEncoder passwordEncoder;
 
-    public CreatePatient(PatientPort patientPort, UserPort userPort){
+    public CreatePatient(PatientPort patientPort, UserPort userPort, PasswordEncoder passwordEncoder){
         this.patientPort = patientPort;
         this.userPort = userPort;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void createPatient(Patient patient) throws BusinessException{
@@ -41,7 +44,7 @@ public class CreatePatient {
 
         User newUser = new User();
         newUser.setUserName(patient.getDocument());
-        newUser.setPassword(patient.getDocument());
+        newUser.setPassword(passwordEncoder.encode(patient.getDocument()));
         newUser.setFullName(patient.getFullName());
         newUser.setDocument(patient.getDocument());
         newUser.setEmail(patient.getEmail());

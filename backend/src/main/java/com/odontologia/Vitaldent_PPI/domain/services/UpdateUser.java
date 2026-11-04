@@ -2,6 +2,7 @@ package com.odontologia.Vitaldent_PPI.domain.services;
 
 import java.util.UUID;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
@@ -15,10 +16,12 @@ import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 public class UpdateUser {
     private final UserPort userPort;
     private final PatientPort patientPort;
+    private final PasswordEncoder passwordEncoder;
 
-    public UpdateUser(UserPort userPort, PatientPort patientPort){
+    public UpdateUser(UserPort userPort, PatientPort patientPort, PasswordEncoder passwordEncoder){
         this.userPort = userPort;
         this.patientPort = patientPort;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void updateUser(User user, UUID relatedId) throws BusinessException{
@@ -39,6 +42,12 @@ public class UpdateUser {
         User relatedUser = userPort.findById(relatedId);
         if(relatedUser == null){
             throw new BusinessException("El usuario no esta autenticado");
+        }
+
+        if(user.getPassword() == null || user.getPassword().isBlank()){
+            user.setPassword(relatedUser.getPassword());
+        }else{
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
         if(user.getRol() != RolUser.RECEPTIONIST){
