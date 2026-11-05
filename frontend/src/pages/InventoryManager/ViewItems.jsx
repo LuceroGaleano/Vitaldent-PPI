@@ -114,7 +114,6 @@ function ViewItems() {
             <table className="table table-hover align-middle mb-0">
               <thead className="table-light">
                 <tr>
-                  <th className="text-secondary fw-semibold py-3 px-4">ID</th>
                   <th className="text-secondary fw-semibold py-3">Insumo</th>
                   <th className="text-secondary fw-semibold py-3 text-center">Stock</th>
                   <th className="text-secondary fw-semibold py-3 text-center">Estado</th>
@@ -125,7 +124,7 @@ function ViewItems() {
                 {filteredItems.length > 0 ? (
                   filteredItems.map(item => (
                     <tr key={item.id}>
-                      <td className="px-4 text-muted fw-bold">#{item.id}</td>
+
                       <td>
                         <div className="d-flex align-items-center gap-3">
                           {getItemIcon(item.name)}

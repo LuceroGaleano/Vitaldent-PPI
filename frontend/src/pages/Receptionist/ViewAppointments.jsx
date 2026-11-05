@@ -6,6 +6,25 @@ import { patchFetch } from '../../fetchs/PatchFetch';
 
 const initialState = { loading: true, error: null, document: '' };
 
+const STATUS_LABELS = {
+  AVAILABLE: 'Disponible',
+  SCHEDULED: 'Programada',
+  CLOSED: 'Cerrada',
+  COMPLETED: 'Completada',
+};
+
+const STATUS_STYLES = {
+  AVAILABLE: 'bg-success text-success border-success',
+  SCHEDULED: 'bg-primary text-primary border-primary',
+  CLOSED: 'bg-danger text-danger border-danger',
+  COMPLETED: 'bg-warning text-warning border-warning',
+};
+
+const translateStatus = (status) => STATUS_LABELS[status] ?? status;
+
+const getStatusClasses = (status) =>
+  `${STATUS_STYLES[status] ?? 'bg-secondary text-secondary border-secondary'} bg-opacity-10 border border-opacity-25`;
+
 function ViewAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
@@ -32,7 +51,8 @@ function ViewAppointments() {
         id: appointment.appointmentId,
         patient: appointment.patientName ?? 'Sin paciente',
         doctor: appointment.doctorName,
-        date: appointment.date + " - " + appointment.hour,
+        date: appointment.date,
+        hour: appointment.hour,
         status: appointment.appointmentStatus
       }));
       setAppointments(mappedAppointments);
@@ -53,7 +73,7 @@ function ViewAppointments() {
           Total: {appointments.length}
         </span>
       </div>
-      
+
       {state.error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
           {state.error}
@@ -67,28 +87,29 @@ function ViewAppointments() {
         </div>
       ) : (
         <div className="row g-4">
-          {appointments.map(appointment => (
+          {appointments.map((appointment) => (
             <div className="col-md-6 col-lg-4" key={appointment.id}>
               <div className="card shadow-sm border-0 rounded-4 h-100 bg-white transition-all hover-shadow">
                 <div className="card-body p-4">
                   <div className="d-flex justify-content-between align-items-start mb-3">
                     <div>
-                      <small className="text-uppercase fw-bold text-muted" style={{fontSize: '0.7rem'}}>Paciente</small>
+                      <small className="text-uppercase fw-bold text-muted" style={{ fontSize: '0.7rem' }}>Paciente</small>
                       <h5 className="card-title text-dark fw-bold mb-0">{appointment.patient}</h5>
                     </div>
-                    <span className={`badge rounded-pill ${appointment.status === 'AVAILABLE' ? 'bg-success bg-opacity-10 text-success border border-success' : 'bg-secondary bg-opacity-10 text-secondary border border-secondary'} border-opacity-25`}>
-                      {appointment.status}
+                    <span className={`badge rounded-pill ${getStatusClasses(appointment.status)}`}>
+                      {translateStatus(appointment.status)}
                     </span>
                   </div>
-                  
+
                   <div className="mb-3">
                     <p className="card-text text-muted mb-1 small">👨‍⚕️ <strong>Doctor:</strong> {appointment.doctor}</p>
-                    <p className="card-text text-muted small">📅 <strong>Fecha:</strong> {appointment.date}</p>
+                    <p className="card-text text-muted mb-1 small">📅 <strong>Fecha:</strong> {appointment.date}</p>
+                    <p className="card-text text-muted small">🕛 <strong>Hora:</strong> {appointment.hour}</p>
                   </div>
 
                   {appointment.status === 'AVAILABLE' && (
-                    <button 
-                      className="btn btn-outline-danger btn-sm w-100 rounded-3 fw-semibold" 
+                    <button
+                      className="btn btn-outline-danger btn-sm w-100 rounded-3 fw-semibold"
                       onClick={() => closeAppointment(appointment.id)}
                       disabled={state.loading}
                     >
