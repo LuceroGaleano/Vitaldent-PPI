@@ -144,83 +144,6 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-<<<<<<< HEAD
-        // BCrypt es lento a propósito: se cifra una sola vez y se reutiliza el hash.
-        String password = passwordEncoder.encode(DEFAULT_PASSWORD);
-
-        // ---------------- Usuarios (2 por rol) ----------------
-        createUser("laura.gomez", "Laura Marcela Gómez Restrepo", "1037612345",
-                "laura.gomez@vitaldent.com", "3012345678",
-                "Carrera 43A # 7-50, El Poblado, Medellín",
-                LocalDate.of(1994, 3, 15), RolUser.RECEPTIONIST, password);
-        createUser("camilo.zapata", "Camilo Andrés Zapata Henao", "1017234567",
-                "camilo.zapata@vitaldent.com", "3105558821",
-                "Calle 33 # 74-20, Laureles, Medellín",
-                LocalDate.of(1991, 11, 2), RolUser.RECEPTIONIST, password);
-
-        UserEntity valentina = createUser("valentina.ospina", "Valentina Ospina Cardona", "43875421",
-                "valentina.ospina@vitaldent.com", "3204419076",
-                "Carrera 70 # 44-18, Estadio, Medellín",
-                LocalDate.of(1986, 7, 21), RolUser.DOCTOR, password);
-        UserEntity santiago = createUser("santiago.mejia", "Santiago Mejía Arango", "71654328",
-                "santiago.mejia@vitaldent.com", "3157740392",
-                "Calle 10 # 32-45, Envigado, Antioquia",
-                LocalDate.of(1983, 1, 30), RolUser.DOCTOR, password);
-
-        createUser("diana.builes", "Diana Carolina Builes Salazar", "1020456789",
-                "diana.builes@vitaldent.com", "3002266140",
-                "Carrera 65 # 98A-75, Robledo, Medellín",
-                LocalDate.of(1992, 9, 8), RolUser.INVENTORY_MANAGER, password);
-        createUser("juan.cadavid", "Juan Pablo Cadavid Muñoz", "98567432",
-                "juan.cadavid@vitaldent.com", "3186673025",
-                "Calle 51 # 45-30, Itagüí, Antioquia",
-                LocalDate.of(1988, 5, 12), RolUser.INVENTORY_MANAGER, password);
-
-        UserEntity mariana = createUser("mariana.londono", "Mariana Alejandra Londoño Vélez", "1000987654",
-                "mariana.londono@example.com", "3128834410",
-                "Carrera 80 # 32-15, Belén, Medellín",
-                LocalDate.of(1998, 12, 4), RolUser.PATIENT, password);
-        UserEntity andres = createUser("andres.rios", "Andrés Felipe Ríos Giraldo", "1128345671",
-                "andres.rios@example.com", "3017795532",
-                "Calle 77 Sur # 40-62, Sabaneta, Antioquia",
-                LocalDate.of(1985, 4, 19), RolUser.PATIENT, password);
-
-        // ---------------- Inventario, ítems y tratamientos ----------------
-        InventoryEntity inventory = seedInventory();
-        Map<String, ItemEntity> items = seedItems(inventory);
-        Map<String, TreatmentEntity> treatments = seedTreatments(items);
-
-        // ---------------- Citas, historia clínica, factura y pago ----------------
-        seedAppointments(valentina, santiago, mariana, andres, treatments);
-    }
-
-    // =====================================================================
-    // Usuarios y pacientes
-    // =====================================================================
-
-    private UserEntity createUser(String userName, String fullName, String document, String email,
-            String phone, String address, LocalDate birthDate, RolUser rol, String encodedPassword) {
-
-        UserEntity existing = userRepository.findByUserName(userName);
-        if (existing != null) {
-            return existing;
-        }
-
-        UserEntity user = new UserEntity();
-        user.setUserName(userName);
-        user.setPassword(encodedPassword);
-        user.setFullName(fullName);
-        user.setDocument(document);
-        user.setEmail(email);
-        user.setPhone(phone);
-        user.setAddress(address);
-        user.setBirthDate(Date.valueOf(birthDate));
-        user.setRol(rol);
-
-        // Igual que CreateUser: un usuario PATIENT debe quedar enlazado a su ficha de paciente.
-        if (rol == RolUser.PATIENT) {
-            user.setPatient(findOrCreatePatient(fullName, document, email, phone, address, birthDate));
-=======
         InventoryEntity inventory = seedInventory();
         List<ItemEntity> items = seedItems(inventory);
 
@@ -307,7 +230,6 @@ public class DataInitializer implements CommandLineRunner {
                     today.plusDays(11L + i),
                     LocalTime.of(9 + i, 0),
                     AppointmentStatus.AVAILABLE);
->>>>>>> 126c588 (refactor: Dataseeder add to Datainitializer)
         }
         return userRepository.save(user);
     }
