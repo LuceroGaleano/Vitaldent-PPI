@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import logo from '../../assets/LogoPatient@4x-8.png';
@@ -28,11 +28,13 @@ export default function PatientPortal() {
   const navigate = useNavigate();
   const location = useLocation();
   const activeSection = findSectionByPath(location.pathname);
-  const [openSection, setOpenSection] = useState(activeSection);
-
-  useEffect(() => {
-    if (activeSection) setOpenSection(activeSection);
-  }, [activeSection]);
+  const [sectionPreference, setSectionPreference] = useState({
+    pathname: location.pathname,
+    openSection: activeSection,
+  });
+  const openSection = sectionPreference.pathname === location.pathname
+    ? sectionPreference.openSection
+    : activeSection;
 
   const handleLogout = () => {
     setAuth({ logged: false, token: null });
@@ -40,12 +42,11 @@ export default function PatientPortal() {
   };
 
   const handleSectionClick = (event, key) => {
-    if (openSection === key) {
-      event.preventDefault();
-      setOpenSection(null);
-    } else {
-      setOpenSection(key);
-    }
+    if (openSection === key) event.preventDefault();
+    setSectionPreference({
+      pathname: location.pathname,
+      openSection: openSection === key ? null : key,
+    });
   };
 
   const getSectionClass = (key) => {
