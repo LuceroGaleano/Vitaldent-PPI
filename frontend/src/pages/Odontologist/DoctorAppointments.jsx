@@ -4,72 +4,99 @@ import { AuthContext } from '../../context/AuthContext';
 import { getFetch } from '../../fetchs/GetFetch';
 import { useOutletContext } from 'react-router-dom';
 
-const initialState = {
-  loading: false,
-  error: null
-}
-function DoctorAppointments() {
+const initialState = { loading: false, error: null };
 
+function DoctorAppointments() {
   const { onAppointmentClick } = useOutletContext();
   const [appointments, setAppointments] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const {auth} = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
 
-  const loadAppointments = useCallback(async() =>{
-    dispatch({type: 'LOADING', payload: true});
-    try{
-      const data = await getFetch(
-        `http://localhost:8080/doctor/appointment/doctor/${auth.document}`,
-        auth.user
-      )
-      
-        dispatch({type: 'LOADING', payload: false})
-        console.log(data)
-        const mappedAppointments = data.map((appointment) => ({
-          id: appointment.appointmentId,
-          patient: appointment.patientName ?? 'Sin paciente',
-          document: appointment.patientDocument ?? 'Sin documento',
-          date: appointment.date + " - " + appointment.hour,
-          status: appointment.appointmentStatus
-        }));
-
-        setAppointments(mappedAppointments)
-    } catch(error){
-      dispatch({type: 'ERROR', payload: error.message})
-    } 
+  const loadAppointments = useCallback(async () => {
+    dispatch({ type: 'LOADING', payload: true });
+    try {
+      const data = await getFetch(`http://localhost:8080/doctor/appointment/doctor/${auth.document}`, auth.user);
+      dispatch({ type: 'LOADING', payload: false });
+      const mappedAppointments = data.map((appointment) => ({
+        id: appointment.appointmentId,
+        patient: appointment.patientName ?? 'Sin paciente',
+        document: appointment.patientDocument ?? 'Sin documento',
+        date: appointment.date + " - " + appointment.hour,
+        status: appointment.appointmentStatus
+      }));
+      setAppointments(mappedAppointments);
+    } catch (error) {
+      dispatch({ type: 'ERROR', payload: error.message });
+    }
   }, [auth.document, auth.user]);
 
-  useEffect(() => {
-    loadAppointments();
-  }, [loadAppointments]);
+  useEffect(() => { loadAppointments(); }, [loadAppointments]);
 
   return (
-    <div>
-      <h2 className="text-success mb-4">Mis Citas Agendadas</h2>
+    <div className="mx-auto" style={{ maxWidth: '1000px' }}>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="text-success fw-bold mb-0">Mi Agenda de Citas</h2>
+        <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill shadow-sm">
+          Total: {appointments.length}
+        </span>
+      </div>
+
       {state.error && (
-        <div className="alert alert-danger" role="alert">
+        <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
           {state.error}
         </div>
       )}
-      <div className="list-group">
-        {appointments.map(appointment => (
-          <div className="list-group-item p-3 shadow-sm mb-2 border-0 rounded" key={appointment.id}>
-            <h5 className="mb-1 text-primary">Paciente: {appointment.patient}</h5>
-            <p className="mb-1 text-muted">Documento: {appointment.document}</p>
-            <small className="fw-bold text-secondary">{appointment.date}</small>
-            <div className="mt-2">
-              {appointment.status === 'COMPLETED' ? (
-                <p className="card-text text-muted mb-1" key={appointment.id}>Cita atendida</p>
-              ) :<button
-                    className="btn btn-outline-success btn-sm"
-                    onClick={() => onAppointmentClick(appointment)}
-                    >
-                    Crear Historial
-                  </button>}
+
+      {state.loading && appointments.length === 0 ? (
+        <div className="text-center py-5">
+          <span className="spinner-border text-success" role="status"></span>
+          <p className="text-muted mt-2 small">Cargando agenda...</p>
+        </div>
+      ) : appointments.length > 0 ? (
+        <div className="row g-4">
+          {appointments.map(appointment => (
+            <div className="col-md-6 col-lg-4" key={appointment.id}>
+              <div className="card shadow-sm border-0 rounded-4 h-100 bg-white transition-all hover-shadow">
+                <div className="card-body p-4 d-flex flex-column">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <small className="text-uppercase fw-bold text-muted" style={{fontSize: '0.7rem'}}>Paciente</small>
+                      <h5 className="card-title text-dark fw-bold mb-0">{appointment.patient}</h5>
+                    </div>
+                    {appointment.status === 'COMPLETED' ? (
+                      <span className="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill">Atendida</span>
+                    ) : (
+                      <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill">Programada</span>
+                    )}
+                  </div>
+                  
+                  <div className="mb-4">
+                    <p className="card-text text-muted mb-1 small">🪪 <strong>Doc:</strong> {appointment.document}</p>
+                    <p className="card-text text-muted small">📅 <strong>Fecha:</strong> {appointment.date}</p>
+                  </div>
+
+                  <div className="mt-auto">
+                    {appointment.status !== 'COMPLETED' && (
+                      <button 
+                        className="btn btn-success btn-sm w-100 rounded-3 fw-semibold py-2 shadow-sm" 
+                        onClick={() => onAppointmentClick(appointment)}
+                      >
+                        Iniciar Consulta (Crear Historial)
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-5 bg-white rounded-4 shadow-sm">
+          <span className="fs-1 opacity-50 mb-3 d-block">☕</span>
+          <h5 className="fw-bold text-dark">Agenda Libre</h5>
+          <p className="text-muted small">No tienes citas programadas en este momento.</p>
+        </div>
+      )}
     </div>
   );
 }
