@@ -5,82 +5,90 @@ import { AuthContext } from '../../context/AuthContext';
 import { putFetch } from '../../fetchs/PutFetch';
 import { useNavigate } from 'react-router-dom';
 
-
 function UpdateItem() {
   const { item } = useContext(ItemContext);
   
-  const initialState ={
-    name: item?.name,
-    stock:item?.stock,
-    active: item?.active
+  const initialState = {
+    name: item?.name || '',
+    stock: item?.stock || '',
+    active: item?.active || 'true'
   };
-  const[state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const {auth} = useContext(AuthContext);
+  
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleChange = (e) =>{
-      dispatch({
-      type: 'OK',
-      payload: { field: e.target.name, value: e.target.value }
-    });
+  const handleChange = (e) => {
+    dispatch({ type: 'OK', payload: { field: e.target.name, value: e.target.value } });
   }
   
-  
-  const handleSubmit =  async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch({type: 'LOADING', payload: true});
-
-    try{
-      await putFetch(
-        `http://localhost:8080/inventory_manager/item/${item.id}`,
-        { name: state.name,
-          stock: state.stock,
-          active: true
-        },
-        auth.user
-      )
-      dispatch({type: 'LOADING', payload: false})
-      navigate('/inventoryManager/viewItems')
-    } catch(error){
-      dispatch({type: 'ERROR', payload: error.message})
-    } 
-    
+    dispatch({ type: 'LOADING', payload: true });
+    try {
+      await putFetch(`http://localhost:8080/inventory_manager/item/${item.id}`, { 
+        name: state.name, stock: state.stock, active: state.active === 'true'
+      }, auth.user);
+      dispatch({ type: 'LOADING', payload: false });
+      navigate('/inventoryManager/viewItems');
+    } catch (error) {
+      dispatch({ type: 'ERROR', payload: error.message });
+    }
   };
 
   return (
-    <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '600px' }}>
-      <h2 className="text-success mb-4">Actualizar Item</h2>
+    <div className="mx-auto" style={{ maxWidth: '600px' }}>
+      
       {state.error && (
-        <div className="alert alert-danger py-2 small text-center" role="alert">
+        <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
           {state.error}
         </div>
       )}
+
       {item ? (
-        <form onSubmit={handleSubmit}>
-          <div className="alert alert-info small py-2">
-            Editando el item ID: <strong>{item.id}</strong>
+        <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 bg-white">
+          <h2 className="text-success fw-bold mb-4 text-center">Editar Insumo</h2>
+          
+          <div className="alert alert-info py-2 text-center border-0 bg-primary bg-opacity-10 text-primary rounded-3 mb-4 fw-semibold small">
+            Modificando Insumo ID: #{item.id}
           </div>
-          <div className="mb-3">
-            <label className="form-label fw-bold">Nombre del Item</label>
-            <input type="text" className="form-control" id="name" name="name" value={state.name} onChange = {handleChange}  required />
-          </div>
-          <div className="mb-3">
-            <label className="form-label fw-bold">Cantidad en Stock</label>
-            <input type="number" className="form-control" id="stock" name="stock" value={state.stock} onChange = {handleChange} required />
-          </div>
-          <div className = "mb-3">
-            <label className="form-label fw-bold">Activado/Desactivado</label>
-            <select className="form-control" id="active" name="active" value={state.active} onChange = {handleChange} >
-              <option>Elige uno</option>
-              <option value="true">Activado</option>
-              <option value="false">Desactivado</option>
-            </select>
-          </div>
-          <button type="submit" className="btn btn-success">Guardar Cambios</button>
-        </form>
+          
+          <form onSubmit={handleSubmit}>
+            <div className="form-floating mb-3">
+              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="name" name="name" value={state.name} onChange={handleChange} placeholder="Nombre" disabled={state.loading} required />
+              <label htmlFor="name" className="text-secondary small">Nombre del Insumo</label>
+            </div>
+            
+            <div className="form-floating mb-3">
+              <input type="number" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="stock" name="stock" value={state.stock} onChange={handleChange} placeholder="Stock" disabled={state.loading} required />
+              <label htmlFor="stock" className="text-secondary small">Cantidad en Stock</label>
+            </div>
+            
+            <div className="form-floating mb-4">
+              <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="active" name="active" value={state.active} onChange={handleChange} disabled={state.loading} required>
+                <option value="true">Activo (Disponible)</option>
+                <option value="false">Inactivo (Oculto)</option>
+              </select>
+              <label htmlFor="active" className="text-secondary small">Estado Operativo</label>
+            </div>
+            
+            <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
+              {state.loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Actualizar Inventario'}
+            </button>
+          </form>
+        </div>
       ) : (
-        <div className="alert alert-warning">
-          Por favor, selecciona un item desde la pestaña "Ver Items" para actualizarlo.
+        <div className="card shadow-lg border-0 rounded-4 p-5 text-center">
+          <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '80px', height: '80px' }}>
+            <span className="fs-1 opacity-50">📦</span>
+          </div>
+          <h4 className="text-secondary fw-bold mb-2">Ningún insumo seleccionado</h4>
+          <p className="text-muted mb-4">Para editar la información o el stock de un insumo, búscalo primero en el inventario.</p>
+          <div>
+            <button className="btn btn-primary rounded-3 px-4" onClick={() => navigate('/inventoryManager/viewItems')}>
+              Ir al Inventario
+            </button>
+          </div>
         </div>
       )}
     </div>
