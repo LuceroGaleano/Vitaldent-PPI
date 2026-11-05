@@ -3,6 +3,7 @@ import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
 import { AuthContext } from '../../context/AuthContext';
 import { getFetch } from '../../fetchs/GetFetch';
 import { InvoiceContext } from '../../context/InvoiceContext';
+import { useNavigate } from 'react-router-dom';
 
 const initialState = {
   loading: true,
@@ -14,68 +15,98 @@ function ViewPayments() {
   const [paymentResults, setPaymentResults] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
-  const {invoice} = useContext(InvoiceContext)
+  const {invoice} = useContext(InvoiceContext);
+  const navigate = useNavigate();
 
+  const loadPayments = async () => {
+    if (!invoice) return;
+    dispatch({type: 'LOADING', payload: true});
+    try {
+      const data = await getFetch(
+        `http://localhost:8080/receptionist/pay/invoice/${invoice.id}`,
+        auth.user
+      );
 
+      const payments = data.map((payment) => ({
+        id: payment.payId,
+        date: payment.date,
+        amount: payment.amount,
+        paymentMethod: payment.methodPayment
+      }));
 
-    const loadPayments = async () => {
-      dispatch({type: 'LOADING', payload: true});
-      try {
-        const data = await getFetch(
-          `http://localhost:8080/receptionist/pay/invoice/${invoice.id}`,
-          auth.user
-        );
-
-        const payments = data.map((payment) => ({
-          id: payment.payId,
-          date: payment.date,
-          amount: payment.amount,
-          paymentMethod: payment.methodPayment
-        }));
-
-        setPaymentResults(payments);
-        dispatch({type: 'LOADING', payload: false});
-      } catch(error) {
-        dispatch({type: 'ERROR', payload: error.message});
-      }
-    };
+      setPaymentResults(payments);
+      dispatch({type: 'LOADING', payload: false});
+    } catch(error) {
+      dispatch({type: 'ERROR', payload: error.message});
+    }
+  };
 
   useEffect(() => {
     loadPayments();
-  },[])
+  },[]);
 
   return (
-    <div>
-      <h2 className="text-success mb-4">Lista de Pagos</h2>
-
+    <div className="mx-auto" style={{ maxWidth: '900px' }}>
+      
       {!invoice ? (
-        <div className="alert alert-info py-2 small text-center" role="status">
-          Selecciona una factura desde "Ver Facturas" para ver sus pagos.
-        </div>
-      ): (
-      <>  
-        {state.error && (
-          <div className="alert alert-danger py-2 small text-center" role="alert">
-            {state.error}
+        <div className="card shadow-lg border-0 rounded-4 p-5 text-center">
+          <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '80px', height: '80px' }}>
+            <span className="fs-1 opacity-50">💸</span>
           </div>
-        )}
-
-        <div className="row">
-          {paymentResults.length > 0 && paymentResults.map(payment => (
-            <div className="col-md-6 mb-3" key={payment.id}>
-              <div className="card shadow-sm border-0">
-                <div className="card-body">
-                  <h5 className="card-title text-primary">Fecha: {payment.date}</h5>
-                  <p className="card-text text-muted mb-1">Monto: ${Number(payment.amount).toLocaleString('es-CO')}</p>
-                  <p className="card-text text-muted">Método de pago: {payment.paymentMethod}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+          <h4 className="text-secondary fw-bold mb-2">Ninguna factura seleccionada</h4>
+          <p className="text-muted mb-4">Para visualizar el historial de pagos, por favor busca y selecciona una factura específica desde el módulo de facturación.</p>
+          <div>
+            <button className="btn btn-primary rounded-3 px-4" onClick={() => navigate('/receptionist/viewInvoices')}>
+              Ir a Búsqueda de Facturas
+            </button>
+          </div>
         </div>
-      </>
-      )}
+      ) : (
+        <>  
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h2 className="text-success fw-bold mb-0">Pagos de Factura #{invoice.id}</h2>
+            <button className="btn btn-outline-secondary btn-sm rounded-3" onClick={() => navigate('/receptionist/viewInvoices')}>
+              Volver
+            </button>
+          </div>
 
+          {state.error && (
+            <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
+              {state.error}
+            </div>
+          )}
+
+          {state.loading ? (
+             <div className="text-center py-5">
+               <span className="spinner-border text-success" role="status"></span>
+               <p className="text-muted mt-2 small">Cargando pagos...</p>
+             </div>
+          ) : (
+            <div className="row g-4">
+              {paymentResults.length > 0 ? paymentResults.map(payment => (
+                <div className="col-md-6" key={payment.id}>
+                  <div className="card shadow-sm border-0 rounded-4 h-100 bg-white">
+                    <div className="card-body p-4">
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h5 className="card-title text-success fw-bold mb-0">${Number(payment.amount).toLocaleString('es-CO')}</h5>
+                        <span className="badge bg-light text-dark border rounded-pill px-3 py-2">
+                          💳 {payment.paymentMethod}
+                        </span>
+                      </div>
+                      <p className="card-text text-muted small mb-0">📅 <strong>Fecha del pago:</strong> {payment.date}</p>
+                      <p className="card-text text-muted small mt-1">🆔 <strong>Ref Pago:</strong> {payment.id}</p>
+                    </div>
+                  </div>
+                </div>
+              )) : (
+                <div className="col-12 text-center py-4 bg-light rounded-4">
+                  <p className="text-muted mb-0">Esta factura aún no registra ningún pago.</p>
+                </div>
+              )}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

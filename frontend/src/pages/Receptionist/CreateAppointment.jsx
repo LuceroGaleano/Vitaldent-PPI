@@ -10,9 +10,10 @@ const initialState = {
   loading: false,
   error: null
 };
+
 function CreateAppointment() {
-  const[state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const {auth} = useContext(AuthContext);
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,43 +25,70 @@ function CreateAppointment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch({type:'LOADING', payload: true});
-    try{
+    dispatch({ type: 'LOADING', payload: true });
+    try {
       const [date, time] = state.dateAndHour.split('T');
-       await postFetch('http://localhost:8080/receptionist/appointment',
+      await postFetch('http://localhost:8080/receptionist/appointment',
         {
           date: date,
           hour: time,
           doctorDocument: state.doctorDocument
         },
         auth.user
-      )
+      );
 
-      dispatch({type:'LOADING', payload: false});
+      dispatch({ type: 'LOADING', payload: false });
       navigate('/receptionist/viewAppointments');
-    } catch(error){
-        dispatch({type:'ERROR', payload: error.message})
+    } catch (error) {
+      dispatch({ type: 'ERROR', payload: error.message });
     }
   };
 
   return (
-    <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '600px' }}>
-      <h2 className="text-success mb-4">Crear Cita</h2>
+    <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
+      <h2 className="text-success fw-bold mb-4 text-center">Agendar Nueva Cita</h2>
+      
       {state.error && (
-        <div className="alert alert-danger py-2 small text-center" role="alert">
+        <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
           {state.error}
         </div>
       )}
+      
       <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label fw-bold" htmlFor="doctorDocument">Documento del Doctor</label>
-          <input type="text" className="form-control" id="doctorDocument" name="doctorDocument" value={state.doctorDocument} onChange={handleChange} required />
+        <div className="form-floating mb-3">
+          <input 
+            type="text" 
+            className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" 
+            id="doctorDocument" 
+            name="doctorDocument" 
+            value={state.doctorDocument} 
+            onChange={handleChange} 
+            placeholder="Documento"
+            disabled={state.loading}
+            required 
+          />
+          <label htmlFor="doctorDocument" className="text-secondary small">Documento del Doctor</label>
         </div>
-        <div className="mb-3">
-          <label className="form-label fw-bold">Fecha y Hora</label>
-          <input type="datetime-local" className="form-control" id="dateAndHour" name="dateAndHour" value={state.dateAndHour} onChange={handleChange} required />
+
+        <div className="form-floating mb-4">
+          <input 
+            type="datetime-local" 
+            className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" 
+            id="dateAndHour" 
+            name="dateAndHour" 
+            value={state.dateAndHour} 
+            onChange={handleChange} 
+            disabled={state.loading}
+            required 
+          />
+          <label htmlFor="dateAndHour" className="text-secondary small">Fecha y Hora</label>
         </div>
-        <button type="submit" className="btn btn-success">Crear Cita</button>
+
+        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
+          {state.loading ? (
+            <><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Procesando...</>
+          ) : 'Crear Cita'}
+        </button>
       </form>
     </div>
   );

@@ -5,7 +5,7 @@ import { getFetch } from '../../fetchs/GetFetch';
 import { useOutletContext } from 'react-router-dom';
 
 const initialState = {
-  loading: true,
+  loading: false,
   error: null,
   document: ''
 }
@@ -15,7 +15,6 @@ function ViewInvoices() {
   const [invoices, setInvoices] = useState([]);
   const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const {auth} = useContext(AuthContext);
-
   
   const handleChange = (e) =>{
       dispatch({
@@ -49,53 +48,73 @@ function ViewInvoices() {
   };
 
   return (
-    <div>
-      <h2 className="text-success mb-4">Lista de Facturas</h2>
+    <div className="mx-auto" style={{ maxWidth: '1000px' }}>
+      <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mb-4">
+        <h2 className="text-success fw-bold mb-4 text-center">Búsqueda de Facturas</h2>
 
-      {state.error && (
-        <div className="alert alert-danger py-2 small text-center" role="alert">
-           {state.error}
-        </div>
-      )}
-      
-      <form onSubmit={handleSearch} className="d-flex gap-2 mb-4" style={{ maxWidth: '400px' }}>
-        <input type="text" className="form-control" id="document" name="document" value={state.document} onChange={handleChange} placeholder="Documento del paciente" required />
-        <button type="submit" className="btn btn-primary">Buscar</button>
-      </form>
+        <form onSubmit={handleSearch} className="d-flex gap-3">
+          <div className="form-floating flex-grow-1">
+            <input 
+              type="text" 
+              className="form-control rounded-3 bg-light shadow-none border-light-subtle" 
+              id="document" 
+              name="document" 
+              value={state.document} 
+              onChange={handleChange} 
+              placeholder="Documento" 
+              disabled={state.loading}
+              required 
+            />
+            <label htmlFor="document" className="text-secondary small">Documento del paciente...</label>
+          </div>
+          <button type="submit" className="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" disabled={state.loading}>
+            {state.loading ? <span className="spinner-border spinner-border-sm"></span> : 'Buscar'}
+          </button>
+        </form>
+
+        {state.error && (
+          <div className="alert alert-danger mt-3 py-2 small text-center border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
+             {state.error}
+          </div>
+        )}
+      </div>
 
       {invoices.length > 0 && (
-        <div className="list-group">
+        <div className="row g-4">
           {invoices.map(res => (
-            <div className="list-group-item shadow-sm mb-2 border-0 rounded" key={res.id}>
-              <h6 className="text-success">Fecha: {res.date}</h6>
-              <p className="mb-2">Costo: ${res.amount.toLocaleString('es-CO')}</p>
-              {res.isPaid ? (
-                <span className="badge bg-success-subtle text-success border border-success-subtle p-2 mb-2">
-                  Factura Pagada
-                </span>
-              ) : (
-                  <div className = "mt-2">
-                    <button
-                      className="btn btn-outline-danger btn-sm"
-                      onClick={() => onCreatePayClick(res)}
-                      >
-                      Realizar Pago
+            <div className="col-md-6 col-lg-4" key={res.id}>
+              <div className="card shadow-sm border-0 rounded-4 h-100 bg-white transition-all hover-shadow">
+                <div className="card-body p-4 d-flex flex-column">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <small className="text-uppercase fw-bold text-muted" style={{fontSize: '0.7rem'}}>Factura #{res.id}</small>
+                      <h5 className="card-title text-dark fw-bold mb-0">${res.amount.toLocaleString('es-CO')}</h5>
+                    </div>
+                    {res.isPaid ? (
+                      <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill">Pagada</span>
+                    ) : (
+                      <span className="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 rounded-pill">Pendiente</span>
+                    )}
+                  </div>
+                  
+                  <p className="card-text text-muted mb-4 small">📅 <strong>Fecha:</strong> {res.date}</p>
+                  
+                  <div className="mt-auto d-flex flex-column gap-2">
+                    {!res.isPaid && (
+                      <button className="btn btn-success btn-sm w-100 rounded-3 fw-semibold" onClick={() => onCreatePayClick(res)}>
+                        Realizar Pago
+                      </button>
+                    )}
+                    <button className="btn btn-outline-primary btn-sm w-100 rounded-3 fw-semibold" onClick={() => onInvoiceClick(res)}>
+                      Ver Historial de Pagos
                     </button>
                   </div>
-              )}
-                  <div className = "mt-2">
-                    <button
-                      className="btn btn-outline-success btn-sm"
-                      onClick={() => onInvoiceClick(res)}
-                      >
-                      Ver Pagos
-                    </button>
-                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
       )}
-    
     </div>
   );
 }
