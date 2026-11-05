@@ -11,11 +11,12 @@ const initialState = {
   loading: false,
   error: null
 };
+
 function CreatePayment() {
-  const {invoice} = useContext(InvoiceContext)
-    const[state, dispatch] = useReducer(apiFetchReduce, initialState)
-    const { auth } = useContext(AuthContext);
-    const navigate = useNavigate();
+  const { invoice } = useContext(InvoiceContext);
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const { auth } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     dispatch({
@@ -26,8 +27,8 @@ function CreatePayment() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch({type:'LOADING', payload: true});
-    try{
+    dispatch({ type: 'LOADING', payload: true });
+    try {
       await postFetch('http://localhost:8080/receptionist/pay',
         {
           amount: state.amount,
@@ -36,44 +37,58 @@ function CreatePayment() {
           invoiceId: invoice.id
         },
         auth.user
-      )
+      );
 
-      dispatch({type:'LOADING', payload: false});
+      dispatch({ type: 'LOADING', payload: false });
       navigate('/receptionist/viewInvoices');
-    } catch(error){
-        dispatch({type:'ERROR', payload: error.message})
+    } catch (error) {
+      dispatch({ type: 'ERROR', payload: error.message });
     }
   };
+
   return (
-    <div className="card shadow-sm border-0 p-4" style={{ maxWidth: '600px' }}>
-      <h2 className="text-success mb-4">Registrar Pago</h2>
+    <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
+      <h2 className="text-success fw-bold mb-4 text-center">Registrar Pago</h2>
+      
       {state.error && (
-        <div className="alert alert-danger py-2 small text-center" role="alert">
+        <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
           {state.error}
         </div>
       )}
-        {!invoice ? (
-        <div className="alert alert-info py-2 small text-center" role="status">
-          Selecciona una factura desde "Ver Facturas" para crear su pago.
+
+      {!invoice ? (
+        <div className="text-center py-5">
+          <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '80px', height: '80px' }}>
+            <span className="fs-1 opacity-50">🧾</span>
+          </div>
+          <h5 className="text-secondary fw-semibold">No hay factura seleccionada</h5>
+          <p className="text-muted small mb-4">Por favor, selecciona una factura desde el módulo de "Ver Facturas" para procesar su pago.</p>
+          <button className="btn btn-outline-success rounded-3" onClick={() => navigate('/receptionist/viewInvoices')}>Ir a Facturas</button>
         </div>
-      ): (
-      <>  
-          <form onSubmit={handleSubmit}>
-            <div className="mb-3">
-              <label className="form-label fw-bold">Monto a Pagar</label>
-              <input type="text" className="form-control" id="amount" name="amount" value={state.amount} onChange={handleChange} required />
-            </div>
-            <div className="mb-3">
-              <label className="form-label fw-bold">Método de pago</label>
-              <select className="form-select" id="methodPayment" name="methodPayment" value={state.methodPayment} onChange={handleChange} required>
-                <option value="" disabled>Selecciona el método de pago</option>
-                <option value="CARD">Card</option>
-                <option value="CASH">Cash</option>
-              </select>
-            </div>
-            <button type="submit" className="btn btn-success">Crear Pago</button>
-          </form>
-      </>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <div className="alert alert-success bg-opacity-10 border-success border-opacity-25 rounded-3 mb-4">
+            <small className="d-block text-success fw-bold">Factura ID: {invoice.id}</small>
+          </div>
+
+          <div className="form-floating mb-3">
+            <input type="number" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="amount" name="amount" value={state.amount} onChange={handleChange} placeholder="Monto" disabled={state.loading} required />
+            <label htmlFor="amount" className="text-secondary small">Monto a Pagar</label>
+          </div>
+          
+          <div className="form-floating mb-4">
+            <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="methodPayment" name="methodPayment" value={state.methodPayment} onChange={handleChange} disabled={state.loading} required>
+              <option value="" disabled>Selecciona el método...</option>
+              <option value="CARD">Tarjeta (Card)</option>
+              <option value="CASH">Efectivo (Cash)</option>
+            </select>
+            <label htmlFor="methodPayment" className="text-secondary small">Método de pago</label>
+          </div>
+
+          <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
+            {state.loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Procesando...</> : 'Crear Pago'}
+          </button>
+        </form>
       )}
     </div>
   );

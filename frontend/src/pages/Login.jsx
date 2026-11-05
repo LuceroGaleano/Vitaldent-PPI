@@ -5,17 +5,16 @@ import { AuthContext } from '../context/AuthContext';
 import { apiFetchReduce } from '../reduces/ApiFetchReduce';
 
 function Login() {
-
   const initialState = {
-  username: '',
-  password: '',
-  loading: false,
-  error: null
-};
+    username: '',
+    password: '',
+    loading: false,
+    error: null
+  };
 
-  const[state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const navigate = useNavigate();
-  const {setAuth} = useContext(AuthContext);
+  const { setAuth } = useContext(AuthContext);
 
   const handleChange = (e) => {
     dispatch({
@@ -24,18 +23,18 @@ function Login() {
     });
   };
 
-  const handleLogin = async(e) =>{
+  const handleLogin = async (e) => {
     e.preventDefault();
-    dispatch({type: 'LOADING', payload: true});
+    dispatch({ type: 'LOADING', payload: true });
 
-    try{
+    try {
       const data = await postFetch(
         'http://localhost:8080/auth/login',
         {
           username: state.username,
           password: state.password
         }
-      )
+      );
 
       setAuth({
         logged: true,
@@ -44,6 +43,7 @@ function Login() {
       });
       
       dispatch({ type: 'LOADING', payload: false });
+      
       if (data.role === 'RECEPTIONIST') {
         navigate('/receptionist');
       } else if (data.role === 'DOCTOR') {
@@ -64,59 +64,78 @@ function Login() {
   }
 
   return (
-    <div className="container-fluid min-vh-100 d-flex justify-content-center align-items-center bg-light">
-      <div className="card shadow border-0 rounded-4 p-4" style={{ maxWidth: '420px', width: '100%' }}>
-        <div className="card-body">
-          {/* Encabezado */}
-          <div className="text-center mb-4">
-            <h2 className="fw-bold text-success mb-1">Vitaldent</h2>
-            <p className="text-muted small">Bienvenido al portal odontológico</p>
+    <div 
+      className="container-fluid min-vh-100 d-flex justify-content-center align-items-center" 
+      style={{ background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)' }}
+    >
+      <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5" style={{ maxWidth: '420px', width: '100%' }}>
+        <div className="card-body p-0">
+          
+          {/* Encabezado Mejorado */}
+          <div className="text-center mb-5">
+            <div className="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style={{ width: '60px', height: '60px' }}>
+              <span className="fs-3 fw-bold">V</span>
+            </div>
+            <h2 className="fw-bolder text-dark mb-1">Vitaldent</h2>
+            <p className="text-muted small mb-0">Ingresa a tu portal odontológico</p>
           </div>
 
+          {/* Alerta de Error */}
           {state.error && (
-            <div className="alert alert-danger py-2 small text-center" role="alert">
+            <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
               {state.error}
             </div>
           )}
 
-          {/* Formulario */}
+          {/* Formulario con Etiquetas Flotantes */}
           <form onSubmit={handleLogin}>
-            <div className="mb-3">
-              <label htmlFor="user" className="form-label fw-semibold text-secondary small">
-                Usuario / Correo
-              </label>
+            <div className="form-floating mb-3">
               <input
                 id="user"
                 type="text"
-                name = "username"
-                value = {state.username}
-                onChange = {handleChange}
-                className="form-control form-control-lg fs-6"
+                name="username"
+                value={state.username}
+                onChange={handleChange}
+                className="form-control form-control-lg rounded-3 border-light-subtle shadow-none bg-light"
                 placeholder="Ingresa tu credencial"
+                disabled={state.loading}
                 required
               />
+              <label htmlFor="user" className="text-secondary small">Usuario o Correo</label>
             </div>
 
-            <div className="mb-4">
-              <label htmlFor="pass" className="form-label fw-semibold text-secondary small">
-                Contraseña
-              </label>
+            <div className="form-floating mb-4">
               <input
                 id="pass"
                 type="password"
-                name = "password"
-                value = {state.password}
-                onChange = {handleChange}
-                className="form-control form-control-lg fs-6"
+                name="password"
+                value={state.password}
+                onChange={handleChange}
+                className="form-control form-control-lg rounded-3 border-light-subtle shadow-none bg-light"
                 placeholder="Ingresa tu contraseña"
+                disabled={state.loading}
                 required
               />
+              <label htmlFor="pass" className="text-secondary small">Contraseña</label>
             </div>
 
-            <button type="submit" className="btn btn-success btn-lg w-100 fs-6 fw-semibold shadow-sm">
-              Ingresar
+            {/* Botón Dinámico de Carga */}
+            <button 
+              type="submit" 
+              className="btn btn-success btn-lg w-100 fs-6 fw-semibold shadow-sm rounded-3 py-3"
+              disabled={state.loading}
+            >
+              {state.loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Validando credenciales...
+                </>
+              ) : (
+                'Ingresar'
+              )}
             </button>
           </form>
+
         </div>
       </div>
     </div>

@@ -6,79 +6,104 @@ import { AppointmentContext } from '../../context/AppointmentContext';
 import { useOutletContext } from 'react-router-dom';
 import { TreatmentContext } from '../../context/TreatmentContext';
 
-const initialState = {
-  loading: true,
-  error: null,
-  document: ''
-}
+const initialState = { loading: true, error: null, document: '' };
+
 function ViewTreatments() {
-    const { onTreatmentClick } = useOutletContext();
-    const{appointment} = useContext(AppointmentContext);
-    const{treatment} = useContext(TreatmentContext);
-    const [treatments, setTreatments] = useState([]);
-    const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-    const {auth} = useContext(AuthContext);
+  const { onTreatmentClick } = useOutletContext();
+  const { appointment } = useContext(AppointmentContext);
+  const { treatment } = useContext(TreatmentContext);
+  const [treatments, setTreatments] = useState([]);
+  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const { auth } = useContext(AuthContext);
 
-    const loadTreatments = async() =>{
-      dispatch({type: 'LOADING', payload: true});
-      try{
-        const data = await getFetch('http://localhost:8080/doctor/treatment', auth.user);
-        
-        dispatch({type: 'LOADING', payload: false});
-        const mappedTreatments = data.map((treatment) => ({
-          id: treatment.treatamentId, 
-          name: treatment.name,
-          cost: treatment.cost,
-          description: treatment.description,
-          items: treatment.treatmentItems
-        }));
-
-        setTreatments(mappedTreatments);
-      } catch(error){
-        dispatch({type: 'ERROR', payload: error.message});
-      }
+  const loadTreatments = async () => {
+    dispatch({ type: 'LOADING', payload: true });
+    try {
+      const data = await getFetch('http://localhost:8080/doctor/treatment', auth.user);
+      dispatch({ type: 'LOADING', payload: false });
+      const mappedTreatments = data.map((treat) => ({
+        id: treat.treatamentId, 
+        name: treat.name,
+        cost: treat.cost,
+        description: treat.description,
+        items: treat.treatmentItems
+      }));
+      setTreatments(mappedTreatments);
+    } catch (error) {
+      dispatch({ type: 'ERROR', payload: error.message });
     }
+  }
 
-
-  useEffect(() => {
-    loadTreatments();
-  }, []);
+  useEffect(() => { loadTreatments(); }, []);
 
   return (
-    <div>
-      <h2 className="text-success mb-4">Lista de Tratamientos</h2>
+    <div className="mx-auto" style={{ maxWidth: '1200px' }}>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="text-success fw-bold mb-0">Catálogo de Tratamientos</h2>
+        <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill shadow-sm">
+          Total: {treatments.length}
+        </span>
+      </div>
+
+      {appointment && !treatment && (
+        <div className="alert alert-info border-info border-opacity-25 bg-info bg-opacity-10 text-center rounded-4 p-3 mb-4 shadow-sm fw-semibold">
+          💡 Estás creando el historial para {appointment.patient}. Selecciona el tratamiento a aplicar.
+        </div>
+      )}
+
       {state.error && (
-        <div className="alert alert-danger py-2 small text-center" role="alert">
+        <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
           {state.error}
         </div>
       )}
-      <div className="row">
-        {treatments.map(treatmentRecord => (
-          <div className="col-md-6 mb-3" key={treatmentRecord.id}>
-            <div className="card shadow-sm border-0">
-              <div className="card-body">
-                <h5 className="card-title text-primary">{treatmentRecord.name}</h5>
-                <p className="card-text text-muted">Descripción: {treatmentRecord.description}</p>
-                <p className="card-text text-muted">Costo: ${treatmentRecord.cost}</p>
-                <p className="card-text text-muted fw-bold">Items:</p>
-                {treatmentRecord.items.map((item) =>(
-                  <p className="card-text text-muted mb-1" key={item.itemId}>{item.itemName}</p>
-                ))}
-                {appointment && !treatment? (
-                  <div className = "mt-2">
-                    <button
-                      className="btn btn-outline-success btn-sm"
-                      onClick={() => onTreatmentClick(treatmentRecord)}
-                      >
-                      Agregar Historial
-                    </button>
+
+      {state.loading ? (
+        <div className="text-center py-5">
+          <span className="spinner-border text-success" role="status"></span>
+          <p className="text-muted mt-2 small">Cargando tratamientos...</p>
+        </div>
+      ) : (
+        <div className="row g-4">
+          {treatments.map(treatmentRecord => (
+            <div className="col-md-6 col-lg-4" key={treatmentRecord.id}>
+              <div className="card shadow-sm border-0 rounded-4 h-100 bg-white transition-all hover-shadow">
+                <div className="card-body p-4 d-flex flex-column">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <h5 className="card-title text-dark fw-bold mb-0 pe-2">{treatmentRecord.name}</h5>
+                    <span className="badge bg-light text-success border border-success border-opacity-50 px-2 py-1 rounded">
+                      ${Number(treatmentRecord.cost).toLocaleString('es-CO')}
+                    </span>
                   </div>
-                ): null}
+                  
+                  <p className="card-text text-muted small mb-3" style={{ minHeight: '40px' }}>
+                    {treatmentRecord.description}
+                  </p>
+                  
+                  <div className="mb-4 bg-light p-3 rounded-3 flex-grow-1">
+                    <small className="text-uppercase fw-bold text-secondary mb-2 d-block" style={{fontSize: '0.7rem'}}>Insumos requeridos:</small>
+                    <div className="d-flex flex-wrap gap-1">
+                      {treatmentRecord.items.map((item) =>(
+                        <span className="badge bg-white text-muted border fw-normal" key={item.itemId}>{item.itemName}</span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {appointment && !treatment && (
+                    <div className="mt-auto">
+                      <button 
+                        className="btn btn-success btn-sm w-100 rounded-3 fw-semibold py-2 shadow-sm" 
+                        onClick={() => onTreatmentClick(treatmentRecord)}
+                      >
+                        Vincular al Historial
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
