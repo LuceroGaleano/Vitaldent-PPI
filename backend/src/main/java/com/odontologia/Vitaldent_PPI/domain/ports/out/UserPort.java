@@ -9,6 +9,7 @@ public interface UserPort {
     public User findById(UUID id);
     public User findByDocument(String document);
     public User findByUserName(String userName);
+    public User findByEmail(String email);
     
     //exists
     public boolean existsById(UUID id);

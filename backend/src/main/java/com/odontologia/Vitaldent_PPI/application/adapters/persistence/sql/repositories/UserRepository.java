@@ -9,6 +9,7 @@ import com.odontologia.Vitaldent_PPI.application.adapters.persistence.sql.entiti
 public interface UserRepository extends JpaRepository<UserEntity, UUID>{
     UserEntity findByDocument(String document);
     UserEntity findByUserName(String userName);
+    UserEntity findByEmail(String email);
 
     boolean existsByDocument(String document);
     boolean existsByEmail(String email);

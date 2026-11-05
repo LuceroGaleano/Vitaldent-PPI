@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class LoginRequest {
 
-    @NotBlank(message = "El username es obligatorio")
+    @NotBlank(message = "El usuario o correo es obligatorio")
     private String username;
 
     @NotBlank(message = "La contraseña es obligatoria")
