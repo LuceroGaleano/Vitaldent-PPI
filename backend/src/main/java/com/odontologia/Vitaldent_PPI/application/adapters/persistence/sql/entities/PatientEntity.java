@@ -21,7 +21,7 @@ public class PatientEntity {
     @Id 
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "patient_id", nullable = false, updatable = false)
-    private UUID patientId = UUID.randomUUID();
+    private UUID patientId;
 
     @Column (name = "full_name")
     private String fullName;
