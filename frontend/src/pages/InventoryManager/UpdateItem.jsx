@@ -1,8 +1,7 @@
 import { useContext, useReducer } from 'react';
 import { ItemContext } from '../../context/ItemContext';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { AuthContext } from '../../context/AuthContext';
-import { putFetch } from '../../fetchs/PutFetch';
+import { apiFetchReducer } from '../../reduces/ApiFetchReducer';
+import useApiRequest from '../../customHooks/useApiRequest';
 import { useNavigate } from 'react-router-dom';
 
 function UpdateItem() {
@@ -14,8 +13,8 @@ function UpdateItem() {
     active: item?.active || 'true'
   };
   
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const { auth } = useContext(AuthContext);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { execute: updateItem, loading, error } = useApiRequest();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,24 +23,24 @@ function UpdateItem() {
   
   const handleSubmit = async (event) => {
     event.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await putFetch(`http://localhost:8080/inventory_manager/item/${item.id}`, { 
+    const result = await updateItem({
+      url: `http://localhost:8080/inventory_manager/item/${item.id}`,
+      method: 'PUT',
+      body: {
         name: state.name, stock: state.stock, active: state.active === 'true'
-      }, auth.user);
-      dispatch({ type: 'LOADING', payload: false });
+      },
+    });
+    if (result.success) {
       navigate('/inventoryManager/viewItems');
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
     }
   };
 
   return (
     <div className="mx-auto" style={{ maxWidth: '600px' }}>
       
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {error}
         </div>
       )}
 
@@ -55,25 +54,25 @@ function UpdateItem() {
           
           <form onSubmit={handleSubmit}>
             <div className="form-floating mb-3">
-              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="name" name="name" value={state.name} onChange={handleChange} placeholder="Nombre" disabled={state.loading} required />
+              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="name" name="name" value={state.name} onChange={handleChange} placeholder="Nombre" disabled={loading} required />
               <label htmlFor="name" className="text-secondary small">Nombre del Insumo</label>
             </div>
             
             <div className="form-floating mb-3">
-              <input type="number" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="stock" name="stock" value={state.stock} onChange={handleChange} placeholder="Stock" disabled={state.loading} required />
+              <input type="number" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="stock" name="stock" value={state.stock} onChange={handleChange} placeholder="Stock" disabled={loading} required />
               <label htmlFor="stock" className="text-secondary small">Cantidad en Stock</label>
             </div>
             
             <div className="form-floating mb-4">
-              <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="active" name="active" value={state.active} onChange={handleChange} disabled={state.loading} required>
+              <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="active" name="active" value={state.active} onChange={handleChange} disabled={loading} required>
                 <option value="true">Activo (Disponible)</option>
                 <option value="false">Inactivo (Oculto)</option>
               </select>
               <label htmlFor="active" className="text-secondary small">Estado Operativo</label>
             </div>
             
-            <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
-              {state.loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Actualizar Inventario'}
+            <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
+              {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Actualizar Inventario'}
             </button>
           </form>
         </div>

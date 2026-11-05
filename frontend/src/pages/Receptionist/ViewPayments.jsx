@@ -1,49 +1,29 @@
-import { useContext, useEffect, useReducer, useState } from 'react';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { AuthContext } from '../../context/AuthContext';
-import { getFetch } from '../../fetchs/GetFetch';
+import { useContext } from 'react';
+import useApiRequest from '../../customHooks/useApiRequest';
 import { InvoiceContext } from '../../context/InvoiceContext';
 import { useNavigate } from 'react-router-dom';
 
-const initialState = {
-  loading: true,
-  error: null,
-  document: ''
-}
+const mapPayments = (data) => data.map((payment) => ({
+  id: payment.payId,
+  date: payment.date,
+  amount: payment.amount,
+  paymentMethod: payment.methodPayment,
+}));
 
 function ViewPayments() {
-  const [paymentResults, setPaymentResults] = useState([]);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const {auth} = useContext(AuthContext);
   const {invoice} = useContext(InvoiceContext);
   const navigate = useNavigate();
-
-  const loadPayments = async () => {
-    if (!invoice) return;
-    dispatch({type: 'LOADING', payload: true});
-    try {
-      const data = await getFetch(
-        `http://localhost:8080/receptionist/pay/invoice/${invoice.id}`,
-        auth.user
-      );
-
-      const payments = data.map((payment) => ({
-        id: payment.payId,
-        date: payment.date,
-        amount: payment.amount,
-        paymentMethod: payment.methodPayment
-      }));
-
-      setPaymentResults(payments);
-      dispatch({type: 'LOADING', payload: false});
-    } catch(error) {
-      dispatch({type: 'ERROR', payload: error.message});
-    }
-  };
-
-  useEffect(() => {
-    loadPayments();
-  },[]);
+  const {
+    data: paymentData,
+    loading,
+    error,
+  } = useApiRequest({
+    autoExecute: Boolean(invoice),
+    url: invoice ? `http://localhost:8080/receptionist/pay/invoice/${invoice.id}` : undefined,
+    method: 'GET',
+    mapper: mapPayments,
+  });
+  const paymentResults = paymentData ?? [];
 
   return (
     <div className="mx-auto" style={{ maxWidth: '900px' }}>
@@ -70,13 +50,13 @@ function ViewPayments() {
             </button>
           </div>
 
-          {state.error && (
+          {error && (
             <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-              {state.error}
+              {error}
             </div>
           )}
 
-          {state.loading ? (
+          {loading || (paymentData === null && !error) ? (
              <div className="text-center py-5">
                <span className="spinner-border text-success" role="status"></span>
                <p className="text-muted mt-2 small">Cargando pagos...</p>

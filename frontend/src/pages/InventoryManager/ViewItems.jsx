@@ -1,40 +1,32 @@
 import { useOutletContext } from 'react-router-dom';
-import { useContext, useEffect, useReducer, useState } from 'react';
-import { AuthContext } from '../../context/AuthContext';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { getFetch } from '../../fetchs/GetFetch';
+import { useState } from 'react';
+import useApiRequest from '../../customHooks/useApiRequest';
 import { 
   FaSyringe, FaTooth, FaBox, FaMask, 
   FaHandPaper, FaPrescriptionBottleAlt, FaBandAid, FaPumpSoap 
 } from 'react-icons/fa';
 
-const initialState = { loading: true, error: null };
+const mapItems = (data) => data.map((item) => ({
+  id: item.itemId,
+  name: item.name,
+  stock: item.stock,
+  active: item.active,
+}));
 
 function ViewItems() {
   const { onUpdateClick } = useOutletContext();
-  const [items, setItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const { auth } = useContext(AuthContext);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-
-  const loadItems = async () => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      const data = await getFetch('http://localhost:8080/inventory_manager/item', auth.user);
-      dispatch({ type: 'LOADING', payload: false });
-      const mappedItems = data.map((item) => ({
-        id: item.itemId,
-        name: item.name,
-        stock: item.stock,
-        active: item.active
-      }));
-      setItems(mappedItems);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    }
-  };
-
-  useEffect(() => { loadItems(); }, []);
+  const {
+    data: itemData,
+    loading,
+    error,
+  } = useApiRequest({
+    autoExecute: true,
+    url: 'http://localhost:8080/inventory_manager/item',
+    method: 'GET',
+    mapper: mapItems,
+  });
+  const items = itemData ?? [];
 
   // Función de filtro local
   const filteredItems = items.filter(item => 
@@ -88,7 +80,7 @@ function ViewItems() {
                 placeholder="Buscar insumo..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                disabled={state.loading}
+                disabled={loading}
               />
               <label className="text-secondary small">🔍 Buscar por nombre...</label>
             </div>
@@ -96,15 +88,15 @@ function ViewItems() {
         </div>
       </div>
 
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-           {state.error}
+           {error}
         </div>
       )}
 
       {/* Tabla Interactiva */}
       <div className="card shadow-sm border-0 rounded-4 overflow-hidden bg-white">
-        {state.loading ? (
+        {loading || (itemData === null && !error) ? (
           <div className="text-center py-5">
             <span className="spinner-border text-success" role="status"></span>
             <p className="text-muted mt-2 small">Cargando inventario...</p>

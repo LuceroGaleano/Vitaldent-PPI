@@ -1,50 +1,34 @@
-import { useContext, useReducer, useState } from 'react';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { AuthContext } from '../../context/AuthContext';
-import { getFetch } from '../../fetchs/GetFetch';
+import useApiRequest from '../../customHooks/useApiRequest';
+import useForm from '../../customHooks/useForm';
 import { useOutletContext } from 'react-router-dom';
 
-const initialState = {
-  loading: false,
-  error: null,
-  document: ''
-}
+const mapInvoices = (data) =>
+  data.map((invoice) => ({
+    id: invoice.invoiceId,
+    amount: invoice.total,
+    date: invoice.date,
+    isPaid: invoice.isPaid,
+  }));
 
 function ViewInvoices() {
   const { onInvoiceClick, onCreatePayClick } = useOutletContext();
-  const [invoices, setInvoices] = useState([]);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const {auth} = useContext(AuthContext);
+  const { state, handleChange } = useForm({ document: '' });
   
-  const handleChange = (e) =>{
-      dispatch({
-      type: 'OK',
-      payload: { field: e.target.name, value: e.target.value }
-      });
-  };
-
+  const {
+    execute: searchInvoices,
+    data: responseData,
+    loading,
+    error,
+  } = useApiRequest();
+  const invoices = responseData ?? [];
+  
   const handleSearch = async (e) => {
-    e.preventDefault()
-    dispatch({type: 'LOADING', payload: true});
-    try {
-      const data = await getFetch(
-        `http://localhost:8080/receptionist/invoice/patient/${state.document}`,
-        auth.user
-      );
-
-      dispatch({type: 'LOADING', payload: false});
-      
-      const mappedInvoices = data.map((invoice) => ({
-        id: invoice.invoiceId,
-        amount: invoice.total,
-        date: invoice.date,
-        isPaid: invoice.isPaid
-      }));
-
-      setInvoices(mappedInvoices);
-    } catch(error) {
-      dispatch({type: 'ERROR', payload: error.message});
-    }
+    e.preventDefault();
+    await searchInvoices({
+      url: `http://localhost:8080/receptionist/invoice/patient/${encodeURIComponent(state.document.trim())}`,
+      method: 'GET',
+      mapper: mapInvoices,
+    });
   };
 
   return (
@@ -62,19 +46,19 @@ function ViewInvoices() {
               value={state.document} 
               onChange={handleChange} 
               placeholder="Documento" 
-              disabled={state.loading}
+              disabled={loading}
               required 
             />
             <label htmlFor="document" className="text-secondary small">Documento del paciente...</label>
           </div>
-          <button type="submit" className="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" disabled={state.loading}>
-            {state.loading ? <span className="spinner-border spinner-border-sm"></span> : 'Buscar'}
+          <button type="submit" className="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" disabled={loading}>
+            {loading ? <span className="spinner-border spinner-border-sm"></span> : 'Buscar'}
           </button>
         </form>
 
-        {state.error && (
+        {error && (
           <div className="alert alert-danger mt-3 py-2 small text-center border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-             {state.error}
+             {error}
           </div>
         )}
       </div>

@@ -1,36 +1,30 @@
-import { useCallback, useContext, useEffect, useReducer, useState } from 'react';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
+import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { getFetch } from '../../fetchs/GetFetch';
+import useApiRequest from '../../customHooks/useApiRequest';
 import { useOutletContext } from 'react-router-dom';
 
-const initialState = { loading: false, error: null };
+const mapAppointments = (data) => data.map((appointment) => ({
+  id: appointment.appointmentId,
+  patient: appointment.patientName ?? 'Sin paciente',
+  document: appointment.patientDocument ?? 'Sin documento',
+  date: `${appointment.date} - ${appointment.hour}`,
+  status: appointment.appointmentStatus,
+}));
 
 function DoctorAppointments() {
   const { onAppointmentClick } = useOutletContext();
-  const [appointments, setAppointments] = useState([]);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
   const { auth } = useContext(AuthContext);
-
-  const loadAppointments = useCallback(async () => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      const data = await getFetch(`http://localhost:8080/doctor/appointment/doctor/${auth.document}`, auth.user);
-      dispatch({ type: 'LOADING', payload: false });
-      const mappedAppointments = data.map((appointment) => ({
-        id: appointment.appointmentId,
-        patient: appointment.patientName ?? 'Sin paciente',
-        document: appointment.patientDocument ?? 'Sin documento',
-        date: appointment.date + " - " + appointment.hour,
-        status: appointment.appointmentStatus
-      }));
-      setAppointments(mappedAppointments);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    }
-  }, [auth.document, auth.user]);
-
-  useEffect(() => { loadAppointments(); }, [loadAppointments]);
+  const {
+    data: appointmentData,
+    loading,
+    error,
+  } = useApiRequest({
+    autoExecute: true,
+    url: `http://localhost:8080/doctor/appointment/doctor/${auth.document}`,
+    method: 'GET',
+    mapper: mapAppointments,
+  });
+  const appointments = appointmentData ?? [];
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1000px' }}>
@@ -41,13 +35,13 @@ function DoctorAppointments() {
         </span>
       </div>
 
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {error}
         </div>
       )}
 
-      {state.loading && appointments.length === 0 ? (
+      {(loading || (appointmentData === null && !error)) ? (
         <div className="text-center py-5">
           <span className="spinner-border text-success" role="status"></span>
           <p className="text-muted mt-2 small">Cargando agenda...</p>

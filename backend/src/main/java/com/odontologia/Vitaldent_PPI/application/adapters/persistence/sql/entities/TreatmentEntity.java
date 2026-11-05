@@ -22,7 +22,8 @@ import lombok.Setter;
 public class TreatmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID treatamentId;
+    @Column(name = "treatament_id")
+    private UUID treatmentId;
 
     @Column(name = "name")
     private String name;

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record TreatmentResponse(
-    UUID treatamentId,
+    UUID treatmentId,
     String name,
     String description,
     BigDecimal cost,

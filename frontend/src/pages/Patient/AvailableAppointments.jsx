@@ -1,47 +1,40 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react'
-import { getFetch } from '../../fetchs/GetFetch';
-import { AuthContext } from '../../context/AuthContext';
-import { patchFetch } from '../../fetchs/PatchFetch';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
+import useApiRequest from '../../customHooks/useApiRequest';
 
-const initialState = { loading: true, error: null };
+const mapAppointments = (data) => data.map((item) => ({
+  id: item.appointmentId,
+  doctor: item.doctorName,
+  date: `${item.date} ${item.hour}`,
+}));
 
 export function AvailableAppointments() {
-  const [appointments, setAppointments] = useState([]);
-  const { auth } = useContext(AuthContext);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-
-  const loadAvailableAppointments = async () => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      const data = await getFetch('http://localhost:8080/patient/appointment/available', auth.user);
-      dispatch({ type: 'LOADING', payload: false });
-      const mappedAppointments = data.map((item) => ({
-        id: item.appointmentId,
-        doctor: item.doctorName,
-        date: item.date + " " + item.hour
-      }));
-      setAppointments(mappedAppointments);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    }
-  };
-
-  useEffect(() => {
-    loadAvailableAppointments();
-  }, []);
+  const {
+    execute: reloadAppointments,
+    data: appointmentData,
+    loading,
+    error,
+  } = useApiRequest({
+    autoExecute: true,
+    url: 'http://localhost:8080/patient/appointment/available',
+    method: 'GET',
+    mapper: mapAppointments,
+  });
+  const {
+    execute: scheduleRequest,
+    loading: scheduling,
+    error: scheduleError,
+  } = useApiRequest();
+  const appointments = appointmentData ?? [];
 
   const scheduleAppointment = async (id) => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await patchFetch(`http://localhost:8080/patient/appointment/${id}/schedule`, auth.user);
-      setAppointments((current) => current.filter((app) => app.id !== id));
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    } finally {
-      dispatch({ type: 'LOADING', payload: false });
+    const result = await scheduleRequest({
+      url: `http://localhost:8080/patient/appointment/${id}/schedule`,
+      method: 'PATCH',
+    });
+    if (result.success) {
+      await reloadAppointments();
     }
   };
+  const shownError = error || scheduleError;
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1000px' }}>
@@ -52,13 +45,13 @@ export function AvailableAppointments() {
         </span>
       </div>
 
-      {state.error && (
+      {shownError && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {shownError}
         </div>
       )}
 
-      {state.loading && appointments.length === 0 ? (
+      {(loading || (appointmentData === null && !error)) ? (
         <div className="text-center py-5">
           <span className="spinner-border text-success" role="status"></span>
           <p className="text-muted mt-2 small">Buscando horarios...</p>
@@ -78,9 +71,9 @@ export function AvailableAppointments() {
                     <button 
                       className="btn btn-success btn-sm w-100 rounded-3 fw-semibold py-2" 
                       onClick={() => scheduleAppointment(appointment.id)}
-                      disabled={state.loading}
+                      disabled={scheduling}
                     >
-                      {state.loading ? 'Procesando...' : 'Agendar Cita'}
+                      {scheduling ? 'Procesando...' : 'Agendar Cita'}
                     </button>
                   </div>
                 </div>

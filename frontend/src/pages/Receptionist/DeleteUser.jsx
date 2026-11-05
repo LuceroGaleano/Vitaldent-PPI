@@ -1,17 +1,13 @@
-import { useContext, useReducer, useState } from "react";
-import { apiFetchReduce } from "../../reduces/ApiFetchReduce";
-import { AuthContext } from "../../context/AuthContext";
-import { deleteFetch } from "../../fetchs/DeleteFetch";
+import { useReducer, useState } from "react";
+import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
+import useApiRequest from "../../customHooks/useApiRequest";
 
-const initialState = {
-  loading: false,
-  error: null
-};
+const initialState = { document: '' };
 
 function DeleteUser() {
   const [usuarioEliminado, setUsuarioEliminado] = useState(false);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const { auth } = useContext(AuthContext);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { execute: deleteUser, loading, error } = useApiRequest();
 
   const handleChange = (e) => {
     dispatch({
@@ -22,13 +18,12 @@ function DeleteUser() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await deleteFetch(`http://localhost:8080/receptionist/user/${state.document}`, auth.user);
-      dispatch({ type: 'LOADING', payload: false });
+    const result = await deleteUser({
+      url: `http://localhost:8080/receptionist/user/${encodeURIComponent(state.document.trim())}`,
+      method: 'DELETE',
+    });
+    if (result.success) {
       setUsuarioEliminado(true);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
     }
   };
 
@@ -42,12 +37,12 @@ function DeleteUser() {
         <p className="text-muted small">Ingresa el documento del usuario a eliminar.</p>
       </div>
 
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error.message}
+          {error}
         </div>
       )}
-
+      
       {usuarioEliminado ? (
         <div className="alert alert-success border-0 bg-success bg-opacity-10 text-success shadow-sm d-flex flex-column align-items-center justify-content-center text-center p-4 rounded-4">
           <span className="fs-1 mb-2">✅</span>
@@ -65,17 +60,20 @@ function DeleteUser() {
               name="document" 
               value={state.document} 
               onChange={handleChange} 
-              disabled={state.loading}
+              disabled={loading}
               required 
             />
             <label htmlFor="document" className="text-secondary small">Documento del usuario</label>
           </div>
-          <button type="submit" className="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
-            {state.loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Buscando...</> : 'Eliminar Usuario'}
+          <button type="submit" className="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
+            {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Buscando...</> : 'Eliminar Usuario'}
           </button>
         </form>
       )}
+
+      
     </div>
+    
   );
 }
 

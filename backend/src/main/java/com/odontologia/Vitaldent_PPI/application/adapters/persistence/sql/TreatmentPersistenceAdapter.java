@@ -51,12 +51,12 @@ public class TreatmentPersistenceAdapter implements TreatmentPort {
     @Override
     public void save(Treatment treatment) {
         TreatmentEntity savedEntity = treatmentRepository.save(toEntity(treatment));
-        treatment.setTreatamentId(savedEntity.getTreatamentId());
+        treatment.setTreatmentId(savedEntity.getTreatmentId());
     }
 
     @Override
     public void update(Treatment treatment) {
-        TreatmentEntity existingEntity = treatmentRepository.findById(treatment.getTreatamentId()).orElse(null);
+        TreatmentEntity existingEntity = treatmentRepository.findById(treatment.getTreatmentId()).orElse(null);
         if (existingEntity != null) {
             existingEntity.setName(treatment.getName());
             existingEntity.setDescription(treatment.getDescription());
@@ -73,7 +73,7 @@ public class TreatmentPersistenceAdapter implements TreatmentPort {
             return null;
         }
         Treatment treatment = new Treatment();
-        treatment.setTreatamentId(entity.getTreatamentId());
+        treatment.setTreatmentId(entity.getTreatmentId());
         treatment.setName(entity.getName());
         treatment.setDescription(entity.getDescription());
         treatment.setCost(entity.getCost());
@@ -84,7 +84,7 @@ public class TreatmentPersistenceAdapter implements TreatmentPort {
                 treatmentItem.setTreatmentItemId(itemEntity.getTreatmentItemId());
                 treatmentItem.setTreatmentId(itemEntity.getTreatment() == null
                     ? null
-                    : itemEntity.getTreatment().getTreatamentId());
+                    : itemEntity.getTreatment().getTreatmentId());
                 treatmentItem.setQuantityUsed(itemEntity.getQuantityUsed());
                 treatmentItem.setItemId(itemEntity.getItem() == null ? null : itemEntity.getItem().getItemId());
                 treatmentItems.add(treatmentItem);

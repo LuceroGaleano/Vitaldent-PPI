@@ -1,6 +1,7 @@
-export const apiFetchReduce = (state, action = {}) => {
+export const apiFetchReducer = (state, action = {}) => {
   switch (action.type) {
     case 'OK':
+    case 'UPDATE_FIELD':
       return {
         ...state,
         [action.payload.field]: action.payload.value
@@ -9,7 +10,7 @@ export const apiFetchReduce = (state, action = {}) => {
       return {
         ...state,
         loading: action.payload,
-        error: null
+        error: action.payload ? null : state.error
       };
     case 'ERROR':
       return {
@@ -21,8 +22,8 @@ export const apiFetchReduce = (state, action = {}) => {
       return{
         ...state,
         ...action.payload,
-        loanding: false,
-        errro: null
+        loading: false,
+        error: null
       }
     default:
       return state;

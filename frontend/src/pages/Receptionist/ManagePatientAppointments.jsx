@@ -1,17 +1,15 @@
-import { useContext, useReducer, useState } from 'react';
-import { getFetch } from '../../fetchs/GetFetch';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { AuthContext } from '../../context/AuthContext';
-import { patchFetch } from '../../fetchs/PatchFetch';
+import { useReducer, useState } from 'react';
+import { apiFetchReducer } from '../../reduces/ApiFetchReducer';
+import useApiRequest from '../../customHooks/useApiRequest';
 
-const initialState = { loading: false, error: null, document: '' };
+const initialState = { document: '' };
 
 function ManagePatientAppointments() {
   const [patient, setPatient] = useState(null);
   const [availableAppointments, setAvailableAppointments] = useState([]);
   const [patientAppointments, setPatientAppointments] = useState([]);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const { auth } = useContext(AuthContext);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { execute, loading, error } = useApiRequest();
 
   const handleChange = (e) => {
     dispatch({ type: 'OK', payload: { field: e.target.name, value: e.target.value } });
@@ -19,24 +17,22 @@ function ManagePatientAppointments() {
 
   const findPatient = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      const foundPatient = await getFetch(`http://localhost:8080/receptionist/patient/${state.document}`, auth.user);
-      setPatient(foundPatient);
-      dispatch({ type: 'LOADING', payload: false });
+    const result = await execute({
+      url: `http://localhost:8080/receptionist/patient/${encodeURIComponent(state.document.trim())}`,
+      method: 'GET',
+    });
+    if (result.success) {
+      setPatient(result.data);
       await loadAvailableAppointments();
-      await loadPatientAppointments(foundPatient.document);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
+      await loadPatientAppointments(result.data.document);
     }
   };
 
   const loadAvailableAppointments = async () => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      const data = await getFetch(`http://localhost:8080/receptionist/appointment`, auth.user);
-      dispatch({ type: 'LOADING', payload: false });
-      const mappedAppointments = data
+    const result = await execute({
+      url: 'http://localhost:8080/receptionist/appointment',
+      method: 'GET',
+      mapper: (data) => data
         .filter((appointment) => appointment.appointmentStatus === 'AVAILABLE')
         .map((appointment) => ({
           id: appointment.appointmentId,
@@ -44,19 +40,18 @@ function ManagePatientAppointments() {
           doctor: appointment.doctorName,
           date: appointment.date + " - " + appointment.hour,
           status: appointment.appointmentStatus
-        }));
-      setAvailableAppointments(mappedAppointments);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
+        })),
+    });
+    if (result.success) {
+      setAvailableAppointments(result.data);
     }
   };
 
   const loadPatientAppointments = async (document) => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      const data = await getFetch(`http://localhost:8080/receptionist/appointment/patient/${document}`, auth.user);
-      dispatch({ type: 'LOADING', payload: false });
-      const mappedPatientAppointments = data
+    const result = await execute({
+      url: `http://localhost:8080/receptionist/appointment/patient/${encodeURIComponent(document)}`,
+      method: 'GET',
+      mapper: (data) => data
         .filter((appointment) => appointment.appointmentStatus === 'SCHEDULED')
         .map((appointment) => ({
           id: appointment.appointmentId,
@@ -64,37 +59,33 @@ function ManagePatientAppointments() {
           doctor: appointment.doctorName,
           date: appointment.date + " - " + appointment.hour,
           status: appointment.appointmentStatus
-        }));
-      setPatientAppointments(mappedPatientAppointments);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
+        })),
+    });
+    if (result.success) {
+      setPatientAppointments(result.data);
     }
   };
 
   const scheduleAppointment = async (id, document) => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await patchFetch(`http://localhost:8080/receptionist/appointment/${id}/${document}/schedule`, auth.user);
+    const result = await execute({
+      url: `http://localhost:8080/receptionist/appointment/${id}/${encodeURIComponent(document)}/schedule`,
+      method: 'PATCH',
+    });
+    if (result.success) {
       setAvailableAppointments((current) => current.filter((app) => app.id !== id));
       await loadPatientAppointments(patient.document);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    } finally {
-      dispatch({ type: 'LOADING', payload: false });
     }
   };
 
   const cancelAppointment = async (id, document) => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await patchFetch(`http://localhost:8080/receptionist/appointment/${id}/cancel`, auth.user);
+    const result = await execute({
+      url: `http://localhost:8080/receptionist/appointment/${id}/cancel`,
+      method: 'PATCH',
+    });
+    if (result.success) {
       setAvailableAppointments((current) => current.filter((app) => app.id !== id));
       await loadPatientAppointments(document);
       await loadAvailableAppointments();
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    } finally {
-      dispatch({ type: 'LOADING', payload: false });
     }
   };
 
@@ -105,15 +96,15 @@ function ManagePatientAppointments() {
         
         <form onSubmit={findPatient} className="d-flex gap-3">
           <div className="form-floating flex-grow-1">
-            <input type="text" className="form-control rounded-3 bg-light shadow-none border-light-subtle" placeholder="Documento" id="document" name="document" value={state.document} onChange={handleChange} disabled={state.loading} required />
+            <input type="text" className="form-control rounded-3 bg-light shadow-none border-light-subtle" placeholder="Documento" id="document" name="document" value={state.document} onChange={handleChange} disabled={loading} required />
             <label htmlFor="document" className="text-secondary small">Buscar por Documento...</label>
           </div>
-          <button type="submit" className="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" disabled={state.loading}>
-            {state.loading ? <span className="spinner-border spinner-border-sm"></span> : 'Buscar'}
+          <button type="submit" className="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" disabled={loading}>
+            {loading ? <span className="spinner-border spinner-border-sm"></span> : 'Buscar'}
           </button>
         </form>
 
-        {state.error && <div className="alert alert-danger mt-3 py-2 small text-center border-0 bg-danger bg-opacity-10 text-danger fw-semibold">{state.error}</div>}
+        {error && <div className="alert alert-danger mt-3 py-2 small text-center border-0 bg-danger bg-opacity-10 text-danger fw-semibold">{error}</div>}
       </div>
 
       {patient && (
@@ -139,7 +130,7 @@ function ManagePatientAppointments() {
                           <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill">Disponible</span>
                         </div>
                         <p className="small text-muted mb-3">📅 {app.date}</p>
-                        <button className="btn btn-success btn-sm w-100 rounded-3 fw-semibold" onClick={() => scheduleAppointment(app.id, patient.document)} disabled={state.loading}>
+                        <button className="btn btn-success btn-sm w-100 rounded-3 fw-semibold" onClick={() => scheduleAppointment(app.id, patient.document)} disabled={loading}>
                           Agendar Cita
                         </button>
                       </div>
@@ -163,7 +154,7 @@ function ManagePatientAppointments() {
                           <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill">Programada</span>
                         </div>
                         <p className="small text-muted mb-3">📅 {app.date}</p>
-                        <button className="btn btn-outline-danger btn-sm w-100 rounded-3 fw-semibold" onClick={() => cancelAppointment(app.id, patient.document)} disabled={state.loading}>
+                        <button className="btn btn-outline-danger btn-sm w-100 rounded-3 fw-semibold" onClick={() => cancelAppointment(app.id, patient.document)} disabled={loading}>
                           Cancelar Cita
                         </button>
                       </div>

@@ -65,7 +65,7 @@ function OdontologistPortal() {
   };
 
   const handleLogout = () => {
-    setAuth({ logged: false, user: null });
+    setAuth({ logged: false, token: null });
     navigate('/');
   };
 

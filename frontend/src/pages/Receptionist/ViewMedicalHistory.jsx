@@ -1,18 +1,24 @@
-import { useContext, useReducer, useState } from 'react';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { AuthContext } from '../../context/AuthContext';
-import { getFetch } from '../../fetchs/GetFetch';
+import { useReducer } from 'react';
+import { apiFetchReducer } from '../../reduces/ApiFetchReducer';
+import useApiRequest from '../../customHooks/useApiRequest';
 
-const initialState = {
-  loading: false,
-  error: null,
-  document: ''
-}
+const initialState = { document: '' };
+const mapClinicalHistory = (data) => data.map((record) => ({
+  id: record.clinicalRecordId,
+  date: record.date,
+  reason: record.reasonForConsultation,
+  diagnosis: record.diagnostic,
+}));
 
 function ViewMedicalHistory() {
-  const [results, setResults] = useState([]);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const {auth} = useContext(AuthContext);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const {
+    execute: searchHistory,
+    data: resultData,
+    loading,
+    error,
+  } = useApiRequest();
+  const results = resultData ?? [];
   
   const handleChange = (e) =>{
       dispatch({
@@ -22,26 +28,12 @@ function ViewMedicalHistory() {
   };
 
   const handleSearch = async (e) => {
-    e.preventDefault()
-    dispatch({type: 'LOADING', payload: true});
-    try {
-      const data = await getFetch(
-        `http://localhost:8080/receptionist/clinical_record/patient/${state.document}`,
-        auth.user
-      );
-
-      dispatch({type: 'LOADING', payload: false});
-      const clinicalHistory = data.map((record) => ({
-        id: record.clinicalRecordId,
-        date: record.date,
-        reason: record.reasonForConsultation,
-        diagnosis: record.diagnostic
-      }));
-
-      setResults(clinicalHistory);
-    } catch(error) {
-      dispatch({type: 'ERROR', payload: error.message});
-    }
+    e.preventDefault();
+    await searchHistory({
+      url: `http://localhost:8080/receptionist/clinical_record/patient/${encodeURIComponent(state.document.trim())}`,
+      method: 'GET',
+      mapper: mapClinicalHistory,
+    });
   };
 
   return (
@@ -59,19 +51,19 @@ function ViewMedicalHistory() {
               value={state.document} 
               onChange={handleChange} 
               placeholder="Documento"
-              disabled={state.loading}
+              disabled={loading}
               required 
             />
             <label htmlFor="document" className="text-secondary small">Documento del paciente...</label>
           </div>
-          <button type="submit" className="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" disabled={state.loading}>
-            {state.loading ? <span className="spinner-border spinner-border-sm"></span> : 'Buscar'}
+          <button type="submit" className="btn btn-primary rounded-3 px-4 fw-semibold shadow-sm" disabled={loading}>
+            {loading ? <span className="spinner-border spinner-border-sm"></span> : 'Buscar'}
           </button>
         </form>
 
-        {state.error && (
+        {error && (
           <div className="alert alert-danger mt-3 py-2 small text-center border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-             {state.error}
+             {error}
           </div>
         )}
       </div>

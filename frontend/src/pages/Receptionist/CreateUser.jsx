@@ -1,7 +1,6 @@
-import { useContext, useReducer } from "react";
-import { apiFetchReduce } from "../../reduces/ApiFetchReduce";
-import { postFetch } from "../../fetchs/PostFetch";
-import { AuthContext } from "../../context/AuthContext";
+import { useReducer } from "react";
+import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
+import useApiRequest from "../../customHooks/useApiRequest";
 import { useNavigate } from "react-router-dom";
 
 const initialState = {
@@ -14,13 +13,11 @@ const initialState = {
   address: '',
   birthDate: '',
   rol: '',
-  loading: false,
-  error: null
 };
 
 function CreateUser() {
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const { auth } = useContext(AuthContext);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { execute: createUser, loading, error } = useApiRequest();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -32,10 +29,10 @@ function CreateUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await postFetch('http://localhost:8080/receptionist/user',
-        {
+    const result = await createUser({
+      url: 'http://localhost:8080/receptionist/user',
+      method: 'POST',
+      body: {
           userName: state.userName,
           fullName: state.fullName,
           document: state.document,
@@ -45,14 +42,10 @@ function CreateUser() {
           address: state.address,
           birthDate: state.birthDate,
           rol: state.rol
-        },
-        auth.user
-      );
-
-      dispatch({ type: 'LOADING', payload: false });
+      },
+    });
+    if (result.success) {
       navigate('/receptionist/viewAppointments');
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
     }
   };
 
@@ -60,9 +53,9 @@ function CreateUser() {
     <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mx-auto" style={{ maxWidth: '800px', width: '100%' }}>
       <h2 className="text-success fw-bold mb-4 text-center">Crear Empleado</h2>
       
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {error}
         </div>
       )}
 
@@ -70,47 +63,47 @@ function CreateUser() {
         <h5 className="text-muted small mb-3 border-bottom pb-2">Datos Personales</h5>
         <div className="row g-3 mb-3">
           <div className="col-md-6 form-floating">
-            <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="fullName" name="fullName" value={state.fullName} onChange={handleChange} placeholder="Nombre" disabled={state.loading} required />
+            <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="fullName" name="fullName" value={state.fullName} onChange={handleChange} placeholder="Nombre" disabled={loading} required />
             <label htmlFor="fullName" className="text-secondary small ms-2">Nombre Completo</label>
           </div>
           <div className="col-md-6 form-floating">
-            <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="document" name="document" value={state.document} onChange={handleChange} placeholder="Documento" disabled={state.loading} required />
+            <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="document" name="document" value={state.document} onChange={handleChange} placeholder="Documento" disabled={loading} required />
             <label htmlFor="document" className="text-secondary small ms-2">Documento</label>
           </div>
         </div>
 
         <div className="row g-3 mb-3">
           <div className="col-md-4 form-floating">
-            <input type="email" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="email" name="email" value={state.email} onChange={handleChange} placeholder="Correo" disabled={state.loading} required />
+            <input type="email" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="email" name="email" value={state.email} onChange={handleChange} placeholder="Correo" disabled={loading} required />
             <label htmlFor="email" className="text-secondary small ms-2">Correo</label>
           </div>
           <div className="col-md-4 form-floating">
-            <input type="tel" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="phone" name="phone" value={state.phone} onChange={handleChange} placeholder="Teléfono" disabled={state.loading} required />
+            <input type="tel" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="phone" name="phone" value={state.phone} onChange={handleChange} placeholder="Teléfono" disabled={loading} required />
             <label htmlFor="phone" className="text-secondary small ms-2">Teléfono</label>
           </div>
           <div className="col-md-4 form-floating">
-            <input type="date" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="birthDate" name="birthDate" value={state.birthDate} onChange={handleChange} disabled={state.loading} required />
+            <input type="date" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="birthDate" name="birthDate" value={state.birthDate} onChange={handleChange} disabled={loading} required />
             <label htmlFor="birthDate" className="text-secondary small ms-2">Nacimiento</label>
           </div>
         </div>
         
         <div className="form-floating mb-4">
-          <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="address" name="address" value={state.address} onChange={handleChange} placeholder="Dirección" disabled={state.loading} required />
+          <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="address" name="address" value={state.address} onChange={handleChange} placeholder="Dirección" disabled={loading} required />
           <label htmlFor="address" className="text-secondary small">Dirección de Residencia</label>
         </div>
 
         <h5 className="text-muted small mb-3 border-bottom pb-2">Credenciales de Acceso</h5>
         <div className="row g-3 mb-4">
           <div className="col-md-4 form-floating">
-            <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="userName" name="userName" value={state.userName} onChange={handleChange} placeholder="Usuario" disabled={state.loading} required />
+            <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="userName" name="userName" value={state.userName} onChange={handleChange} placeholder="Usuario" disabled={loading} required />
             <label htmlFor="userName" className="text-secondary small ms-2">Usuario</label>
           </div>
           <div className="col-md-4 form-floating">
-            <input type="password" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="password" name="password" value={state.password} onChange={handleChange} placeholder="Contraseña" disabled={state.loading} required />
+            <input type="password" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="password" name="password" value={state.password} onChange={handleChange} placeholder="Contraseña" disabled={loading} required />
             <label htmlFor="password" className="text-secondary small ms-2">Contraseña</label>
           </div>
           <div className="col-md-4 form-floating">
-            <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="rol" name="rol" value={state.rol} onChange={handleChange} disabled={state.loading} required>
+            <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="rol" name="rol" value={state.rol} onChange={handleChange} disabled={loading} required>
               <option value="" disabled>Seleccionar...</option>
               <option value="DOCTOR">Odontólogo</option>
               <option value="INVENTORY_MANAGER">Gestor Inventario</option>
@@ -120,8 +113,8 @@ function CreateUser() {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
-          {state.loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Crear Usuario'}
+        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
+          {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Crear Usuario'}
         </button>
       </form>
     </div>

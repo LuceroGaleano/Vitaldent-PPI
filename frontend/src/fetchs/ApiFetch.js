@@ -1,4 +1,4 @@
-export const postFetch = async (url, body, token = null) => {
+export const apiFetch = async ({url, method, body = null, token = null}) => {
   const headers = {
     'Content-Type': 'application/json'
   };
@@ -8,9 +8,9 @@ export const postFetch = async (url, body, token = null) => {
   }
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: method,
     headers,
-    body: JSON.stringify(body)
+    body: body ? JSON.stringify(body) : null
   });
 
   const responseText = await response.text();

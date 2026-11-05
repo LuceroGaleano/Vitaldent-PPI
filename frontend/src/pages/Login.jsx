@@ -1,18 +1,17 @@
 import { useContext, useReducer } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { postFetch } from '../fetchs/PostFetch';
 import { AuthContext } from '../context/AuthContext';
-import { apiFetchReduce } from '../reduces/ApiFetchReduce';
+import { apiFetchReducer } from '../reduces/ApiFetchReducer';
+import useApiRequest from '../customHooks/useApiRequest';
 
 function Login() {
   const initialState = {
     username: '',
-    password: '',
-    loading: false,
-    error: null
+    password: ''
   };
 
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { execute: login, loading, error } = useApiRequest();
   const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
 
@@ -25,25 +24,23 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
-
-    try {
-      const data = await postFetch(
-        'http://localhost:8080/auth/login',
-        {
+    const result = await login({
+      url: 'http://localhost:8080/auth/login',
+      method: 'POST',
+      body: {
           username: state.username,
           password: state.password
-        }
-      );
+      },
+    });
 
+    if (result.success) {
+      const { data } = result;
       setAuth({
         logged: true,
-        user: data.token,
+        token: data.token,
         document: data.document
       });
-      
-      dispatch({ type: 'LOADING', payload: false });
-      
+
       if (data.role === 'RECEPTIONIST') {
         navigate('/receptionist');
       } else if (data.role === 'DOCTOR') {
@@ -55,11 +52,6 @@ function Login() {
       } else {
         navigate('/');
       }
-    } catch (error) {
-      dispatch({
-        type: 'ERROR',
-        payload: error.message
-      });
     }
   }
 
@@ -81,9 +73,9 @@ function Login() {
           </div>
 
           {/* Alerta de Error */}
-          {state.error && (
+          {error && (
             <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-              {state.error}
+              {error}
             </div>
           )}
 
@@ -98,7 +90,7 @@ function Login() {
                 onChange={handleChange}
                 className="form-control form-control-lg rounded-3 border-light-subtle shadow-none bg-light"
                 placeholder="Ingresa tu credencial"
-                disabled={state.loading}
+                disabled={loading}
                 required
               />
               <label htmlFor="user" className="text-secondary small">Usuario o Correo</label>
@@ -113,7 +105,7 @@ function Login() {
                 onChange={handleChange}
                 className="form-control form-control-lg rounded-3 border-light-subtle shadow-none bg-light"
                 placeholder="Ingresa tu contraseña"
-                disabled={state.loading}
+                disabled={loading}
                 required
               />
               <label htmlFor="pass" className="text-secondary small">Contraseña</label>
@@ -123,9 +115,9 @@ function Login() {
             <button 
               type="submit" 
               className="btn btn-success btn-lg w-100 fs-6 fw-semibold shadow-sm rounded-3 py-3"
-              disabled={state.loading}
+              disabled={loading}
             >
-              {state.loading ? (
+              {loading ? (
                 <>
                   <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
                   Validando credenciales...

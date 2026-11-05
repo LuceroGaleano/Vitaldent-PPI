@@ -1,9 +1,8 @@
 import { useContext, useReducer } from "react";
 import { AppointmentContext } from "../../context/AppointmentContext";
 import { TreatmentContext } from "../../context/TreatmentContext";
-import { apiFetchReduce } from "../../reduces/ApiFetchReduce";
-import { postFetch } from "../../fetchs/PostFetch";
-import { AuthContext } from "../../context/AuthContext";
+import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
+import useApiRequest from "../../customHooks/useApiRequest";
 import { useNavigate } from "react-router-dom";
 
 const initialState = {
@@ -12,15 +11,13 @@ const initialState = {
   diagnostic: '',
   appointmentId: '',
   treatmentId: '',
-  loading: false,
-  error: null
 };
 
 function CreateMedicalHistory() {
   const { appointment } = useContext(AppointmentContext);
   const { treatment } = useContext(TreatmentContext);
-  const { auth } = useContext(AuthContext);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { execute: createClinicalRecord, loading, error } = useApiRequest();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -29,19 +26,19 @@ function CreateMedicalHistory() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await postFetch('http://localhost:8080/doctor/clinical_record', {
-        reasonForConsultation: state.reason,
+    const result = await createClinicalRecord({
+      url: 'http://localhost:8080/doctor/clinical_record',
+      method: 'POST',
+      body: {
+        reasonForConsultation: state.reasonForConsultation,
         record: state.record,
         diagnostic: state.diagnostic,
         appointmentId: appointment.id,
-        treatmentId: treatment.id
-      }, auth.user);
-      dispatch({ type: 'LOADING', payload: false });
+        treatmentId: treatment.id,
+      },
+    });
+    if (result.success) {
       navigate('/odontologist/appointments');
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
     }
   };
 
@@ -49,9 +46,9 @@ function CreateMedicalHistory() {
     <div className="mx-auto" style={{ maxWidth: '800px' }}>
       <h2 className="text-success fw-bold mb-4 text-center">Registrar Historial Clínico</h2>
 
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {error}
         </div>
       )}
       
@@ -97,20 +94,20 @@ function CreateMedicalHistory() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-floating mb-3">
-              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="reason" name="reason" value={state.reason} onChange={handleChange} placeholder="Razón" disabled={state.loading} required />
-              <label htmlFor="reason" className="text-secondary small">Razón de la consulta</label>
+              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="reasonForConsultation" name="reasonForConsultation" value={state.reasonForConsultation} onChange={handleChange} placeholder="Razón" disabled={loading} required />
+              <label htmlFor="reasonForConsultation" className="text-secondary small">Razón de la consulta</label>
             </div>
             <div className="form-floating mb-3">
-              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="record" name="record" value={state.record} onChange={handleChange} placeholder="Nota" disabled={state.loading} required />
+              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="record" name="record" value={state.record} onChange={handleChange} placeholder="Nota" disabled={loading} required />
               <label htmlFor="record" className="text-secondary small">Nota clínica (Evolución)</label>
             </div>
             <div className="form-floating mb-4">
-              <textarea className="form-control rounded-3 border-light-subtle bg-light shadow-none" placeholder="Diagnóstico" id="diagnostic" name="diagnostic" value={state.diagnostic} onChange={handleChange} style={{ height: '120px' }} disabled={state.loading} required></textarea>
+              <textarea className="form-control rounded-3 border-light-subtle bg-light shadow-none" placeholder="Diagnóstico" id="diagnostic" name="diagnostic" value={state.diagnostic} onChange={handleChange} style={{ height: '120px' }} disabled={loading} required></textarea>
               <label htmlFor="diagnostic" className="text-secondary small">Diagnóstico Médico</label>
             </div>
             
-            <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
-              {state.loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Guardar Historial Clínico'}
+            <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
+              {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Guardar Historial Clínico'}
             </button>
           </form>
         </div>

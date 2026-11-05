@@ -1,60 +1,53 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react'
-import { getFetch } from '../../fetchs/GetFetch';
-import { AuthContext } from '../../context/AuthContext';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { patchFetch } from '../../fetchs/PatchFetch';
+import useApiRequest from '../../customHooks/useApiRequest';
 
-const initialState = { loading: true, error: null };
+const mapAppointments = (data) => data.map((item) => ({
+  id: item.appointmentId,
+  doctor: item.doctorName,
+  date: `${item.date} ${item.hour}`,
+  status: item.appointmentStatus,
+}));
 
 export function MyAppointments() {
-  const [myAppointments, setMyAppointments] = useState([]);
-  const { auth } = useContext(AuthContext);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-
-  const loadMyAppointments = async() => {
-    dispatch({type: 'LOADING', payload:true})
-    try {
-      const data = await getFetch('http://localhost:8080/patient/appointment', auth.user);
-      dispatch({type: 'LOADING', payload: false})
-      const mappedAppointments = data.map((item) => ({
-        id: item.appointmentId,
-        doctor: item.doctorName,
-        date: item.date + " " + item.hour,
-        status: item.appointmentStatus
-      }));
-      setMyAppointments(mappedAppointments);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    }
-  }
-  
-  useEffect(() => {
-    loadMyAppointments();
-  }, []);
+  const {
+    execute: reloadAppointments,
+    data: appointmentData,
+    loading,
+    error,
+  } = useApiRequest({
+    autoExecute: true,
+    url: 'http://localhost:8080/patient/appointment',
+    method: 'GET',
+    mapper: mapAppointments,
+  });
+  const {
+    execute: cancelRequest,
+    loading: cancelling,
+    error: cancelError,
+  } = useApiRequest();
+  const myAppointments = appointmentData ?? [];
 
   const cancelAppointment = async (id) => {
-    dispatch({type: 'LOADING', payload:true})
-    try {
-      await patchFetch(`http://localhost:8080/patient/appointment/${id}/cancel`, auth.user);
-      setMyAppointments((current) => current.filter((app) => app.id !== id));
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    } finally {
-      dispatch({ type: 'LOADING', payload: false });
+    const result = await cancelRequest({
+      url: `http://localhost:8080/patient/appointment/${id}/cancel`,
+      method: 'PATCH',
+    });
+    if (result.success) {
+      await reloadAppointments();
     }
   };
+  const shownError = error || cancelError;
 
   return (
     <div className="mx-auto" style={{ maxWidth: '900px' }}>
       <h2 className="text-success fw-bold mb-4">Mis Citas Agendadas</h2>
       
-      {state.error && (
+      {shownError && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {shownError}
         </div>
       )}
 
-      {state.loading && myAppointments.length === 0 ? (
+      {(loading || (appointmentData === null && !error)) ? (
         <div className="text-center py-5">
           <span className="spinner-border text-success" role="status"></span>
         </div>
@@ -84,9 +77,9 @@ export function MyAppointments() {
                     <button 
                       className="btn btn-outline-danger btn-sm w-100 rounded-3 mt-3 fw-semibold py-2" 
                       onClick={() => cancelAppointment(appointment.id)}
-                      disabled={state.loading}
+                      disabled={cancelling}
                     >
-                      {state.loading ? 'Cancelando...' : 'Cancelar Cita'}
+                      {cancelling ? 'Cancelando...' : 'Cancelar Cita'}
                     </button>
                   )}
                 </div>

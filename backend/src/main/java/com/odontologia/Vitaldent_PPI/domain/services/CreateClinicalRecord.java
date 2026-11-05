@@ -109,7 +109,7 @@ public class CreateClinicalRecord {
 
         record.setDate(LocalDate.now());
         record.setAppointmentId(appointment.getAppointmentId());
-        record.setTreatmentId(treatment.getTreatamentId());
+        record.setTreatmentId(treatment.getTreatmentId());
         appointment.setAppointmentStatus(AppointmentStatus.COMPLETED);
         ClinicalRecord savedRecord = clinicalRecordPort.save(record);
         appointmentPort.update(appointment);

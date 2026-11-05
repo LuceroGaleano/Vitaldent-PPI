@@ -4,9 +4,17 @@ import { AuthContext } from "./AuthContext"
 export const AuthProvider = ({children}) => {
     const [auth, setAuth] = useState(() => {
         const storageAuth = localStorage.getItem("auth");
-        return storageAuth ? JSON.parse(storageAuth) : {
+        if (storageAuth) {
+            const { user, ...storedAuth } = JSON.parse(storageAuth);
+            return {
+                ...storedAuth,
+                token: storedAuth.token ?? user ?? null
+            };
+        }
+
+        return {
             logged: false,
-            user: null,
+            token: null,
             document: null
         }
     })

@@ -1,47 +1,35 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react'
-import { getFetch } from '../../fetchs/GetFetch';
-import { AuthContext } from '../../context/AuthContext';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
+import useApiRequest from '../../customHooks/useApiRequest';
 
-const initialState = { loading: true, error: null };
+const mapClinicalHistory = (data) => data.map((item) => ({
+  id: item.clinicalRecordId,
+  date: item.date,
+  description: item.diagnostic,
+}));
 
 export function PatientClinicalHistory() {
-  const [clinicalHistory, setClinicalHistory] = useState([]);
-  const { auth } = useContext(AuthContext);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-
-  const loadClinicalHistory = async () => {
-    dispatch({type: 'LOADING', payload: true});
-    try {
-      const data = await getFetch('http://localhost:8080/patient/clinical_record', auth.user);
-      dispatch({type: 'LOADING', payload: false});
-      const mappedHistory = data.map((item) => ({
-        id: item.clinicalRecordId,
-        date: item.date,
-        description: item.diagnostic
-      }));
-      setClinicalHistory(mappedHistory);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    }
-  }
-  
-  // ¡Corregido el bucle infinito dejando el arreglo de dependencias vacío!
-  useEffect(() => {
-    loadClinicalHistory();
-  }, []);
+  const {
+    data: historyData,
+    loading,
+    error,
+  } = useApiRequest({
+    autoExecute: true,
+    url: 'http://localhost:8080/patient/clinical_record',
+    method: 'GET',
+    mapper: mapClinicalHistory,
+  });
+  const clinicalHistory = historyData ?? [];
 
   return (
     <div className="mx-auto" style={{ maxWidth: '800px' }}>
       <h2 className="text-success fw-bold mb-4">Historial Clínico</h2>
       
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-           {state.error}
+           {error}
         </div>
       )}
 
-      {state.loading && clinicalHistory.length === 0 ? (
+      {(loading || (historyData === null && !error)) ? (
         <div className="text-center py-5">
           <span className="spinner-border text-success" role="status"></span>
         </div>

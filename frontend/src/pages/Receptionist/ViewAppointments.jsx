@@ -1,10 +1,4 @@
-import { useContext, useEffect, useReducer, useState } from 'react';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { AuthContext } from '../../context/AuthContext';
-import { getFetch } from '../../fetchs/GetFetch';
-import { patchFetch } from '../../fetchs/PatchFetch';
-
-const initialState = { loading: true, error: null, document: '' };
+import useApiRequest from '../../customHooks/useApiRequest';
 
 const STATUS_LABELS = {
   AVAILABLE: 'Disponible',
@@ -25,45 +19,49 @@ const translateStatus = (status) => STATUS_LABELS[status] ?? status;
 const getStatusClasses = (status) =>
   `${STATUS_STYLES[status] ?? 'bg-secondary text-secondary border-secondary'} bg-opacity-10 border border-opacity-25`;
 
+//El mapeo de las citas
+const mapAppointments = (data) =>
+  data.map((appointment) => ({
+    id: appointment.appointmentId,
+    patient: appointment.patientName ?? 'Sin paciente',
+    doctor: appointment.doctorName,
+    date: appointment.date,
+    hour: appointment.hour,
+    status: appointment.appointmentStatus,
+  }));
+
 function ViewAppointments() {
-  const [appointments, setAppointments] = useState([]);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const { auth } = useContext(AuthContext);
+  const {
+    execute: reloadAppointments,
+    data: appointmentData,
+    loading: loadingAppointments,
+    error,
+  } = useApiRequest({
+    autoExecute: true,
+    url: 'http://localhost:8080/receptionist/appointment',
+    method: 'GET',
+    mapper: mapAppointments,
+  });
+  
+  const {
+    execute: closeAppointmentRequest,
+    loading: closing,
+    error: actionError,
+  } = useApiRequest();
+  const appointments = appointmentData ?? [];
 
+  //Si selecciona cancelar, ejecutamos la petición y recargamos las citas.
   const closeAppointment = async (id) => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await patchFetch(`http://localhost:8080/receptionist/appointment/${id}/close`, auth.user);
-      window.location.reload();
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    } finally {
-      dispatch({ type: 'LOADING', payload: false });
+    const result = await closeAppointmentRequest({
+        url: `http://localhost:8080/receptionist/appointment/${id}/close`,
+        method: 'PATCH',
+      });
+
+    if (result.success) {
+      await reloadAppointments();
     }
   };
-
-  const loadAppointments = async () => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      const data = await getFetch(`http://localhost:8080/receptionist/appointment`, auth.user);
-      dispatch({ type: 'LOADING', payload: false });
-      const mappedAppointments = data.map((appointment) => ({
-        id: appointment.appointmentId,
-        patient: appointment.patientName ?? 'Sin paciente',
-        doctor: appointment.doctorName,
-        date: appointment.date,
-        hour: appointment.hour,
-        status: appointment.appointmentStatus
-      }));
-      setAppointments(mappedAppointments);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    }
-  };
-
-  useEffect(() => {
-    loadAppointments();
-  }, []);
+  const shownError = error || actionError;
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1000px' }}>
@@ -74,17 +72,19 @@ function ViewAppointments() {
         </span>
       </div>
 
-      {state.error && (
+      {shownError && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {shownError}
         </div>
       )}
 
-      {state.loading && appointments.length === 0 ? (
+      {loadingAppointments || (appointmentData === null && !error) ? (
         <div className="text-center py-5">
           <span className="spinner-border text-success" role="status"></span>
           <p className="text-muted mt-2 small">Cargando citas...</p>
         </div>
+      ) : appointments.length === 0 ? (
+        <p className="text-center text-muted py-5">No hay citas para mostrar.</p>
       ) : (
         <div className="row g-4">
           {appointments.map((appointment) => (
@@ -111,9 +111,9 @@ function ViewAppointments() {
                     <button
                       className="btn btn-outline-danger btn-sm w-100 rounded-3 fw-semibold"
                       onClick={() => closeAppointment(appointment.id)}
-                      disabled={state.loading}
+                      disabled={closing}
                     >
-                      {state.loading ? 'Cancelando...' : 'Cancelar Cita'}
+                      {closing ? 'Cancelando...' : 'Cancelar Cita'}
                     </button>
                   )}
                 </div>

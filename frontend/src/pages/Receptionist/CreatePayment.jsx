@@ -1,21 +1,18 @@
 import { useContext, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { InvoiceContext } from "../../context/InvoiceContext";
-import { AuthContext } from "../../context/AuthContext";
-import { apiFetchReduce } from "../../reduces/ApiFetchReduce";
-import { postFetch } from "../../fetchs/PostFetch";
+import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
+import useApiRequest from "../../customHooks/useApiRequest";
 
 const initialState = {
   amount: '',
   methodPayment: '',
-  loading: false,
-  error: null
 };
 
 function CreatePayment() {
   const { invoice } = useContext(InvoiceContext);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const { auth } = useContext(AuthContext);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { execute: createPayment, loading, error } = useApiRequest();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -27,22 +24,18 @@ function CreatePayment() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await postFetch('http://localhost:8080/receptionist/pay',
-        {
+    const result = await createPayment({
+      url: 'http://localhost:8080/receptionist/pay',
+      method: 'POST',
+      body: {
           amount: state.amount,
           methodPayment: state.methodPayment,
           state: 'PAID',
           invoiceId: invoice.id
-        },
-        auth.user
-      );
-
-      dispatch({ type: 'LOADING', payload: false });
+      },
+    });
+    if (result.success) {
       navigate('/receptionist/viewInvoices');
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
     }
   };
 
@@ -50,9 +43,9 @@ function CreatePayment() {
     <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
       <h2 className="text-success fw-bold mb-4 text-center">Registrar Pago</h2>
       
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {error}
         </div>
       )}
 
@@ -72,12 +65,12 @@ function CreatePayment() {
           </div>
 
           <div className="form-floating mb-3">
-            <input type="number" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="amount" name="amount" value={state.amount} onChange={handleChange} placeholder="Monto" disabled={state.loading} required />
+            <input type="number" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="amount" name="amount" value={state.amount} onChange={handleChange} placeholder="Monto" disabled={loading} required />
             <label htmlFor="amount" className="text-secondary small">Monto a Pagar</label>
           </div>
           
           <div className="form-floating mb-4">
-            <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="methodPayment" name="methodPayment" value={state.methodPayment} onChange={handleChange} disabled={state.loading} required>
+            <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="methodPayment" name="methodPayment" value={state.methodPayment} onChange={handleChange} disabled={loading} required>
               <option value="" disabled>Selecciona el método...</option>
               <option value="CARD">Tarjeta (Card)</option>
               <option value="CASH">Efectivo (Cash)</option>
@@ -85,8 +78,8 @@ function CreatePayment() {
             <label htmlFor="methodPayment" className="text-secondary small">Método de pago</label>
           </div>
 
-          <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
-            {state.loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Procesando...</> : 'Crear Pago'}
+          <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
+            {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Procesando...</> : 'Crear Pago'}
           </button>
         </form>
       )}

@@ -1,14 +1,13 @@
-import { useContext, useReducer } from "react";
-import { apiFetchReduce } from "../../reduces/ApiFetchReduce";
-import { AuthContext } from "../../context/AuthContext";
-import { postFetch } from "../../fetchs/PostFetch";
+import { useReducer } from "react";
+import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
+import useApiRequest from "../../customHooks/useApiRequest";
 import { useNavigate } from "react-router-dom";
 
 const initialState = { name: '', stock: '', active: '' };
 
 function CreateItem() {
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const { auth } = useContext(AuthContext);
+  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { execute: createItem, loading, error } = useApiRequest();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,15 +16,15 @@ function CreateItem() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      await postFetch('http://localhost:8080/inventory_manager/item', { 
+    const result = await createItem({
+      url: 'http://localhost:8080/inventory_manager/item',
+      method: 'POST',
+      body: {
         name: state.name, stock: state.stock, active: true 
-      }, auth.user);
-      dispatch({ type: 'LOADING', payload: false });
+      },
+    });
+    if (result.success) {
       navigate('/inventoryManager/viewItems');
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
     }
   };
 
@@ -33,9 +32,9 @@ function CreateItem() {
     <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
       <h2 className="text-success fw-bold mb-4 text-center">Registrar Nuevo Insumo</h2>
       
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {error}
         </div>
       )}
       
@@ -49,7 +48,7 @@ function CreateItem() {
             value={state.name} 
             onChange={handleChange} 
             placeholder="Nombre" 
-            disabled={state.loading}
+            disabled={loading}
             required 
           />
           <label htmlFor="name" className="text-secondary small">Nombre del Insumo (Ej: Jeringas)</label>
@@ -64,14 +63,14 @@ function CreateItem() {
             value={state.stock} 
             onChange={handleChange} 
             placeholder="Stock" 
-            disabled={state.loading}
+            disabled={loading}
             required 
           />
           <label htmlFor="stock" className="text-secondary small">Cantidad inicial en Stock</label>
         </div>
         
-        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={state.loading}>
-          {state.loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Crear Insumo'}
+        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
+          {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Crear Insumo'}
         </button>
       </form>
     </div>

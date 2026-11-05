@@ -117,7 +117,7 @@ public class ClinicalRecordPersistenceAdapter implements ClinicalRecordPort {
             : entity.getAppointment().getAppointmentId());
         clinicalRecord.setTreatmentId(entity.getTreatment() == null
             ? null
-            : entity.getTreatment().getTreatamentId());
+            : entity.getTreatment().getTreatmentId());
         return clinicalRecord;
     }
 

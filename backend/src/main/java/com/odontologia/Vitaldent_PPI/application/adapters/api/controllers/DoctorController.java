@@ -100,7 +100,7 @@ public class DoctorController {
             @PathVariable UUID id,
             @Valid @RequestBody TreatmentRequest request) {
         Treatment treatment = toTreatment(request);
-            treatment.setTreatamentId(id);
+            treatment.setTreatmentId(id);
         doctorUseCase.updateTreatment(treatment);
         return ResponseEntity.ok(toTreatmentResponse(treatment));
     }
@@ -177,7 +177,7 @@ public class DoctorController {
 
     private TreatmentResponse toTreatmentResponse(Treatment treatment){
         return new TreatmentResponse(
-            treatment.getTreatamentId(),
+            treatment.getTreatmentId(),
             treatment.getName(),
             treatment.getDescription(),
             treatment.getCost(),

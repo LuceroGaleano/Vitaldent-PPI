@@ -1,40 +1,32 @@
-import { useContext, useEffect, useReducer, useState } from 'react';
-import { apiFetchReduce } from '../../reduces/ApiFetchReduce';
-import { AuthContext } from '../../context/AuthContext';
-import { getFetch } from '../../fetchs/GetFetch';
+import { useContext } from 'react';
+import useApiRequest from '../../customHooks/useApiRequest';
 import { AppointmentContext } from '../../context/AppointmentContext';
 import { useOutletContext } from 'react-router-dom';
 import { TreatmentContext } from '../../context/TreatmentContext';
 
-const initialState = { loading: true, error: null, document: '' };
+const mapTreatments = (data) => data.map((treat) => ({
+  id: treat.treatmentId,
+  name: treat.name,
+  cost: treat.cost,
+  description: treat.description,
+  items: treat.treatmentItems,
+}));
 
 function ViewTreatments() {
   const { onTreatmentClick } = useOutletContext();
   const { appointment } = useContext(AppointmentContext);
   const { treatment } = useContext(TreatmentContext);
-  const [treatments, setTreatments] = useState([]);
-  const [state, dispatch] = useReducer(apiFetchReduce, initialState);
-  const { auth } = useContext(AuthContext);
-
-  const loadTreatments = async () => {
-    dispatch({ type: 'LOADING', payload: true });
-    try {
-      const data = await getFetch('http://localhost:8080/doctor/treatment', auth.user);
-      dispatch({ type: 'LOADING', payload: false });
-      const mappedTreatments = data.map((treat) => ({
-        id: treat.treatamentId, 
-        name: treat.name,
-        cost: treat.cost,
-        description: treat.description,
-        items: treat.treatmentItems
-      }));
-      setTreatments(mappedTreatments);
-    } catch (error) {
-      dispatch({ type: 'ERROR', payload: error.message });
-    }
-  }
-
-  useEffect(() => { loadTreatments(); }, []);
+  const {
+    data: treatmentData,
+    loading,
+    error,
+  } = useApiRequest({
+    autoExecute: true,
+    url: 'http://localhost:8080/doctor/treatment',
+    method: 'GET',
+    mapper: mapTreatments,
+  });
+  const treatments = treatmentData ?? [];
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1200px' }}>
@@ -51,13 +43,13 @@ function ViewTreatments() {
         </div>
       )}
 
-      {state.error && (
+      {error && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {state.error}
+          {error}
         </div>
       )}
 
-      {state.loading ? (
+      {loading || (treatmentData === null && !error) ? (
         <div className="text-center py-5">
           <span className="spinner-border text-success" role="status"></span>
           <p className="text-muted mt-2 small">Cargando tratamientos...</p>

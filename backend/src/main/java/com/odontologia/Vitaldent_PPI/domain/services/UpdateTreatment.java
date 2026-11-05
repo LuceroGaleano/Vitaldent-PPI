@@ -25,7 +25,7 @@ public class UpdateTreatment {
             throw new BusinessException("Tratamiento no entregado");
         }
 
-        if(!treatmentPort.existsById(treatment.getTreatamentId())){
+        if(!treatmentPort.existsById(treatment.getTreatmentId())){
             throw new BusinessException("No se ha encontraod el tratamiento en la base de datos");
         }
 
