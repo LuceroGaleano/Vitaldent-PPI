@@ -1,3 +1,4 @@
+import { API_URL } from '../../config';
 import useApiRequest from '../../customHooks/useApiRequest';
 import useForm from '../../customHooks/useForm';
 import { useOutletContext } from 'react-router-dom';
@@ -25,7 +26,7 @@ function ViewInvoices() {
   const handleSearch = async (e) => {
     e.preventDefault();
     await searchInvoices({
-      url: `http://localhost:8080/receptionist/invoice/patient/${encodeURIComponent(state.document.trim())}`,
+      url: `${API_URL}/receptionist/invoice/patient/${encodeURIComponent(state.document.trim())}`,
       method: 'GET',
       mapper: mapInvoices,
     });

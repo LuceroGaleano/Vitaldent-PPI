@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { API_URL } from '../../config';
 import useApiRequest from '../../customHooks/useApiRequest';
 import { InvoiceContext } from '../../context/InvoiceContext';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +20,7 @@ function ViewPayments() {
     error,
   } = useApiRequest({
     autoExecute: Boolean(invoice),
-    url: invoice ? `http://localhost:8080/receptionist/pay/invoice/${invoice.id}` : undefined,
+    url: invoice ? `${API_URL}/receptionist/pay/invoice/${invoice.id}` : undefined,
     method: 'GET',
     mapper: mapPayments,
   });

@@ -1,4 +1,5 @@
 import { useContext, useReducer } from "react";
+import { API_URL } from "../../config";
 import { AppointmentContext } from "../../context/AppointmentContext";
 import { TreatmentContext } from "../../context/TreatmentContext";
 import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
@@ -27,7 +28,7 @@ function CreateMedicalHistory() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await createClinicalRecord({
-      url: 'http://localhost:8080/doctor/clinical_record',
+      url: `${API_URL}/doctor/clinical_record`,
       method: 'POST',
       body: {
         reasonForConsultation: state.reasonForConsultation,

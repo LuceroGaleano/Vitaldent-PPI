@@ -1,3 +1,4 @@
+import { API_URL } from '../../config';
 import { useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
 import useApiRequest from '../../customHooks/useApiRequest';
@@ -22,7 +23,7 @@ function ViewItems() {
     error,
   } = useApiRequest({
     autoExecute: true,
-    url: 'http://localhost:8080/inventory_manager/item',
+    url: `${API_URL}/inventory_manager/item`,
     method: 'GET',
     mapper: mapItems,
   });

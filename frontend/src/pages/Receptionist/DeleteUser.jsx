@@ -1,4 +1,5 @@
 import { useReducer, useState } from "react";
+import { API_URL } from "../../config";
 import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
 import useApiRequest from "../../customHooks/useApiRequest";
 
@@ -19,7 +20,7 @@ function DeleteUser() {
   const handleSearch = async (e) => {
     e.preventDefault();
     const result = await deleteUser({
-      url: `http://localhost:8080/receptionist/user/${encodeURIComponent(state.document.trim())}`,
+      url: `${API_URL}/receptionist/user/${encodeURIComponent(state.document.trim())}`,
       method: 'DELETE',
     });
     if (result.success) {

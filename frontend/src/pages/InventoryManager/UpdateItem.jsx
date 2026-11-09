@@ -1,4 +1,5 @@
 import { useContext, useReducer } from 'react';
+import { API_URL } from '../../config';
 import { ItemContext } from '../../context/ItemContext';
 import { apiFetchReducer } from '../../reduces/ApiFetchReducer';
 import useApiRequest from '../../customHooks/useApiRequest';
@@ -24,7 +25,7 @@ function UpdateItem() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const result = await updateItem({
-      url: `http://localhost:8080/inventory_manager/item/${item.id}`,
+      url: `${API_URL}/inventory_manager/item/${item.id}`,
       method: 'PUT',
       body: {
         name: state.name, stock: state.stock, active: state.active === 'true'

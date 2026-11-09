@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/inventory_manager")
-@CrossOrigin (origins = "http://localhost:5173")
+@CrossOrigin (origins = "${app.cors.allowed-origin}")
 public class InventoryManagerController {
     private final InventoryManagerUseCase inventoryManagerUseCase;
 

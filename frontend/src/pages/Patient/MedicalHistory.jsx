@@ -1,3 +1,4 @@
+import { API_URL } from '../../config';
 import useApiRequest from '../../customHooks/useApiRequest';
 
 const mapClinicalHistory = (data) => data.map((item) => ({
@@ -13,7 +14,7 @@ export function PatientClinicalHistory() {
     error,
   } = useApiRequest({
     autoExecute: true,
-    url: 'http://localhost:8080/patient/clinical_record',
+    url: `${API_URL}/patient/clinical_record`,
     method: 'GET',
     mapper: mapClinicalHistory,
   });

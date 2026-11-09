@@ -1,4 +1,5 @@
 import { useReducer } from 'react';
+import { API_URL } from '../../config';
 import { apiFetchReducer } from '../../reduces/ApiFetchReducer';
 import useApiRequest from '../../customHooks/useApiRequest';
 
@@ -30,7 +31,7 @@ function ViewMedicalHistory() {
   const handleSearch = async (e) => {
     e.preventDefault();
     await searchHistory({
-      url: `http://localhost:8080/receptionist/clinical_record/patient/${encodeURIComponent(state.document.trim())}`,
+      url: `${API_URL}/receptionist/clinical_record/patient/${encodeURIComponent(state.document.trim())}`,
       method: 'GET',
       mapper: mapClinicalHistory,
     });

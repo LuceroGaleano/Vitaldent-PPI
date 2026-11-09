@@ -1,4 +1,5 @@
 import { useContext, useReducer } from 'react';
+import { API_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { apiFetchReducer } from '../reduces/ApiFetchReducer';
@@ -25,7 +26,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     const result = await login({
-      url: 'http://localhost:8080/auth/login',
+      url: `${API_URL}/auth/login`,
       method: 'POST',
       body: {
           username: state.username,

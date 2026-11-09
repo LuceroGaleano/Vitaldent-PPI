@@ -1,4 +1,5 @@
 import { useReducer, useState } from "react";
+import { API_URL } from "../../config";
 import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
 import useApiRequest from "../../customHooks/useApiRequest";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +21,7 @@ function CreateTreatment() {
     error: itemsError,
   } = useApiRequest({
     autoExecute: true,
-    url: 'http://localhost:8080/doctor/item',
+    url: `${API_URL}/doctor/item`,
     method: 'GET',
     mapper: mapItems,
   });
@@ -50,7 +51,7 @@ function CreateTreatment() {
     e.preventDefault();
     const itemsToSend = selectedItems.map((item) => ({ itemId: item.id, quantityUsed: 1 }));
     const result = await createTreatment({
-      url: 'http://localhost:8080/doctor/treatment',
+      url: `${API_URL}/doctor/treatment`,
       method: 'POST',
       body: {
         name: state.name,

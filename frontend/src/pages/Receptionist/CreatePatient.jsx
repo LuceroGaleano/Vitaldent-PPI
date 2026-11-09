@@ -1,3 +1,4 @@
+import { API_URL } from "../../config";
 import useApiRequest from "../../customHooks/useApiRequest";
 import useForm from "../../customHooks/useForm";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +20,7 @@ function CreatePatient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await createPatient({
-      url: 'http://localhost:8080/receptionist/patient',
+      url: `${API_URL}/receptionist/patient`,
       method: 'POST',
       body: {
         fullName: form.fullName,

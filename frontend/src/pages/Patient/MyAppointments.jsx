@@ -1,3 +1,4 @@
+import { API_URL } from '../../config';
 import useApiRequest from '../../customHooks/useApiRequest';
 
 const mapAppointments = (data) => data.map((item) => ({
@@ -15,7 +16,7 @@ export function MyAppointments() {
     error,
   } = useApiRequest({
     autoExecute: true,
-    url: 'http://localhost:8080/patient/appointment',
+    url: `${API_URL}/patient/appointment`,
     method: 'GET',
     mapper: mapAppointments,
   });
@@ -28,7 +29,7 @@ export function MyAppointments() {
 
   const cancelAppointment = async (id) => {
     const result = await cancelRequest({
-      url: `http://localhost:8080/patient/appointment/${id}/cancel`,
+      url: `${API_URL}/patient/appointment/${id}/cancel`,
       method: 'PATCH',
     });
     if (result.success) {

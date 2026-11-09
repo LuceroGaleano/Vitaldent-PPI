@@ -1,3 +1,4 @@
+import { API_URL } from '../../config';
 import useApiRequest from '../../customHooks/useApiRequest';
 
 const STATUS_LABELS = {
@@ -38,7 +39,7 @@ function ViewAppointments() {
     error,
   } = useApiRequest({
     autoExecute: true,
-    url: 'http://localhost:8080/receptionist/appointment',
+    url: `${API_URL}/receptionist/appointment`,
     method: 'GET',
     mapper: mapAppointments,
   });
@@ -53,7 +54,7 @@ function ViewAppointments() {
   //Si selecciona cancelar, ejecutamos la petición y recargamos las citas.
   const closeAppointment = async (id) => {
     const result = await closeAppointmentRequest({
-        url: `http://localhost:8080/receptionist/appointment/${id}/close`,
+        url: `${API_URL}/receptionist/appointment/${id}/close`,
         method: 'PATCH',
       });
 

@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/doctor")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${app.cors.allowed-origin}")
 public class DoctorController {
     private final DoctorUseCase doctorUseCase;
     private final UserPort userPort;

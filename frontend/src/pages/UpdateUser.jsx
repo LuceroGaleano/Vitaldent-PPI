@@ -1,4 +1,5 @@
 import { useContext, useEffect, useReducer } from "react";
+import { API_URL } from '../config';
 import { apiFetchReducer } from "../reduces/ApiFetchReducer";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +29,7 @@ function UpdateUser() {
     error: loadError,
   } = useApiRequest({
     autoExecute: true,
-    url: `http://localhost:8080/user/user/${auth.document}`,
+    url: `${API_URL}/user/user/${auth.document}`,
     method: 'GET',
   });
   const {
@@ -61,7 +62,7 @@ function UpdateUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await saveProfile({
-      url: 'http://localhost:8080/user/profile',
+      url: `${API_URL}/user/profile`,
       method: 'PUT',
       body: {
         userName: state.userName,

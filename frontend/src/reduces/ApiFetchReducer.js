@@ -1,6 +1,5 @@
 export const apiFetchReducer = (state, action = {}) => {
   switch (action.type) {
-    case 'OK':
     case 'UPDATE_FIELD':
       return {
         ...state,

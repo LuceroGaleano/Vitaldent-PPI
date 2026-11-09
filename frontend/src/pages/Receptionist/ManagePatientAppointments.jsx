@@ -1,4 +1,5 @@
 import { useReducer, useState } from 'react';
+import { API_URL } from '../../config';
 import { apiFetchReducer } from '../../reduces/ApiFetchReducer';
 import useApiRequest from '../../customHooks/useApiRequest';
 
@@ -18,7 +19,7 @@ function ManagePatientAppointments() {
   const findPatient = async (e) => {
     e.preventDefault();
     const result = await execute({
-      url: `http://localhost:8080/receptionist/patient/${encodeURIComponent(state.document.trim())}`,
+      url: `${API_URL}/receptionist/patient/${encodeURIComponent(state.document.trim())}`,
       method: 'GET',
     });
     if (result.success) {
@@ -30,7 +31,7 @@ function ManagePatientAppointments() {
 
   const loadAvailableAppointments = async () => {
     const result = await execute({
-      url: 'http://localhost:8080/receptionist/appointment',
+      url: `${API_URL}/receptionist/appointment`,
       method: 'GET',
       mapper: (data) => data
         .filter((appointment) => appointment.appointmentStatus === 'AVAILABLE')
@@ -49,7 +50,7 @@ function ManagePatientAppointments() {
 
   const loadPatientAppointments = async (document) => {
     const result = await execute({
-      url: `http://localhost:8080/receptionist/appointment/patient/${encodeURIComponent(document)}`,
+      url: `${API_URL}/receptionist/appointment/patient/${encodeURIComponent(document)}`,
       method: 'GET',
       mapper: (data) => data
         .filter((appointment) => appointment.appointmentStatus === 'SCHEDULED')
@@ -68,7 +69,7 @@ function ManagePatientAppointments() {
 
   const scheduleAppointment = async (id, document) => {
     const result = await execute({
-      url: `http://localhost:8080/receptionist/appointment/${id}/${encodeURIComponent(document)}/schedule`,
+      url: `${API_URL}/receptionist/appointment/${id}/${encodeURIComponent(document)}/schedule`,
       method: 'PATCH',
     });
     if (result.success) {
@@ -79,7 +80,7 @@ function ManagePatientAppointments() {
 
   const cancelAppointment = async (id, document) => {
     const result = await execute({
-      url: `http://localhost:8080/receptionist/appointment/${id}/cancel`,
+      url: `${API_URL}/receptionist/appointment/${id}/cancel`,
       method: 'PATCH',
     });
     if (result.success) {

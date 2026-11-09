@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { API_URL } from "../../config";
 import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
 import useApiRequest from "../../customHooks/useApiRequest";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +25,7 @@ function CreateAppointment() {
     e.preventDefault();
     const [date, time] = state.dateAndHour.split('T');
     const result = await createAppointment({
-      url: 'http://localhost:8080/receptionist/appointment',
+      url: `${API_URL}/receptionist/appointment`,
       method: 'POST',
       body: {
         date,

@@ -9,5 +9,5 @@ public class VitaldentPpiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(VitaldentPpiApplication.class, args);
 	}
-
+  
 }

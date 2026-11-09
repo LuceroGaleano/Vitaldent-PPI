@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { API_URL } from "../../config";
 import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
 import useApiRequest from "../../customHooks/useApiRequest";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +31,7 @@ function CreateUser() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await createUser({
-      url: 'http://localhost:8080/receptionist/user',
+      url: `${API_URL}/receptionist/user`,
       method: 'POST',
       body: {
           userName: state.userName,

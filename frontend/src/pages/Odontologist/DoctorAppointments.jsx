@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { API_URL } from '../../config';
 import { AuthContext } from '../../context/AuthContext';
 import useApiRequest from '../../customHooks/useApiRequest';
 import { useOutletContext } from 'react-router-dom';
@@ -20,7 +21,7 @@ function DoctorAppointments() {
     error,
   } = useApiRequest({
     autoExecute: true,
-    url: `http://localhost:8080/doctor/appointment/doctor/${auth.document}`,
+    url: `${API_URL}/doctor/appointment/doctor/${auth.document}`,
     method: 'GET',
     mapper: mapAppointments,
   });

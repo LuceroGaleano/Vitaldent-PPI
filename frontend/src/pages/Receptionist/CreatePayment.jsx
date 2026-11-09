@@ -1,4 +1,5 @@
 import { useContext, useReducer } from "react";
+import { API_URL } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { InvoiceContext } from "../../context/InvoiceContext";
 import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
@@ -25,7 +26,7 @@ function CreatePayment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await createPayment({
-      url: 'http://localhost:8080/receptionist/pay',
+      url: `${API_URL}/receptionist/pay`,
       method: 'POST',
       body: {
           amount: state.amount,

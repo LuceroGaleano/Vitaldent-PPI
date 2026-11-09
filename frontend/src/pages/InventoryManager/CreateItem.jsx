@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { API_URL } from "../../config";
 import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
 import useApiRequest from "../../customHooks/useApiRequest";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +18,7 @@ function CreateItem() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await createItem({
-      url: 'http://localhost:8080/inventory_manager/item',
+      url: `${API_URL}/inventory_manager/item`,
       method: 'POST',
       body: {
         name: state.name, stock: state.stock, active: true 
