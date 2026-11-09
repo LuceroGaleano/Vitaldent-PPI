@@ -1,5 +1,5 @@
 import { API_URL } from '../../config';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 import useForm from '../../customHooks/useForm';
 import { useOutletContext } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ function ViewInvoices() {
     data: responseData,
     loading,
     error,
-  } = useApiRequest();
+  } = useFetch();
   const invoices = responseData ?? [];
   
   const handleSearch = async (e) => {

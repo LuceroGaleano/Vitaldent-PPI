@@ -1,9 +1,9 @@
-import { useContext, useReducer } from "react";
+import { useContext } from "react";
 import { API_URL } from "../../config";
 import { useNavigate } from "react-router-dom";
 import { InvoiceContext } from "../../context/InvoiceContext";
-import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
-import useApiRequest from "../../customHooks/useApiRequest";
+import useFetch from "../../customHooks/useFetch";
+import useForm from "../../customHooks/useForm";
 
 const initialState = {
   amount: '',
@@ -12,17 +12,10 @@ const initialState = {
 
 function CreatePayment() {
   const { invoice } = useContext(InvoiceContext);
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
-  const { execute: createPayment, loading, error } = useApiRequest();
+  const { state, handleChange } = useForm(initialState);
+  const { execute: createPayment, loading, error } = useFetch();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    dispatch({
-      type: 'OK',
-      payload: { field: e.target.name, value: e.target.value }
-    });
-  };
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const result = await createPayment({

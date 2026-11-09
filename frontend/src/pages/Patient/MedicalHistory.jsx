@@ -1,5 +1,5 @@
 import { API_URL } from '../../config';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 
 const mapClinicalHistory = (data) => data.map((item) => ({
   id: item.clinicalRecordId,
@@ -12,7 +12,7 @@ export function PatientClinicalHistory() {
     data: historyData,
     loading,
     error,
-  } = useApiRequest({
+  } = useFetch({
     autoExecute: true,
     url: `${API_URL}/patient/clinical_record`,
     method: 'GET',

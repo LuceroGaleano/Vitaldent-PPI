@@ -1,9 +1,8 @@
-import { useReducer } from 'react';
 import { API_URL } from '../../config';
-import { apiFetchReducer } from '../../reduces/ApiFetchReducer';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
+import useForm from '../../customHooks/useForm';
 
-const initialState = { loading: false, error: null, document: '' };
+const initialState = { document: '' };
 const mapClinicalHistory = (data) => data.map((record) => ({
   id: record.clinicalRecordId,
   date: record.date,
@@ -12,18 +11,14 @@ const mapClinicalHistory = (data) => data.map((record) => ({
 }));
 
 function SearchMedicalHistory() {
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { state, handleChange } = useForm(initialState);
   const {
     execute: searchHistory,
     data: resultData,
     loading,
     error,
-  } = useApiRequest();
+  } = useFetch();
   const results = resultData ?? [];
-
-  const handleChange = (e) => {
-    dispatch({ type: 'OK', payload: { field: e.target.name, value: e.target.value } });
-  };
 
   const handleSearch = async (e) => {
     e.preventDefault();

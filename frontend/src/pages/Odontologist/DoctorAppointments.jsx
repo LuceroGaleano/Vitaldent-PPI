@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { API_URL } from '../../config';
 import { AuthContext } from '../../context/AuthContext';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 import { useOutletContext } from 'react-router-dom';
 
 const mapAppointments = (data) => data.map((appointment) => ({
@@ -19,7 +19,7 @@ function DoctorAppointments() {
     data: appointmentData,
     loading,
     error,
-  } = useApiRequest({
+  } = useFetch({
     autoExecute: true,
     url: `${API_URL}/doctor/appointment/doctor/${auth.document}`,
     method: 'GET',

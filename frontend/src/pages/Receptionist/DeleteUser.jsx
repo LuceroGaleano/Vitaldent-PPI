@@ -1,21 +1,14 @@
-import { useReducer, useState } from "react";
+import { useState } from "react";
 import { API_URL } from "../../config";
-import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
-import useApiRequest from "../../customHooks/useApiRequest";
+import useFetch from "../../customHooks/useFetch";
+import useForm from "../../customHooks/useForm";
 
 const initialState = { document: '' };
 
 function DeleteUser() {
   const [usuarioEliminado, setUsuarioEliminado] = useState(false);
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
-  const { execute: deleteUser, loading, error } = useApiRequest();
-
-  const handleChange = (e) => {
-    dispatch({
-      type: 'OK',
-      payload: { field: e.target.name, value: e.target.value }
-    });
-  };
+  const { state, handleChange } = useForm(initialState);
+  const { execute: deleteUser, loading, error } = useFetch();
 
   const handleSearch = async (e) => {
     e.preventDefault();

@@ -1,10 +1,10 @@
-import { useContext, useReducer } from "react";
+import { useContext } from "react";
 import { API_URL } from "../../config";
 import { AppointmentContext } from "../../context/AppointmentContext";
 import { TreatmentContext } from "../../context/TreatmentContext";
-import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
-import useApiRequest from "../../customHooks/useApiRequest";
+import useFetch from "../../customHooks/useFetch";
 import { useNavigate } from "react-router-dom";
+import useForm from "../../customHooks/useForm";
 
 const initialState = {
   reasonForConsultation: '',
@@ -17,13 +17,9 @@ const initialState = {
 function CreateMedicalHistory() {
   const { appointment } = useContext(AppointmentContext);
   const { treatment } = useContext(TreatmentContext);
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
-  const { execute: createClinicalRecord, loading, error } = useApiRequest();
+  const { state, handleChange } = useForm(initialState);
+  const { execute: createClinicalRecord, loading, error } = useFetch();
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    dispatch({ type: 'OK', payload: { field: e.target.name, value: e.target.value } });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

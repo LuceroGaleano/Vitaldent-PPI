@@ -1,9 +1,9 @@
-import { useContext, useEffect, useReducer } from "react";
+import { useContext, useEffect } from "react";
 import { API_URL } from '../config';
-import { apiFetchReducer } from "../reduces/ApiFetchReducer";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import useApiRequest from "../customHooks/useApiRequest";
+import useFetch from "../customHooks/useFetch";
+import useForm from "../customHooks/useForm";
 
 const initialState = {
   userName: '',
@@ -20,14 +20,14 @@ const initialState = {
 };
 
 function UpdateUser() {
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
+  const { state, handleChange, setValues } = useForm(initialState);
   const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const {
     data: userData,
     loading: loadingUser,
     error: loadError,
-  } = useApiRequest({
+  } = useFetch({
     autoExecute: true,
     url: `${API_URL}/user/user/${auth.document}`,
     method: 'GET',
@@ -36,28 +36,18 @@ function UpdateUser() {
     execute: saveProfile,
     loading: saving,
     error: saveError,
-  } = useApiRequest();
+  } = useFetch();
   const loading = loadingUser || saving;
   const error = loadError || saveError;
 
   useEffect(() => {
     if (userData) {
-      dispatch({
-        type: 'SET_USER',
-        payload: {
-          ...userData,
-          birthDate: userData.birthDate?.split('T')[0] ?? ''
-        }
+      setValues({
+        ...userData,
+        birthDate: userData.birthDate?.split('T')[0] ?? ''
       });
     }
-  }, [userData]);
-
-  const handleChange = (e) => {
-    dispatch({
-      type: 'OK',
-      payload: { field: e.target.name, value: e.target.value }
-    });
-  };
+  }, [userData, setValues]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,7 +1,7 @@
 import { API_URL } from '../../config';
 import { useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 import { 
   FaSyringe, FaTooth, FaBox, FaMask, 
   FaHandPaper, FaPrescriptionBottleAlt, FaBandAid, FaPumpSoap 
@@ -21,7 +21,7 @@ function ViewItems() {
     data: itemData,
     loading,
     error,
-  } = useApiRequest({
+  } = useFetch({
     autoExecute: true,
     url: `${API_URL}/inventory_manager/item`,
     method: 'GET',

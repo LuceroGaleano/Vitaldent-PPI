@@ -6,7 +6,7 @@ import { apiFetchReducer } from '../reduces/ApiFetchReducer';
 const initialState = { loading: false, error: null, data: null };
 const identity = (data) => data;
 
-const useApiRequest = ({
+const useFetch = ({
   autoExecute = false,
   url: defaultUrl,
   method: defaultMethod,
@@ -33,7 +33,7 @@ const useApiRequest = ({
     try {
       const response = await apiFetch({ url, method, body, token: auth.token });
       const data = mapper(response);
-      dispatch({ type: 'OK', payload: { field: 'data', value: data } });
+      dispatch({ type: 'SET_DATA', payload: data });
       return { success: true, data };
     } catch (requestError) {
       dispatch({ type: 'ERROR', payload: requestError.message });
@@ -57,4 +57,4 @@ const useApiRequest = ({
   };
 };
 
-export default useApiRequest;
+export default useFetch;

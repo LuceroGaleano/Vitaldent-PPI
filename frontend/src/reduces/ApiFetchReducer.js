@@ -5,6 +5,11 @@ export const apiFetchReducer = (state, action = {}) => {
         ...state,
         [action.payload.field]: action.payload.value
       };
+    case 'SET_DATA':
+      return {
+        ...state,
+        data: action.payload
+      };
     case 'LOADING':
       return {
         ...state,

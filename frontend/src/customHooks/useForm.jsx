@@ -14,7 +14,11 @@ const useForm = (initialValues) => {
     });
   }, []);
 
-  return { state, handleChange };
+  const setValues = useCallback((values) => {
+    dispatch({ type: 'SET_USER', payload: values });
+  }, []);
+
+  return { state, handleChange, setValues };
 };
 
 export default useForm;

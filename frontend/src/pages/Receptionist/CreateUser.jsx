@@ -1,8 +1,7 @@
-import { useReducer } from "react";
 import { API_URL } from "../../config";
-import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
-import useApiRequest from "../../customHooks/useApiRequest";
+import useFetch from "../../customHooks/useFetch";
 import { useNavigate } from "react-router-dom";
+import useForm from "../../customHooks/useForm";
 
 const initialState = {
   userName: '',
@@ -17,16 +16,9 @@ const initialState = {
 };
 
 function CreateUser() {
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
-  const { execute: createUser, loading, error } = useApiRequest();
+  const { state, handleChange } = useForm(initialState);
+  const { execute: createUser, loading, error } = useFetch();
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    dispatch({
-      type: 'OK',
-      payload: { field: e.target.name, value: e.target.value }
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

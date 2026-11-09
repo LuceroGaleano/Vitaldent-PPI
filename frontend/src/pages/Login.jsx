@@ -1,9 +1,9 @@
-import { useContext, useReducer } from 'react';
+import { useContext } from 'react';
 import { API_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { apiFetchReducer } from '../reduces/ApiFetchReducer';
-import useApiRequest from '../customHooks/useApiRequest';
+import useFetch from '../customHooks/useFetch';
+import useForm from '../customHooks/useForm';
 
 function Login() {
   const initialState = {
@@ -11,17 +11,10 @@ function Login() {
     password: ''
   };
 
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
-  const { execute: login, loading, error } = useApiRequest();
+  const { state, handleChange } = useForm(initialState);
+  const { execute: login, loading, error } = useFetch();
   const navigate = useNavigate();
   const { setAuth } = useContext(AuthContext);
-
-  const handleChange = (e) => {
-    dispatch({
-      type: 'OK',
-      payload: { field: e.target.name, value: e.target.value }
-    });
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();

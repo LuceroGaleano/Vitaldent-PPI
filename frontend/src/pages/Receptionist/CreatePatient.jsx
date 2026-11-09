@@ -1,5 +1,5 @@
 import { API_URL } from "../../config";
-import useApiRequest from "../../customHooks/useApiRequest";
+import useFetch from "../../customHooks/useFetch";
 import useForm from "../../customHooks/useForm";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +14,7 @@ const initialForm = {
 
 function CreatePatient() {
   const { state: form, handleChange } = useForm(initialForm);
-  const { execute: createPatient, loading, error } = useApiRequest();
+  const { execute: createPatient, loading, error } = useFetch();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {

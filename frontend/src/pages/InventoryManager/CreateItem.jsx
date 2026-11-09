@@ -1,19 +1,14 @@
-import { useReducer } from "react";
 import { API_URL } from "../../config";
-import { apiFetchReducer } from "../../reduces/ApiFetchReducer";
-import useApiRequest from "../../customHooks/useApiRequest";
+import useFetch from "../../customHooks/useFetch";
+import useForm from "../../customHooks/useForm";
 import { useNavigate } from "react-router-dom";
 
 const initialState = { name: '', stock: '', active: '' };
 
 function CreateItem() {
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
-  const { execute: createItem, loading, error } = useApiRequest();
+  const { state, handleChange } = useForm(initialState);
+  const { execute: createItem, loading, error } = useFetch();
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    dispatch({ type: 'OK', payload: { field: e.target.name, value: e.target.value } });
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

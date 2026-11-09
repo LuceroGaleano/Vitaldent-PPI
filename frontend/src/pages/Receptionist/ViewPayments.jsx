@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { API_URL } from '../../config';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 import { InvoiceContext } from '../../context/InvoiceContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ function ViewPayments() {
     data: paymentData,
     loading,
     error,
-  } = useApiRequest({
+  } = useFetch({
     autoExecute: Boolean(invoice),
     url: invoice ? `${API_URL}/receptionist/pay/invoice/${invoice.id}` : undefined,
     method: 'GET',

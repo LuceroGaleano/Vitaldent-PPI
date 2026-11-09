@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { API_URL } from '../../config';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 import { AppointmentContext } from '../../context/AppointmentContext';
 import { useOutletContext } from 'react-router-dom';
 import { TreatmentContext } from '../../context/TreatmentContext';
@@ -21,7 +21,7 @@ function ViewTreatments() {
     data: treatmentData,
     loading,
     error,
-  } = useApiRequest({
+  } = useFetch({
     autoExecute: true,
     url: `${API_URL}/doctor/treatment`,
     method: 'GET',

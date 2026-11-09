@@ -1,5 +1,5 @@
 import { API_URL } from '../../config';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 
 const mapAppointments = (data) => data.map((item) => ({
   id: item.appointmentId,
@@ -14,7 +14,7 @@ export function MyAppointments() {
     data: appointmentData,
     loading,
     error,
-  } = useApiRequest({
+  } = useFetch({
     autoExecute: true,
     url: `${API_URL}/patient/appointment`,
     method: 'GET',
@@ -24,7 +24,7 @@ export function MyAppointments() {
     execute: cancelRequest,
     loading: cancelling,
     error: cancelError,
-  } = useApiRequest();
+  } = useFetch();
   const myAppointments = appointmentData ?? [];
 
   const cancelAppointment = async (id) => {

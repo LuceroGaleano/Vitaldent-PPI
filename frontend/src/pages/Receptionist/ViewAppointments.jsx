@@ -1,5 +1,5 @@
 import { API_URL } from '../../config';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 
 const STATUS_LABELS = {
   AVAILABLE: 'Disponible',
@@ -37,7 +37,7 @@ function ViewAppointments() {
     data: appointmentData,
     loading: loadingAppointments,
     error,
-  } = useApiRequest({
+  } = useFetch({
     autoExecute: true,
     url: `${API_URL}/receptionist/appointment`,
     method: 'GET',
@@ -48,7 +48,7 @@ function ViewAppointments() {
     execute: closeAppointmentRequest,
     loading: closing,
     error: actionError,
-  } = useApiRequest();
+  } = useFetch();
   const appointments = appointmentData ?? [];
 
   //Si selecciona cancelar, ejecutamos la petición y recargamos las citas.

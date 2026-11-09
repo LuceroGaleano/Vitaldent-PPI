@@ -1,9 +1,9 @@
-import { useContext, useReducer } from 'react';
+import { useContext } from 'react';
 import { API_URL } from '../../config';
 import { ItemContext } from '../../context/ItemContext';
-import { apiFetchReducer } from '../../reduces/ApiFetchReducer';
-import useApiRequest from '../../customHooks/useApiRequest';
+import useFetch from '../../customHooks/useFetch';
 import { useNavigate } from 'react-router-dom';
+import useForm from '../../customHooks/useForm';
 
 function UpdateItem() {
   const { item } = useContext(ItemContext);
@@ -14,14 +14,10 @@ function UpdateItem() {
     active: item?.active || 'true'
   };
   
-  const [state, dispatch] = useReducer(apiFetchReducer, initialState);
-  const { execute: updateItem, loading, error } = useApiRequest();
+  const { state, handleChange } = useForm(initialState);
+  const { execute: updateItem, loading, error } = useFetch();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    dispatch({ type: 'OK', payload: { field: e.target.name, value: e.target.value } });
-  }
-  
   const handleSubmit = async (event) => {
     event.preventDefault();
     const result = await updateItem({
