@@ -4,6 +4,7 @@ import useFetch from '../../hooks/useFetch';
 const mapAppointments = (data) => data.map((item) => ({
   id: item.appointmentId,
   doctor: item.doctorName,
+  doctorDocument: item.doctorDocument,
   date: `${item.date} ${item.hour}`,
 }));
 

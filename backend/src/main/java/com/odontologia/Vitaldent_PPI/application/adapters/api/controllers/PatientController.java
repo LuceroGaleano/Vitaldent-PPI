@@ -94,6 +94,7 @@ public class PatientController {
                 appointment.getPatientDocument(),
                 appointment.getDoctorId(),
                 appointment.getDoctorName(),
+                appointment.getDoctorDocument(),
                 appointment.getAppointmentStatus());
     }
 

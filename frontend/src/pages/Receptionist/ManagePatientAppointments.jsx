@@ -34,7 +34,9 @@ function ManagePatientAppointments() {
         .map((appointment) => ({
           id: appointment.appointmentId,
           patient: appointment.patientName ?? 'Sin paciente',
+          patientDocument: appointment.patientDocument,
           doctor: appointment.doctorName,
+          doctorDocument: appointment.doctorDocument,
           date: appointment.date + " - " + appointment.hour,
           status: appointment.appointmentStatus
         })),
@@ -53,7 +55,9 @@ function ManagePatientAppointments() {
         .map((appointment) => ({
           id: appointment.appointmentId,
           patient: appointment.patientName ?? 'Sin paciente',
+          patientDocument: appointment.patientDocument,
           doctor: appointment.doctorName,
+          doctorDocument: appointment.doctorDocument,
           date: appointment.date + " - " + appointment.hour,
           status: appointment.appointmentStatus
         })),

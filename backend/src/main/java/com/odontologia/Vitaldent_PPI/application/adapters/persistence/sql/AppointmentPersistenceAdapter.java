@@ -85,7 +85,12 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
     @Override
     public void save(Appointment appointment) {
         AppointmentEntity savedEntity = appointmentRepository.save(toEntity(appointment));
-        appointment.setAppointmentId(savedEntity.getAppointmentId());
+        Appointment savedAppointment = toModel(savedEntity);
+        appointment.setAppointmentId(savedAppointment.getAppointmentId());
+        appointment.setPatientName(savedAppointment.getPatientName());
+        appointment.setPatientDocument(savedAppointment.getPatientDocument());
+        appointment.setDoctorName(savedAppointment.getDoctorName());
+        appointment.setDoctorDocument(savedAppointment.getDoctorDocument());
     }
 
     @Override
@@ -129,6 +134,7 @@ public class AppointmentPersistenceAdapter implements AppointmentPort {
         appointment.setPatientDocument(entity.getPatient() == null ? null : entity.getPatient().getDocument());
         appointment.setDoctorId(entity.getDoctor() == null ? null : entity.getDoctor().getUserId());
         appointment.setDoctorName(entity.getDoctor() == null ? null : entity.getDoctor().getFullName());
+        appointment.setDoctorDocument(entity.getDoctor() == null ? null : entity.getDoctor().getDocument());
         return appointment;
     }
 

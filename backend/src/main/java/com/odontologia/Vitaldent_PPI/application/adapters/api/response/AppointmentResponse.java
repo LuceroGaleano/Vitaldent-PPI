@@ -15,5 +15,6 @@ public record AppointmentResponse(
     String patientDocument,
     UUID doctorId,
     String doctorName,
+    String doctorDocument,
     AppointmentStatus appointmentStatus
 ) {}

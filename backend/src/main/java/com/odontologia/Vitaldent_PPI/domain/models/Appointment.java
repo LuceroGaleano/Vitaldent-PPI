@@ -23,5 +23,6 @@ public class Appointment {
     private String patientDocument;
     private UUID doctorId;
     private String doctorName;
+    private String doctorDocument;
     private AppointmentStatus appointmentStatus;
 }

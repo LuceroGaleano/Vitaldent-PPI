@@ -7,6 +7,7 @@ const mapAppointments = (data) => data.map((appointment) => ({
   id: appointment.appointmentId,
   patient: appointment.patientName ?? 'Sin paciente',
   document: appointment.patientDocument ?? 'Sin documento',
+  doctorDocument: appointment.doctorDocument,
   date: `${appointment.date} - ${appointment.hour}`,
   status: appointment.appointmentStatus,
 }));

@@ -248,6 +248,7 @@ public class ReceptionistController {
                 appointment.getPatientDocument(),
                 appointment.getDoctorId(),
                 appointment.getDoctorName(),
+                appointment.getDoctorDocument(),
                 appointment.getAppointmentStatus());
     }
 

@@ -14,6 +14,7 @@ const mapTreatments = (data) => data.map((treat) => ({
 const mapAppointments = (data) => data.map((appointment) => ({
   id: appointment.appointmentId,
   patient: appointment.patientName ?? 'Sin paciente',
+  patientDocument: appointment.patientDocument,
 }));
 
 function ViewTreatments() {

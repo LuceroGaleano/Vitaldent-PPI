@@ -13,6 +13,7 @@ const initialState = {
 const mapAppointments = (data) => data.map((appointment) => ({
   id: appointment.appointmentId,
   patient: appointment.patientName ?? 'Sin paciente',
+  patientDocument: appointment.patientDocument,
 }));
 
 const mapTreatment = (treatment) => ({
