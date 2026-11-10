@@ -1,11 +1,13 @@
 import { API_URL } from '../../config';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
 import useFetch from '../../hooks/useFetch';
 import { 
   FaSyringe, FaTooth, FaBox, FaMask, 
   FaHandPaper, FaPrescriptionBottleAlt, FaBandAid, FaPumpSoap 
 } from 'react-icons/fa';
+import { SearchFilter } from '../../components/SearchFilter';
+import SelectFilter from '../../components/SelectFilter';
+import useSearchFilter from '../../hooks/useSearchFilter';
 
 const mapItems = (data) => data.map((item) => ({
   id: item.itemId,
@@ -16,7 +18,6 @@ const mapItems = (data) => data.map((item) => ({
 
 function ViewItems() {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
   const {
     data: itemData,
     loading,
@@ -27,39 +28,21 @@ function ViewItems() {
     method: 'GET',
     mapper: mapItems,
   });
-  const items = itemData ?? [];
 
-  // Función de filtro local
-  const filteredItems = items.filter(item => 
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const items = itemData ?? [];
+  const {
+    searchTerm,
+    setSearchTerm,
+    filterValue: activeFilter,
+    setFilterValue: setActiveFilter,
+    filterBySearch,
+    filterByStatus,
+  } = useSearchFilter();
+  const searchedItems = filterBySearch(items, 'name');
+  const filteredItems = filterByStatus(searchedItems, 'active');
 
   // Función para asignar íconos dinámicamente según el nombre del insumo
-  const getItemIcon = (name) => {
-    const lowerName = name.toLowerCase();
-    
-    if (lowerName.includes('jeringa') || lowerName.includes('aguja')) 
-      return <div className="bg-info bg-opacity-10 text-info p-2 rounded-3 d-inline-flex"><FaSyringe size={18} /></div>;
-    
-    if (lowerName.includes('guante')) 
-      return <div className="bg-warning bg-opacity-10 text-warning p-2 rounded-3 d-inline-flex"><FaHandPaper size={18} /></div>;
-    
-    if (lowerName.includes('cepillo') || lowerName.includes('hilo') || lowerName.includes('dental')) 
-      return <div className="bg-primary bg-opacity-10 text-primary p-2 rounded-3 d-inline-flex"><FaTooth size={18} /></div>;
-    
-    if (lowerName.includes('mascarilla') || lowerName.includes('tapaboca')) 
-      return <div className="bg-success bg-opacity-10 text-success p-2 rounded-3 d-inline-flex"><FaMask size={18} /></div>;
-    
-    if (lowerName.includes('anestesia') || lowerName.includes('liquido') || lowerName.includes('enjuague') || lowerName.includes('resina')) 
-      return <div className="bg-danger bg-opacity-10 text-danger p-2 rounded-3 d-inline-flex"><FaPrescriptionBottleAlt size={18} /></div>;
-    
-    if (lowerName.includes('algodon') || lowerName.includes('algodón') || lowerName.includes('gasa')) 
-      return <div className="bg-secondary bg-opacity-10 text-secondary p-2 rounded-3 d-inline-flex"><FaBandAid size={18} /></div>;
-    
-    if (lowerName.includes('jabón') || lowerName.includes('jabon') || lowerName.includes('gel')) 
-      return <div className="bg-info bg-opacity-10 text-info p-2 rounded-3 d-inline-flex"><FaPumpSoap size={18} /></div>;
-    
-    // Ícono por defecto (Caja genérica)
+  const getItemIcon = () => {
     return <div className="bg-dark bg-opacity-10 text-dark p-2 rounded-3 d-inline-flex"><FaBox size={18} /></div>;
   };
 
@@ -69,22 +52,30 @@ function ViewItems() {
       {/* Encabezado y Buscador */}
       <div className="card shadow-lg border-0 rounded-4 p-4 mb-4 bg-white">
         <div className="row align-items-center g-3">
-          <div className="col-md-6">
+          <div className="col-md-4">
             <h2 className="text-success fw-bold mb-0">Inventario Actual</h2>
-            <p className="text-muted small mb-0">Total: {items.length} insumos registrados.</p>
           </div>
-          <div className="col-md-6">
-            <div className="form-floating">
-              <input 
-                type="text" 
-                className="form-control rounded-3 bg-light shadow-none border-light-subtle" 
-                placeholder="Buscar insumo..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                disabled={loading}
-              />
-              <label className="text-secondary small">🔍 Buscar por nombre...</label>
-            </div>
+          {/*Filtro de busqeuda*/}
+          <div className="col-md-5">
+            <SearchFilter
+              value={searchTerm}
+              onChange={setSearchTerm}
+              label="Buscar por nombre..."
+              loading={loading}
+            />
+          </div>
+          <div className="col-md-3">
+            <SelectFilter
+              value={activeFilter}
+              onChange={setActiveFilter}
+              label="Filtrar por estado"
+              loading={loading}
+              options={[
+                { value: '', label: 'Todos' },
+                { value: 'true', label: 'Activo' },
+                { value: 'false', label: 'Inactivo' },
+              ]}
+            />
           </div>
         </div>
       </div>
@@ -130,7 +121,7 @@ function ViewItems() {
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className={`badge ${item.active ? 'bg-success' : 'bg-secondary'} bg-opacity-10 ${item.active ? 'text-success' : 'text-secondary'} border px-2 py-1 rounded`}>
+                        <span className={`badge ${item.active ? 'bg-success' : 'bg-danger'} bg-opacity-10 ${item.active ? 'text-success' : 'text-danger'} border px-2 py-1 rounded`}>
                           {item.active ? 'Activo' : 'Inactivo'}
                         </span>
                       </td>
