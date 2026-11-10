@@ -8,6 +8,7 @@ import {
 import { SearchFilter } from '../../components/SearchFilter';
 import SelectFilter from '../../components/SelectFilter';
 import useSearchFilter from '../../hooks/useSearchFilter';
+import useStatusFilter from '../../hooks/useStatusFilter';
 
 const mapItems = (data) => data.map((item) => ({
   id: item.itemId,
@@ -33,13 +34,13 @@ function ViewItems() {
   const {
     searchTerm,
     setSearchTerm,
+    filteredItems: searchedItems,
+  } = useSearchFilter(items, 'name');
+  const {
     filterValue: activeFilter,
     setFilterValue: setActiveFilter,
-    filterBySearch,
-    filterByStatus,
-  } = useSearchFilter();
-  const searchedItems = filterBySearch(items, 'name');
-  const filteredItems = filterByStatus(searchedItems, 'active');
+    filteredItems,
+  } = useStatusFilter(searchedItems, 'active');
 
   // Función para asignar íconos dinámicamente según el nombre del insumo
   const getItemIcon = () => {
