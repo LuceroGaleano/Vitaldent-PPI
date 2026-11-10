@@ -22,6 +22,7 @@ const useFetch = ({
       method = defaultMethod,
       body = defaultBody,
       mapper = defaultMapper,
+      token = auth.token,
     } = request;
 
     if (!url || !method) {
@@ -31,7 +32,7 @@ const useFetch = ({
     dispatch({ type: 'LOADING', payload: true });
 
     try {
-      const response = await apiFetch({ url, method, body, token: auth.token });
+      const response = await apiFetch({ url, method, body, token });
       const data = mapper(response);
       dispatch({ type: 'SET_DATA', payload: data });
       return { success: true, data };

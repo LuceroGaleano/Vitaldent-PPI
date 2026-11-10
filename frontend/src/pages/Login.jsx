@@ -24,6 +24,7 @@ function Login() {
           username: state.username,
           password: state.password
       },
+      token: null,
     });
 
     if (result.success) {
