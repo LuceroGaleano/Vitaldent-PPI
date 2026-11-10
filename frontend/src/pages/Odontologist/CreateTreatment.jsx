@@ -4,6 +4,10 @@ import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 import useForm from "../../hooks/useForm";
 import useFormValidation from "../../hooks/useFormValidation";
+import { SearchFilter } from "../../components/SearchFilter";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import SuccessModal from "../../components/SuccessModal";
+import useSuccessModal from "../../hooks/useSuccessModal";
 
 const initialState = { name: '', description: '', cost: '', treatmentItems: [] };
 const mapItems = (data) => data.map((item) => ({
@@ -33,7 +37,13 @@ function CreateTreatment() {
     error: createError,
   } = useFetch();
   const navigate = useNavigate();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
   const availableItems = itemData ?? [];
+  const {
+    searchTerm,
+    setSearchTerm,
+    filteredItems,
+  } = useSearchFilter(availableItems, 'name');
 
   const addSelectedItem = (item) => {
     if (!selectedItems.some(i => i.id === item.id)) {
@@ -59,12 +69,13 @@ function CreateTreatment() {
       },
     });
     if (result.success) {
-      navigate('/odontologist/viewTreatments');
+      showSuccess('Tratamiento creado correctamente.', () => navigate('/odontologist/viewTreatments'));
     }
   };
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1000px' }}>
+      <SuccessModal message={successMessage} onConfirm={confirmSuccess} />
       <h2 className="text-success fw-bold mb-4">Diseñar Nuevo Tratamiento</h2>
       
       {(itemsError || createError) && (
@@ -118,8 +129,21 @@ function CreateTreatment() {
         <div className="col-lg-5">
           <div className="card shadow-sm border-0 rounded-4 h-100 bg-light p-4">
             <h5 className="text-primary fw-bold mb-4 pb-2 border-bottom">Catálogo de Insumos</h5>
+            {/*Filtro de busqeuda*/}
+            <div className="mb-3">
+              <SearchFilter
+                value={searchTerm}
+                onChange={setSearchTerm}
+                label="Buscar por nombre..."
+                loading={loadingItems}
+              />
+            </div>
             <div className="d-flex flex-column gap-3 overflow-auto pe-2" style={{ maxHeight: '500px' }}>
-              {loadingItems ? <div className="text-center py-3"><span className="spinner-border spinner-border-sm text-primary" role="status"></span></div> : availableItems.map(item => (
+              {loadingItems ? (
+                <div className="text-center py-3">
+                  <span className="spinner-border spinner-border-sm text-primary" role="status"></span>
+                </div>
+              ) : filteredItems.length > 0 ? filteredItems.map(item => (
                 <div className="card border-0 rounded-3 shadow-sm bg-white" key={item.id}>
                   <div className="card-body p-3 d-flex justify-content-between align-items-center">
                     <div>
@@ -134,7 +158,11 @@ function CreateTreatment() {
                     </button>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <p className="text-muted text-center small mb-0 py-3">
+                  No se encontraron insumos con ese nombre.
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import useStatusFilter from '../../hooks/useStatusFilter';
 import SelectFilter from '../../components/SelectFilter';
 import useFormValidation from '../../hooks/useFormValidation';
+import { formatDate } from '../../utils/date';
 
 const mapInvoices = (data) =>
   data.map((invoice) => ({
@@ -13,15 +14,6 @@ const mapInvoices = (data) =>
     date: invoice.date,
     isPaid: invoice.isPaid,
   }));
-
-const formatDate = (date) => {
-  const [year, month, day] = date.split('-').map(Number);
-  const monthName = new Intl.DateTimeFormat('es', { month: 'long' }).format(
-    new Date(year, month - 1, 1)
-  );
-
-  return `${day}/${monthName}/${year}`;
-};
 
 function ViewInvoices() {
   const navigate = useNavigate();

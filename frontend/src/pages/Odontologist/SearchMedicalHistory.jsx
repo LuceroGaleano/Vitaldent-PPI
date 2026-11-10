@@ -2,6 +2,7 @@ import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import useForm from '../../hooks/useForm';
 import useFormValidation from '../../hooks/useFormValidation';
+import { formatDate } from '../../utils/date';
 
 const initialState = { document: '' };
 const mapClinicalHistory = (data) => data.map((record) => ({
@@ -71,7 +72,7 @@ function SearchMedicalHistory() {
               <div className="card-body p-4">
                 <div className="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
                   <h5 className="text-primary fw-bold mb-0">Atención Médica</h5>
-                  <span className="badge bg-light text-secondary border px-3 py-2 rounded-pill">📅 {record.date}</span>
+                  <span className="badge bg-light text-secondary border px-3 py-2 rounded-pill">📅 {formatDate(record.date)}</span>
                 </div>
                 
                 <div className="row g-3">

@@ -2,6 +2,8 @@ import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import { useNavigate, useParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import { SearchFilter } from '../../components/SearchFilter';
+import useSearchFilter from '../../hooks/useSearchFilter';
 
 const mapTreatments = (data) => data.map((treat) => ({
   id: treat.treatmentId,
@@ -43,14 +45,33 @@ function ViewTreatments() {
     mapper: mapTreatments,
   });
   const treatments = treatmentData ?? [];
+  const {
+    searchTerm,
+    setSearchTerm,
+    filteredItems: filteredTreatments,
+  } = useSearchFilter(treatments, 'name');
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1200px' }}>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="text-success fw-bold mb-0">Catálogo de Tratamientos</h2>
-        <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill shadow-sm">
-          Total: {treatments.length}
-        </span>
+      <div className="card shadow-lg border-0 rounded-4 p-4 mb-4 bg-white">
+        <div className="row align-items-center g-3">
+          <div className="col-md-6">
+            <h2 className="text-success fw-bold mb-0">Catálogo de Tratamientos</h2>
+          </div>
+          <div className="col-md-4">
+            <SearchFilter
+              value={searchTerm}
+              onChange={setSearchTerm}
+              label="Buscar tratamiento por nombre..."
+              loading={loading}
+            />
+          </div>
+          <div className="col-md-2 text-md-end">
+            <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill shadow-sm">
+              Total: {filteredTreatments.length}
+            </span>
+          </div>
+        </div>
       </div>
 
       {appointment && (
@@ -78,9 +99,20 @@ function ViewTreatments() {
           <span className="spinner-border text-success" role="status"></span>
           <p className="text-muted mt-2 small">Cargando tratamientos...</p>
         </div>
+      ) : filteredTreatments.length === 0 ? (
+        <div className="text-center py-5 bg-white rounded-4 shadow-sm">
+          <h5 className="fw-bold text-dark">
+            {treatments.length > 0 ? 'Sin resultados' : 'No hay tratamientos'}
+          </h5>
+          <p className="text-muted small mb-0">
+            {treatments.length > 0
+              ? 'No se encontraron tratamientos con ese nombre.'
+              : 'No hay tratamientos registrados en el catálogo.'}
+          </p>
+        </div>
       ) : (
         <div className="row g-4">
-          {treatments.map(treatmentRecord => (
+          {filteredTreatments.map(treatmentRecord => (
             <div className="col-md-6 col-lg-4" key={treatmentRecord.id}>
               <div className="card shadow-sm border-0 rounded-4 h-100 bg-white transition-all hover-shadow">
                 <div className="card-body p-4 d-flex flex-column">

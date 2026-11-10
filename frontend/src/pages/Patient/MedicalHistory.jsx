@@ -1,5 +1,6 @@
 import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
+import { formatDate } from '../../utils/date';
 
 const mapClinicalHistory = (data) => data.map((item) => ({
   id: item.clinicalRecordId,
@@ -40,7 +41,7 @@ export function PatientClinicalHistory() {
             <div className="card border-0 rounded-4 shadow-sm bg-white overflow-hidden" key={item.id}>
               <div className="card-header bg-success bg-opacity-10 border-0 py-3 px-4 d-flex align-items-center gap-2">
                 <span className="fs-5">📋</span>
-                <span className="text-success fw-bold">Atención del {item.date}</span>
+                <span className="text-success fw-bold">Atención del {formatDate(item.date)}</span>
               </div>
               <div className="card-body p-4">
                 <p className="small text-uppercase fw-bold text-muted mb-2">Diagnóstico y Anotaciones</p>

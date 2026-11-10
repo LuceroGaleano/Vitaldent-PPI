@@ -3,22 +3,11 @@ import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import useForm from '../../hooks/useForm';
 import useFormValidation from '../../hooks/useFormValidation';
+import { formatDate, formatTime } from '../../utils/date';
+import SuccessModal from '../../components/SuccessModal';
+import useSuccessModal from '../../hooks/useSuccessModal';
 
 const initialState = { document: '' };
-
-const formatDate = (date) => {
-  const [year, month, day] = date.split('-').map(Number);
-  const monthName = new Intl.DateTimeFormat('es', { month: 'long' }).format(
-    new Date(year, month - 1, 1)
-  );
-  return `${day}/${monthName}/${year}`;
-};
-
-const formatTime = (time) => {
-  const [hours, minutes] = time.split(':').map(Number);
-  const period = hours >= 12 ? 'PM' : 'AM';
-  return `${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${period}`;
-};
 
 function ManagePatientAppointments() {
   const [patient, setPatient] = useState(null);
@@ -27,6 +16,7 @@ function ManagePatientAppointments() {
   const { state, handleChange } = useForm(initialState);
   const { execute, loading, error } = useFetch();
   const { validationClassName, handleInvalid } = useFormValidation();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
 
   const findPatient = async (e) => {
     e.preventDefault();
@@ -93,6 +83,7 @@ function ManagePatientAppointments() {
     if (result.success) {
       setAvailableAppointments((current) => current.filter((app) => app.id !== id));
       await loadPatientAppointments(patient.document);
+      showSuccess('Cita agendada correctamente.');
     }
   };
 
@@ -105,11 +96,13 @@ function ManagePatientAppointments() {
       setAvailableAppointments((current) => current.filter((app) => app.id !== id));
       await loadPatientAppointments(document);
       await loadAvailableAppointments();
+      showSuccess('Cita cancelada correctamente.');
     }
   };
 
   return (
     <div className="mx-auto" style={{ maxWidth: '900px' }}>
+      <SuccessModal message={successMessage} onConfirm={confirmSuccess} />
       <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mb-4">
         <h2 className="text-success fw-bold mb-4 text-center">Gestión de Citas por Paciente</h2>
         

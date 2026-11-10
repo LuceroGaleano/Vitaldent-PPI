@@ -4,6 +4,8 @@ import useFetch from '../../hooks/useFetch';
 import { useNavigate, useParams } from 'react-router-dom';
 import useForm from '../../hooks/useForm';
 import useFormValidation from '../../hooks/useFormValidation';
+import SuccessModal from '../../components/SuccessModal';
+import useSuccessModal from '../../hooks/useSuccessModal';
 
 const initialState = {
   name: '',
@@ -23,6 +25,7 @@ function UpdateItem() {
   const navigate = useNavigate();
   const { state, handleChange, setValues } = useForm(initialState);
   const { validationClassName, handleInvalid } = useFormValidation();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
   const {
     data: item,
     loading: loadingItem,
@@ -59,12 +62,13 @@ function UpdateItem() {
       },
     });
     if (result.success) {
-      navigate('/inventoryManager/viewItems');
+      showSuccess('Insumo actualizado correctamente.', () => navigate('/inventoryManager/viewItems'));
     }
   };
 
   return (
     <div className="mx-auto" style={{ maxWidth: '600px' }}>
+      <SuccessModal message={successMessage} onConfirm={confirmSuccess} />
       
       {(loadError || saveError) && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">

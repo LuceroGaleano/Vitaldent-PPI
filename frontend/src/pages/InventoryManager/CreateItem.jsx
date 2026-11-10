@@ -3,6 +3,8 @@ import useFetch from "../../hooks/useFetch";
 import useForm from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import useFormValidation from "../../hooks/useFormValidation";
+import SuccessModal from "../../components/SuccessModal";
+import useSuccessModal from "../../hooks/useSuccessModal";
 
 const initialState = { name: '', stock: '', active: '' };
 
@@ -11,6 +13,7 @@ function CreateItem() {
   const { execute: createItem, loading, error } = useFetch();
   const navigate = useNavigate();
   const { validationClassName, handleInvalid } = useFormValidation();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,12 +25,13 @@ function CreateItem() {
       },
     });
     if (result.success) {
-      navigate('/inventoryManager/viewItems');
+      showSuccess('Insumo creado correctamente.', () => navigate('/inventoryManager/viewItems'));
     }
   };
 
   return (
     <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
+      <SuccessModal message={successMessage} onConfirm={confirmSuccess} />
       <h2 className="text-success fw-bold mb-4 text-center">Registrar Nuevo Insumo</h2>
       
       {error && (

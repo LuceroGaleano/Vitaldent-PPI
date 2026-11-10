@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useForm from "../../hooks/useForm";
 import useFormValidation from "../../hooks/useFormValidation";
+import SuccessModal from "../../components/SuccessModal";
+import useSuccessModal from "../../hooks/useSuccessModal";
 
 const initialState = {
   reasonForConsultation: '',
@@ -27,6 +29,7 @@ function CreateMedicalHistory() {
   const { auth } = useAuth();
   const { state, handleChange } = useForm(initialState);
   const { validationClassName, handleInvalid } = useFormValidation();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
   const { execute: createClinicalRecord, loading, error } = useFetch();
   const navigate = useNavigate();
   const {
@@ -66,12 +69,13 @@ function CreateMedicalHistory() {
       },
     });
     if (result.success) {
-      navigate('/odontologist/appointments');
+      showSuccess('Historial clínico creado correctamente.', () => navigate('/odontologist/appointments'));
     }
   };
 
   return (
     <div className="mx-auto" style={{ maxWidth: '800px' }}>
+      <SuccessModal message={successMessage} onConfirm={confirmSuccess} />
       <h2 className="text-success fw-bold mb-4 text-center">Registrar Historial Clínico</h2>
 
       {(appointmentError || treatmentError || error) && (

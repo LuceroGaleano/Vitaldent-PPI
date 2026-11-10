@@ -6,6 +6,8 @@ import useFetch from "../hooks/useFetch";
 import useForm from "../hooks/useForm";
 import useFormValidation from "../hooks/useFormValidation";
 import { getLocalDateString } from "../utils/date";
+import SuccessModal from "../components/SuccessModal";
+import useSuccessModal from "../hooks/useSuccessModal";
 
 const initialState = {
   userName: '',
@@ -27,6 +29,7 @@ function UpdateUser() {
   const navigate = useNavigate();
   const { validationClassName, handleInvalid } = useFormValidation();
   const maxBirthDate = getLocalDateString();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
   const {
     data: userData,
     loading: loadingUser,
@@ -71,20 +74,23 @@ function UpdateUser() {
       },
     });
     if (result.success) {
-      if (state.rol === 'PATIENT') {
-        navigate('/patient/citasDisponibles');
-      } else if (state.rol === 'INVENTORY_MANAGER') {
-        navigate('/inventoryManager/viewItems');
-      } else if (state.rol === 'RECEPTIONIST') {
-        navigate('/receptionist/createAppointment');
-      } else if (state.rol === "DOCTOR") {
-        navigate('/odontologist/appointments');
-      }
+      showSuccess('Perfil actualizado correctamente.', () => {
+        if (state.rol === 'PATIENT') {
+          navigate('/patient/citasDisponibles');
+        } else if (state.rol === 'INVENTORY_MANAGER') {
+          navigate('/inventoryManager/viewItems');
+        } else if (state.rol === 'RECEPTIONIST') {
+          navigate('/receptionist/createAppointment');
+        } else if (state.rol === 'DOCTOR') {
+          navigate('/odontologist/appointments');
+        }
+      });
     }
   };
 
   return (
     <div className="mx-auto" style={{ maxWidth: '800px' }}>
+      <SuccessModal message={successMessage} onConfirm={confirmSuccess} />
       <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 bg-white">
         <div className="text-center mb-4">
           <div className="bg-success bg-opacity-10 text-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '60px', height: '60px' }}>

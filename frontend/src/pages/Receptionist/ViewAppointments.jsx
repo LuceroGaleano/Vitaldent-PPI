@@ -3,6 +3,9 @@ import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import useStatusFilter from '../../hooks/useStatusFilter';
 import useDateSort from '../../hooks/useDateSort';
+import { formatDate, formatTime } from '../../utils/date';
+import SuccessModal from '../../components/SuccessModal';
+import useSuccessModal from '../../hooks/useSuccessModal';
 
 const STATUS_LABELS = {
   AVAILABLE: 'Disponible',
@@ -22,23 +25,6 @@ const translateStatus = (status) => STATUS_LABELS[status] ?? status;
 
 const getStatusClasses = (status) =>
   `${STATUS_STYLES[status] ?? 'bg-secondary text-secondary border-secondary'} bg-opacity-10 border border-opacity-25`;
-
-const formatDate = (date) => {
-  const [year, month, day] = date.split('-').map(Number);
-  const monthName = new Intl.DateTimeFormat('es', { month: 'long' }).format(
-    new Date(year, month - 1, 1)
-  );
-
-  return `${day}/${monthName}/${year}`;
-};
-
-const formatTime = (time) => {
-  const [hours, minutes] = time.split(':').map(Number);
-  const period = hours >= 12 ? 'PM' : 'AM';
-  const hour12 = hours % 12 || 12;
-
-  return `${hour12}:${String(minutes).padStart(2, '0')} ${period}`;
-};
 
 //El mapeo de las citas
 const mapAppointments = (data) =>
@@ -72,6 +58,7 @@ function ViewAppointments() {
     error: actionError,
   } = useFetch();
   const appointments = appointmentData ?? [];
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
 
   //Si selecciona cancelar, ejecutamos la petición y recargamos las citas.
   const closeAppointment = async (id) => {
@@ -82,6 +69,7 @@ function ViewAppointments() {
 
     if (result.success) {
       await reloadAppointments();
+      showSuccess('Cita cerrada correctamente.');
     }
   };
   const {
@@ -100,6 +88,7 @@ function ViewAppointments() {
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1200px' }}>
+      <SuccessModal message={successMessage} onConfirm={confirmSuccess} />
       {/* Encabezado y Buscador */}
       <div className="card shadow-lg border-0 rounded-4 p-4 mb-4 bg-white">
         <div className="row align-items-center g-3">
