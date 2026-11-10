@@ -2,6 +2,8 @@ import { API_URL } from "../../config";
 import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 import useForm from "../../hooks/useForm";
+import SuccessModal from "../../components/SuccessModal";
+import useSuccessModal from "../../hooks/useSuccessModal";
 
 const initialState = {
   dateAndHour: '',
@@ -12,6 +14,7 @@ function CreateAppointment() {
   const { state, handleChange } = useForm(initialState);
   const { execute: createAppointment, loading, error } = useFetch();
   const navigate = useNavigate();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +29,7 @@ function CreateAppointment() {
       },
     });
     if (result.success) {
-      navigate('/receptionist/viewAppointments');
+      showSuccess('Cita creada correctamente.', () => navigate('/receptionist/viewAppointments'));
     }
   };
 
@@ -39,6 +42,10 @@ function CreateAppointment() {
           {error}
         </div>
       )}
+      <SuccessModal
+        message={successMessage}
+        onConfirm={confirmSuccess}
+      />
       
       
       <form onSubmit={handleSubmit}>
@@ -71,10 +78,13 @@ function CreateAppointment() {
           <label htmlFor="dateAndHour" className="text-secondary small">Fecha y Hora</label>
         </div>
 
-        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
-          {loading ? (
-            <><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Procesando...</>
-          ) : 'Crear Cita'}
+        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading} aria-busy={loading}>
+          <span
+            className={`spinner-border spinner-border-sm me-2${loading ? '' : ' d-none'}`}
+            role={loading ? 'status' : undefined}
+            aria-hidden={!loading}
+          />
+          <span translate="no">Crear Cita</span>
         </button>
       </form>
     </div>

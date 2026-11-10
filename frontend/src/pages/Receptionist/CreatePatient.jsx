@@ -2,6 +2,8 @@ import { API_URL } from "../../config";
 import useFetch from "../../hooks/useFetch";
 import useForm from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
+import SuccessModal from "../../components/SuccessModal";
+import useSuccessModal from "../../hooks/useSuccessModal";
 
 const initialForm = {
   fullName: '',
@@ -16,6 +18,7 @@ function CreatePatient() {
   const { state: form, handleChange } = useForm(initialForm);
   const { execute: createPatient, loading, error } = useFetch();
   const navigate = useNavigate();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +36,7 @@ function CreatePatient() {
     });
 
     if (result.success) {
-      navigate('/receptionist/viewAppointments');
+      showSuccess('Paciente creado correctamente.', () => navigate('/receptionist/viewAppointments'));
     }
   };
 
@@ -46,6 +49,10 @@ function CreatePatient() {
           {error}
         </div>
       )}
+      <SuccessModal
+        message={successMessage}
+        onConfirm={confirmSuccess}
+      />
 
       <form onSubmit={handleSubmit}>
         <div className="row g-3 mb-3">
@@ -81,8 +88,12 @@ function CreatePatient() {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
-          {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Registrar Paciente'}
+        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading} aria-busy={loading}>
+          <span
+            className={`spinner-border spinner-border-sm me-2${loading ? '' : ' d-none'}`}
+            aria-hidden="true"
+          />
+          <span translate="no">Registrar Paciente</span>
         </button>
       </form>
     </div>

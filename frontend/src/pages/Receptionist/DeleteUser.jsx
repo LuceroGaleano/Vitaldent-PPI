@@ -1,14 +1,15 @@
-import { useState } from "react";
 import { API_URL } from "../../config";
 import useFetch from "../../hooks/useFetch";
 import useForm from "../../hooks/useForm";
+import SuccessModal from "../../components/SuccessModal";
+import useSuccessModal from "../../hooks/useSuccessModal";
 
 const initialState = { document: '' };
 
 function DeleteUser() {
-  const [usuarioEliminado, setUsuarioEliminado] = useState(false);
-  const { state, handleChange } = useForm(initialState);
+  const { state, handleChange, setValues } = useForm(initialState);
   const { execute: deleteUser, loading, error } = useFetch();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -17,7 +18,7 @@ function DeleteUser() {
       method: 'DELETE',
     });
     if (result.success) {
-      setUsuarioEliminado(true);
+      showSuccess('Usuario eliminado correctamente.', () => setValues(initialState));
     }
   };
 
@@ -37,14 +38,11 @@ function DeleteUser() {
         </div>
       )}
       
-      {usuarioEliminado ? (
-        <div className="alert alert-success border-0 bg-success bg-opacity-10 text-success shadow-sm d-flex flex-column align-items-center justify-content-center text-center p-4 rounded-4">
-          <span className="fs-1 mb-2">✅</span>
-          <h5 className="fw-bold mb-0">¡Usuario eliminado con éxito!</h5>
-          <button className="btn btn-outline-success btn-sm mt-3 rounded-3" onClick={() => setUsuarioEliminado(false)}>Eliminar otro</button>
-        </div>
-      ) : (
-        <form onSubmit={handleSearch}>
+      <SuccessModal
+        message={successMessage}
+        onConfirm={confirmSuccess}
+      />
+      <form onSubmit={handleSearch}>
           <div className="form-floating mb-4">
             <input 
               type="text" 
@@ -59,11 +57,15 @@ function DeleteUser() {
             />
             <label htmlFor="document" className="text-secondary small">Documento del usuario</label>
           </div>
-          <button type="submit" className="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
-            {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Buscando...</> : 'Eliminar Usuario'}
+          <button type="submit" className="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading} aria-busy={loading}>
+            <span
+              className={`spinner-border spinner-border-sm me-2${loading ? '' : ' d-none'}`}
+              role={loading ? 'status' : undefined}
+              aria-hidden={!loading}
+            />
+            <span translate="no">Eliminar Usuario</span>
           </button>
-        </form>
-      )}
+      </form>
 
       
     </div>

@@ -2,6 +2,8 @@ import { API_URL } from "../../config";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import useForm from "../../hooks/useForm";
+import SuccessModal from "../../components/SuccessModal";
+import useSuccessModal from "../../hooks/useSuccessModal";
 
 const initialState = {
   amount: '',
@@ -15,6 +17,7 @@ const mapInvoice = (invoice) => ({
 function CreatePayment() {
   const { invoiceId } = useParams();
   const { state, handleChange } = useForm(initialState);
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
   const {
     execute: createPayment,
     loading: saving,
@@ -46,7 +49,7 @@ function CreatePayment() {
       },
     });
     if (result.success) {
-      navigate('/receptionist/viewInvoices');
+      showSuccess('Pago creado correctamente.', () => navigate('/receptionist/viewInvoices'));
     }
   };
 
@@ -59,6 +62,10 @@ function CreatePayment() {
           {invoiceError || error}
         </div>
       )}
+      <SuccessModal
+        message={successMessage}
+        onConfirm={confirmSuccess}
+      />
 
       {loadingInvoice ? (
         <div className="text-center py-5">
@@ -94,8 +101,13 @@ function CreatePayment() {
             <label htmlFor="methodPayment" className="text-secondary small">Método de pago</label>
           </div>
 
-          <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
-            {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Procesando...</> : 'Crear Pago'}
+          <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading} aria-busy={loading}>
+            <span
+              className={`spinner-border spinner-border-sm me-2${loading ? '' : ' d-none'}`}
+              role={loading ? 'status' : undefined}
+              aria-hidden={!loading}
+            />
+            <span translate="no">Crear Pago</span>
           </button>
         </form>
       )}

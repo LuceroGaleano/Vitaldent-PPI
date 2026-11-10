@@ -13,6 +13,15 @@ const mapInvoices = (data) =>
     isPaid: invoice.isPaid,
   }));
 
+const formatDate = (date) => {
+  const [year, month, day] = date.split('-').map(Number);
+  const monthName = new Intl.DateTimeFormat('es', { month: 'long' }).format(
+    new Date(year, month - 1, 1)
+  );
+
+  return `${day}/${monthName}/${year}`;
+};
+
 function ViewInvoices() {
   const navigate = useNavigate();
   const { state, handleChange } = useForm({ document: '' });
@@ -105,7 +114,7 @@ function ViewInvoices() {
                     )}
                   </div>
                   
-                  <p className="card-text text-muted mb-4 small">📅 <strong>Fecha:</strong> {res.date}</p>
+                  <p className="card-text text-muted mb-4 small">📅 <strong>Fecha:</strong> {formatDate(res.date)}</p>
                   
                   <div className="mt-auto d-flex flex-column gap-2">
                     {!res.isPaid && (

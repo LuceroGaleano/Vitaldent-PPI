@@ -2,6 +2,8 @@ import { API_URL } from "../../config";
 import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 import useForm from "../../hooks/useForm";
+import SuccessModal from "../../components/SuccessModal";
+import useSuccessModal from "../../hooks/useSuccessModal";
 
 const initialState = {
   userName: '',
@@ -19,6 +21,7 @@ function CreateUser() {
   const { state, handleChange } = useForm(initialState);
   const { execute: createUser, loading, error } = useFetch();
   const navigate = useNavigate();
+  const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,7 +41,7 @@ function CreateUser() {
       },
     });
     if (result.success) {
-      navigate('/receptionist/viewAppointments');
+      showSuccess('Usuario creado correctamente.', () => navigate('/receptionist/viewAppointments'));
     }
   };
 
@@ -51,6 +54,10 @@ function CreateUser() {
           {error}
         </div>
       )}
+      <SuccessModal
+        message={successMessage}
+        onConfirm={confirmSuccess}
+      />
 
       <form onSubmit={handleSubmit}>
         <h5 className="text-muted small mb-3 border-bottom pb-2">Datos Personales</h5>
@@ -106,8 +113,13 @@ function CreateUser() {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
-          {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Crear Usuario'}
+        <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading} aria-busy={loading}>
+          <span
+            className={`spinner-border spinner-border-sm me-2${loading ? '' : ' d-none'}`}
+            role={loading ? 'status' : undefined}
+            aria-hidden={!loading}
+          />
+          <span translate="no">Crear Usuario</span>
         </button>
       </form>
     </div>

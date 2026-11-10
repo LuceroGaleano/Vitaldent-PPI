@@ -5,6 +5,20 @@ import useForm from '../../hooks/useForm';
 
 const initialState = { document: '' };
 
+const formatDate = (date) => {
+  const [year, month, day] = date.split('-').map(Number);
+  const monthName = new Intl.DateTimeFormat('es', { month: 'long' }).format(
+    new Date(year, month - 1, 1)
+  );
+  return `${day}/${monthName}/${year}`;
+};
+
+const formatTime = (time) => {
+  const [hours, minutes] = time.split(':').map(Number);
+  const period = hours >= 12 ? 'PM' : 'AM';
+  return `${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${period}`;
+};
+
 function ManagePatientAppointments() {
   const [patient, setPatient] = useState(null);
   const [availableAppointments, setAvailableAppointments] = useState([]);
@@ -37,7 +51,8 @@ function ManagePatientAppointments() {
           patientDocument: appointment.patientDocument,
           doctor: appointment.doctorName,
           doctorDocument: appointment.doctorDocument,
-          date: appointment.date + " - " + appointment.hour,
+          date: appointment.date,
+          hour: appointment.hour,
           status: appointment.appointmentStatus
         })),
     });
@@ -58,7 +73,8 @@ function ManagePatientAppointments() {
           patientDocument: appointment.patientDocument,
           doctor: appointment.doctorName,
           doctorDocument: appointment.doctorDocument,
-          date: appointment.date + " - " + appointment.hour,
+          date: appointment.date,
+          hour: appointment.hour,
           status: appointment.appointmentStatus
         })),
     });
@@ -125,12 +141,19 @@ function ManagePatientAppointments() {
                 {availableAppointments?.length > 0 ? (
                   <div className="d-flex flex-column gap-3">
                     {availableAppointments.map(app => (
-                      <div className="p-3 border rounded-3 bg-light hover-shadow transition-all" key={app.id}>
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <h6 className="fw-bold text-dark mb-0">{app.doctor}</h6>
-                          <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill">Disponible</span>
+                      <div className="p-3 border rounded-4 bg-white shadow-sm hover-shadow transition-all" key={app.id}>
+                        <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
+                          <div>
+                            <small className="text-uppercase fw-bold text-muted" style={{ fontSize: '0.7rem' }}>Doctor</small>
+                            <h6 className="fw-bold text-dark mb-0">{app.doctor || 'No asignado'}</h6>
+                            <small className="text-muted">Documento: {app.doctorDocument || 'No disponible'}</small>
+                          </div>
+                          <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill flex-shrink-0">Disponible</span>
                         </div>
-                        <p className="small text-muted mb-3">📅 {app.date}</p>
+                        <div className="d-flex flex-wrap gap-3 text-muted small border-top pt-2 mt-2 mb-3">
+                          <span>📅 {formatDate(app.date)}</span>
+                          <span>🕒 {formatTime(app.hour)}</span>
+                        </div>
                         <button className="btn btn-success btn-sm w-100 rounded-3 fw-semibold" onClick={() => scheduleAppointment(app.id, patient.document)} disabled={loading}>
                           Agendar Cita
                         </button>
@@ -149,12 +172,19 @@ function ManagePatientAppointments() {
                 {patientAppointments.length > 0 ? (
                   <div className="d-flex flex-column gap-3">
                     {patientAppointments.map(app => (
-                      <div className="p-3 border rounded-3 bg-light hover-shadow transition-all" key={app.id}>
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <h6 className="fw-bold text-dark mb-0">{app.doctor}</h6>
-                          <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill">Programada</span>
+                      <div className="p-3 border rounded-4 bg-white shadow-sm hover-shadow transition-all" key={app.id}>
+                        <div className="d-flex justify-content-between align-items-start gap-2 mb-2">
+                          <div>
+                            <small className="text-uppercase fw-bold text-muted" style={{ fontSize: '0.7rem' }}>Doctor</small>
+                            <h6 className="fw-bold text-dark mb-0">{app.doctor || 'No asignado'}</h6>
+                            <small className="text-muted">Documento: {app.doctorDocument || 'No disponible'}</small>
+                          </div>
+                          <span className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill flex-shrink-0">Programada</span>
                         </div>
-                        <p className="small text-muted mb-3">📅 {app.date}</p>
+                        <div className="d-flex flex-wrap gap-3 text-muted small border-top pt-2 mt-2 mb-3">
+                          <span>📅 {formatDate(app.date)}</span>
+                          <span>🕒 {formatTime(app.hour)}</span>
+                        </div>
                         <button className="btn btn-outline-danger btn-sm w-100 rounded-3 fw-semibold" onClick={() => cancelAppointment(app.id, patient.document)} disabled={loading}>
                           Cancelar Cita
                         </button>
