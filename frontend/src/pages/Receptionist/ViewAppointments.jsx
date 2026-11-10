@@ -1,5 +1,8 @@
+import SelectFilter from '../../components/SelectFilter';
 import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
+import useStatusFilter from '../../hooks/useStatusFilter';
+import useDateSort from '../../hooks/useDateSort';
 
 const STATUS_LABELS = {
   AVAILABLE: 'Disponible',
@@ -62,15 +65,57 @@ function ViewAppointments() {
       await reloadAppointments();
     }
   };
+  const {
+    filterValue: statusFilter,
+    setFilterValue: setStatusFilter,
+    filteredItems,
+  } = useStatusFilter(appointments, 'status');
+  const {
+    sortOrder: dateOrder,
+    setSortOrder: setDateOrder,
+    sortedItems: sortedAppointments,
+  } = useDateSort(filteredItems, 'date', 'hour');
+  
+
   const shownError = error || actionError;
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1000px' }}>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="text-success fw-bold mb-0">Listado General de Citas</h2>
-        <span className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill shadow-sm">
-          Total: {appointments.length}
-        </span>
+      {/* Encabezado y Buscador */}
+      <div className="card shadow-lg border-0 rounded-4 p-4 mb-4 bg-white">
+        <div className="row align-items-center g-3">
+          <div className="col-md-4">
+            <h2 className="text-success fw-bold mb-0">Listado General de Citas</h2>
+          </div>
+          {/*Filtro de busqeuda*/}
+          <div className="col-md-4">
+            <SelectFilter
+              value={statusFilter}
+              onChange={setStatusFilter}
+              label="Filtrar por estado"
+              loading={loadingAppointments}
+              options={[
+                { value: '', label: 'Todos' },
+                { value: 'AVAILABLE', label: 'Disponible' },
+                { value: 'SCHEDULED', label: 'Programada' },
+                { value: 'CLOSED', label: 'Cerrada' },
+                { value: 'COMPLETED', label: 'Completada' },
+              ]}
+            />
+          </div>
+          <div className="col-md-4">
+            <SelectFilter
+              value={dateOrder}
+              onChange={setDateOrder}
+              label="Ordenar por fecha"
+              loading={loadingAppointments}
+              options={[
+                { value: 'desc', label: 'Más antigua a más reciente' },
+                { value: 'asc', label: 'Más reciente a más antigua' },
+              ]}
+            />
+          </div>
+        </div>
       </div>
 
       {shownError && (
@@ -84,11 +129,11 @@ function ViewAppointments() {
           <span className="spinner-border text-success" role="status"></span>
           <p className="text-muted mt-2 small">Cargando citas...</p>
         </div>
-      ) : appointments.length === 0 ? (
+      ) : filteredItems.length === 0 ? (
         <p className="text-center text-muted py-5">No hay citas para mostrar.</p>
       ) : (
         <div className="row g-4">
-          {appointments.map((appointment) => (
+          {sortedAppointments.map((appointment) => (
             <div className="col-md-6 col-lg-4" key={appointment.id}>
               <div className="card shadow-sm border-0 rounded-4 h-100 bg-white transition-all hover-shadow">
                 <div className="card-body p-4">

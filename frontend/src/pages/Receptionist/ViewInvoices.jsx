@@ -2,6 +2,8 @@ import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import useForm from '../../hooks/useForm';
 import { useNavigate } from 'react-router-dom';
+import useStatusFilter from '../../hooks/useStatusFilter';
+import SelectFilter from '../../components/SelectFilter';
 
 const mapInvoices = (data) =>
   data.map((invoice) => ({
@@ -31,6 +33,11 @@ function ViewInvoices() {
       mapper: mapInvoices,
     });
   };
+  const {
+    filterValue: paymentFilter,
+    setFilterValue: setPaymentFilter,
+    filteredItems,
+  } = useStatusFilter(invoices, 'isPaid');
 
   return (
     <div className="mx-auto" style={{ maxWidth: '1000px' }}>
@@ -62,17 +69,33 @@ function ViewInvoices() {
              {error}
           </div>
         )}
+
+        {invoices.length > 0 && (
+          <div className="mt-3 col-md-4">
+            <SelectFilter
+              value={paymentFilter}
+              onChange={setPaymentFilter}
+              label="Filtrar por estado de pago"
+              loading={loading}
+              options={[
+                { value: '', label: 'Todas las facturas' },
+                { value: 'true', label: 'Pagadas' },
+                { value: 'false', label: 'No pagadas' },
+              ]}
+            />
+          </div>
+        )}
       </div>
 
       {invoices.length > 0 && (
         <div className="row g-4">
-          {invoices.map(res => (
+          {filteredItems.length > 0 ? filteredItems.map(res => (
             <div className="col-md-6 col-lg-4" key={res.id}>
               <div className="card shadow-sm border-0 rounded-4 h-100 bg-white transition-all hover-shadow">
                 <div className="card-body p-4 d-flex flex-column">
                   <div className="d-flex justify-content-between align-items-start mb-3">
                     <div>
-                      <small className="text-uppercase fw-bold text-muted" style={{fontSize: '0.7rem'}}>Factura #{res.id}</small>
+                      <small className="text-uppercase fw-bold text-muted" style={{fontSize: '0.7rem'}}>Factura</small>
                       <h5 className="card-title text-dark fw-bold mb-0">${res.amount.toLocaleString('es-CO')}</h5>
                     </div>
                     {res.isPaid ? (
@@ -97,7 +120,11 @@ function ViewInvoices() {
                 </div>
               </div>
             </div>
-          ))}
+          )) : (
+            <p className="col-12 text-center text-muted py-4">
+              No hay facturas que coincidan con el estado seleccionado.
+            </p>
+          )}
         </div>
       )}
     </div>

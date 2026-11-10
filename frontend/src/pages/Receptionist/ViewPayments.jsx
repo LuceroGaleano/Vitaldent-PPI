@@ -23,6 +23,7 @@ function ViewPayments() {
     mapper: mapPayments,
   });
   const paymentResults = paymentData ?? [];
+  
 
   return (
     <div className="mx-auto" style={{ maxWidth: '900px' }}>
