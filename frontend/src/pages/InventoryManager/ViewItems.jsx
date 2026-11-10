@@ -1,7 +1,7 @@
 import { API_URL } from '../../config';
 import { useOutletContext } from 'react-router-dom';
 import { useState } from 'react';
-import useFetch from '../../customHooks/useFetch';
+import useFetch from '../../hooks/useFetch';
 import { 
   FaSyringe, FaTooth, FaBox, FaMask, 
   FaHandPaper, FaPrescriptionBottleAlt, FaBandAid, FaPumpSoap 

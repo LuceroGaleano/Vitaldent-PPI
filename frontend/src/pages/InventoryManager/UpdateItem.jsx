@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { API_URL } from '../../config';
 import { ItemContext } from '../../context/ItemContext';
-import useFetch from '../../customHooks/useFetch';
+import useFetch from '../../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
-import useForm from '../../customHooks/useForm';
+import useForm from '../../hooks/useForm';
 
 function UpdateItem() {
   const { item } = useContext(ItemContext);

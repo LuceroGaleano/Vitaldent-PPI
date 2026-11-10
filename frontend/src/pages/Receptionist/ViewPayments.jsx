@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { API_URL } from '../../config';
-import useFetch from '../../customHooks/useFetch';
+import useFetch from '../../hooks/useFetch';
 import { InvoiceContext } from '../../context/InvoiceContext';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,7 +1,7 @@
 import { API_URL } from "../../config";
-import useFetch from "../../customHooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
-import useForm from "../../customHooks/useForm";
+import useForm from "../../hooks/useForm";
 
 const initialState = {
   dateAndHour: '',

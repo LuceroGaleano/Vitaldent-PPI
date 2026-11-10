@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { API_URL } from '../../config';
-import useFetch from '../../customHooks/useFetch';
+import useFetch from '../../hooks/useFetch';
 import { AppointmentContext } from '../../context/AppointmentContext';
 import { useOutletContext } from 'react-router-dom';
 import { TreatmentContext } from '../../context/TreatmentContext';

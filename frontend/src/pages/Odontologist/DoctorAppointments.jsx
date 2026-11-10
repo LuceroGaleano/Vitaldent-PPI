@@ -1,6 +1,6 @@
 import { API_URL } from '../../config';
 import useAuth from '../../hooks/useAuth';
-import useFetch from '../../customHooks/useFetch';
+import useFetch from '../../hooks/useFetch';
 import { useOutletContext } from 'react-router-dom';
 
 const mapAppointments = (data) => data.map((appointment) => ({

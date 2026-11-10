@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { API_URL } from "../../config";
-import useFetch from "../../customHooks/useFetch";
-import useForm from "../../customHooks/useForm";
+import useFetch from "../../hooks/useFetch";
+import useForm from "../../hooks/useForm";
 
 const initialState = { document: '' };
 

@@ -1,5 +1,5 @@
 import { API_URL } from '../../config';
-import useFetch from '../../customHooks/useFetch';
+import useFetch from '../../hooks/useFetch';
 
 const mapClinicalHistory = (data) => data.map((item) => ({
   id: item.clinicalRecordId,

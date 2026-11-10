@@ -2,9 +2,9 @@ import { useContext } from "react";
 import { API_URL } from "../../config";
 import { AppointmentContext } from "../../context/AppointmentContext";
 import { TreatmentContext } from "../../context/TreatmentContext";
-import useFetch from "../../customHooks/useFetch";
+import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
-import useForm from "../../customHooks/useForm";
+import useForm from "../../hooks/useForm";
 
 const initialState = {
   reasonForConsultation: '',
