@@ -30,67 +30,105 @@ import { AppointmentProvider } from '../context/AppointmentProvider'
 import { TreatmentProvider } from '../context/TreatmentProvider'
 import { InvoiceProvider } from '../context/InvoiceProvider'
 import UpdateUser from '../pages/UpdateUser'
+import useAuth from '../hooks/useAuth'
 
 export const MainRoutes = () => {
+    const { auth } = useAuth();
   return (
     <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/actualizarUsuario" element={<Navigate to="/patient/actualizarUsuario" replace />} />
-        <Route path="/patient" element={<PatientPortal />}>
-            <Route index element = {<Navigate to = "citasDisponibles" replace/>}/>
-            <Route path="citasDisponibles" element={<AvailableAppointments />} />
-            <Route path="misCitas" element={<MyAppointments />} />
-            <Route path="historialMedico" element={<PatientClinicalHistory />} />
-            <Route path="actualizarUsuario" element={<UpdateUser />} />
-        </Route>
-        <Route path="/receptionist" element={
-          <InvoiceProvider>
-            <ReceptionistPortal />
-          </InvoiceProvider>
-        }>
-            <Route index element={<Navigate to="createAppointment" replace />} />
-            <Route path="createAppointment" element={<CreateAppointment />} />
-            <Route path="viewAppointments" element={<ViewAppointments />} />
-            <Route path="createPatient" element={<CreatePatient />} />
-            <Route path="createUser" element={<CreateUser />} />
-            <Route path="deleteUser" element={<DeleteUser />} />
-            <Route path="viewMedicalHistory" element={<ViewMedicalHistory />} />
-            <Route path="createPayment" element={<CreatePayment />} />
-            <Route path="viewPayments" element={<ViewPayments />} />
-            <Route path="viewInvoices" element={<ViewInvoices />} />
-            <Route path="managePatientAppointments" element={<ManagePatientAppointments />} />
-            <Route path="actualizarUsuario" element={<UpdateUser />} />
-        </Route>
-        <Route path="/odontologist" element=
-        {<AppointmentProvider>
-            <TreatmentProvider>
-                <OdontologistPortal />
-            </TreatmentProvider>
-        </AppointmentProvider>}>
-            <Route index element={<Navigate to="appointments" replace />} />
-            <Route path="appointments" element={<DoctorAppointments />} />
-            <Route path="createMedicalHistory" element={<CreateMedicalHistory />} />
-            <Route path="searchMedicalHistory" element={<SearchMedicalHistory />} />
-            <Route path="createTreatment" element={<CreateTreatment />} />
-            <Route path="viewTreatments" element={<ViewTreatments />} />
-            <Route path="actualizarUsuario" element={<UpdateUser />} />
-        </Route>
-        <Route path="/inventoryManager" element={
-            <ItemProvider>
-                <InventoryManagerPortal />
-            </ItemProvider>}>
-            <Route index element={<Navigate to="viewItems" replace />} />
-            <Route path="viewItems" element={<ViewItems />} />
-            <Route path="createItem" element={<CreateItem />} />
-            <Route path="updateItem" element={<UpdateItem />} />
-            <Route path="actualizarUsuario" element={<UpdateUser />} />
-        </Route>
+        {!auth.token ? (
+            <>
+                <Route path="/" element={<Login />} />
+                <Route path="/*" element={<Navigate to = '/'/>}/>
+            </>
+        ) : (
+            <>  
+                <Route
+                    path="/"
+                    element={
+                        auth.role === 'PATIENT' ? <Navigate to="/patient" replace />
+                            : auth.role === 'RECEPTIONIST' ? <Navigate to="/receptionist" replace />
+                                : auth.role === 'DOCTOR' ? <Navigate to="/odontologist" replace />
+                                    : auth.role === 'INVENTORY_MANAGER' ? <Navigate to="/inventoryManager" replace />
+                                        : <Login />
+                    }
+                />
+                {/* Ruta actualizar usuario */}
+                <Route path="/actualizarUsuario" element={<Navigate to="/patient/actualizarUsuario" replace />} />
+                {/* Rutas exclusivas para pacientes */}
+                <Route path="/patient" element={auth.role === 'PATIENT' ? <PatientPortal /> : <Navigate to="/" replace/>}>
+                    <Route index element = {<Navigate to = "citasDisponibles" replace/>}/>
+                    <Route path="citasDisponibles" element={<AvailableAppointments />} />
+                    <Route path="misCitas" element={<MyAppointments />} />
+                    <Route path="historialMedico" element={<PatientClinicalHistory />} />
+                    <Route path="actualizarUsuario" element={<UpdateUser />} />
+                </Route>
 
-        <Route path="/citasDisponibles" element={<AvailableAppointments />} />
-        <Route path="/historialMedico" element={<PatientClinicalHistory />} />
-        <Route path="/misCitas" element={<MyAppointments />} />
+                {/* Rutas exclusivas para gestor de recepcionista*/}
+                <Route path="/receptionist" element={
+                    auth.role === 'RECEPTIONIST' 
+                    ?
+                    <InvoiceProvider>
+                        <ReceptionistPortal />
+                    </InvoiceProvider> 
+                    : <Navigate to="/" replace/>
+                }>
+                    <Route index element={<Navigate to="createAppointment" replace />} />
+                    <Route path="createAppointment" element={<CreateAppointment />} />
+                    <Route path="viewAppointments" element={<ViewAppointments />} />
+                    <Route path="createPatient" element={<CreatePatient />} />
+                    <Route path="createUser" element={<CreateUser />} />
+                    <Route path="deleteUser" element={<DeleteUser />} />
+                    <Route path="viewMedicalHistory" element={<ViewMedicalHistory />} />
+                    <Route path="createPayment" element={<CreatePayment />} />
+                    <Route path="viewPayments" element={<ViewPayments />} />
+                    <Route path="viewInvoices" element={<ViewInvoices />} />
+                    <Route path="managePatientAppointments" element={<ManagePatientAppointments />} />
+                    <Route path="actualizarUsuario" element={<UpdateUser />} />
+                </Route>
 
-        <Route path="/*" element={<Navigate to = '/'/>}/>
+                {/* Rutas exclusivas para odontologo */}
+                <Route path="/odontologist" element= 
+                {   auth.role === 'DOCTOR' 
+                    ?
+                    <AppointmentProvider>
+                        <TreatmentProvider>
+                            <OdontologistPortal />
+                        </TreatmentProvider>
+                    </AppointmentProvider>
+                    : <Navigate to="/" replace/>
+                }>
+                    <Route index element={<Navigate to="appointments" replace />} />
+                    <Route path="appointments" element={<DoctorAppointments />} />
+                    <Route path="createMedicalHistory" element={<CreateMedicalHistory />} />
+                    <Route path="searchMedicalHistory" element={<SearchMedicalHistory />} />
+                    <Route path="createTreatment" element={<CreateTreatment />} />
+                    <Route path="viewTreatments" element={<ViewTreatments />} />
+                    <Route path="actualizarUsuario" element={<UpdateUser />} />
+                </Route>
+
+                {/* Rutas exclusivas para gestor inventario */}
+                <Route path="/inventoryManager" element={
+                    auth.role === 'INVENTORY_MANAGER'
+                    ?
+                    <ItemProvider>
+                        <InventoryManagerPortal />
+                    </ItemProvider>
+                    : <Navigate to="/" replace/>
+                }>
+                    <Route index element={<Navigate to="viewItems" replace />} />
+                    <Route path="viewItems" element={<ViewItems />} />
+                    <Route path="createItem" element={<CreateItem />} />
+                    <Route path="updateItem" element={<UpdateItem />} />
+                    <Route path="actualizarUsuario" element={<UpdateUser />} />
+                </Route>
+
+                <Route path="/citasDisponibles" element={<AvailableAppointments />} />
+                <Route path="/historialMedico" element={<PatientClinicalHistory />} />
+                <Route path="/misCitas" element={<MyAppointments />} />
+            </>
+        )}
+
     </Routes>
   )
 }

@@ -32,7 +32,8 @@ function Login() {
       setAuth({
         logged: true,
         token: data.token,
-        document: data.document
+        document: data.document,
+        role: data.role
       });
 
       if (data.role === 'RECEPTIONIST') {

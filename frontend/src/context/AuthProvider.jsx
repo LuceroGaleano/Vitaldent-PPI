@@ -15,7 +15,8 @@ export const AuthProvider = ({children}) => {
         return {
             logged: false,
             token: null,
-            document: null
+            document: null,
+            role: null
         }
     })
 
