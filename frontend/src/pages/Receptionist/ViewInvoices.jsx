@@ -4,6 +4,7 @@ import useForm from '../../hooks/useForm';
 import { useNavigate } from 'react-router-dom';
 import useStatusFilter from '../../hooks/useStatusFilter';
 import SelectFilter from '../../components/SelectFilter';
+import useFormValidation from '../../hooks/useFormValidation';
 
 const mapInvoices = (data) =>
   data.map((invoice) => ({
@@ -25,6 +26,7 @@ const formatDate = (date) => {
 function ViewInvoices() {
   const navigate = useNavigate();
   const { state, handleChange } = useForm({ document: '' });
+  const { validationClassName, handleInvalid } = useFormValidation();
   
   const {
     execute: searchInvoices,
@@ -53,7 +55,7 @@ function ViewInvoices() {
       <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mb-4">
         <h2 className="text-success fw-bold mb-4 text-center">Búsqueda de Facturas</h2>
 
-        <form onSubmit={handleSearch} className="d-flex gap-3">
+        <form onSubmit={handleSearch} onInvalid={handleInvalid} className={`d-flex gap-3 ${validationClassName}`}>
           <div className="form-floating flex-grow-1">
             <input 
               type="text" 

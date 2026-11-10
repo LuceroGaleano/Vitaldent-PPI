@@ -3,6 +3,7 @@ import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import { useNavigate, useParams } from 'react-router-dom';
 import useForm from '../../hooks/useForm';
+import useFormValidation from '../../hooks/useFormValidation';
 
 const initialState = {
   name: '',
@@ -21,6 +22,7 @@ function UpdateItem() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { state, handleChange, setValues } = useForm(initialState);
+  const { validationClassName, handleInvalid } = useFormValidation();
   const {
     data: item,
     loading: loadingItem,
@@ -83,7 +85,7 @@ function UpdateItem() {
             Modificando Insumo ID: #{item.id}
           </div>
           
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={validationClassName}>
             <div className="form-floating mb-3">
               <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="name" name="name" value={state.name} onChange={handleChange} placeholder="Nombre" disabled={saving} required />
               <label htmlFor="name" className="text-secondary small">Nombre del Insumo</label>

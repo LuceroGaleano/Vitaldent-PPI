@@ -3,6 +3,7 @@ import useFetch from "../../hooks/useFetch";
 import { useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import useForm from "../../hooks/useForm";
+import useFormValidation from "../../hooks/useFormValidation";
 
 const initialState = {
   reasonForConsultation: '',
@@ -25,6 +26,7 @@ function CreateMedicalHistory() {
   const { appointmentId, treatmentId } = useParams();
   const { auth } = useAuth();
   const { state, handleChange } = useForm(initialState);
+  const { validationClassName, handleInvalid } = useFormValidation();
   const { execute: createClinicalRecord, loading, error } = useFetch();
   const navigate = useNavigate();
   const {
@@ -123,7 +125,7 @@ function CreateMedicalHistory() {
             </span>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={validationClassName}>
             <div className="form-floating mb-3">
               <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="reasonForConsultation" name="reasonForConsultation" value={state.reasonForConsultation} onChange={handleChange} placeholder="Razón" disabled={loading} required />
               <label htmlFor="reasonForConsultation" className="text-secondary small">Razón de la consulta</label>

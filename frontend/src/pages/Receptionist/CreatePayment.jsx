@@ -4,6 +4,7 @@ import useFetch from "../../hooks/useFetch";
 import useForm from "../../hooks/useForm";
 import SuccessModal from "../../components/SuccessModal";
 import useSuccessModal from "../../hooks/useSuccessModal";
+import useFormValidation from "../../hooks/useFormValidation";
 
 const initialState = {
   amount: '',
@@ -18,6 +19,7 @@ function CreatePayment() {
   const { invoiceId } = useParams();
   const { state, handleChange } = useForm(initialState);
   const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
+  const { validationClassName, handleInvalid } = useFormValidation();
   const {
     execute: createPayment,
     loading: saving,
@@ -82,7 +84,7 @@ function CreatePayment() {
           <button className="btn btn-outline-success rounded-3" onClick={() => navigate('/receptionist/viewInvoices')}>Ir a Facturas</button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={validationClassName}>
           <div className="alert alert-success bg-opacity-10 border-success border-opacity-25 rounded-3 mb-4">
             <small className="d-block text-success fw-bold">Factura ID: {invoice.id}</small>
           </div>

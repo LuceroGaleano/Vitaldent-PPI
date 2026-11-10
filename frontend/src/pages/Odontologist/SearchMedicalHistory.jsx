@@ -1,6 +1,7 @@
 import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import useForm from '../../hooks/useForm';
+import useFormValidation from '../../hooks/useFormValidation';
 
 const initialState = { document: '' };
 const mapClinicalHistory = (data) => data.map((record) => ({
@@ -12,6 +13,7 @@ const mapClinicalHistory = (data) => data.map((record) => ({
 
 function SearchMedicalHistory() {
   const { state, handleChange } = useForm(initialState);
+  const { validationClassName, handleInvalid } = useFormValidation();
   const {
     execute: searchHistory,
     data: resultData,
@@ -34,7 +36,7 @@ function SearchMedicalHistory() {
       <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mb-4">
         <h2 className="text-success fw-bold mb-4 text-center">Búsqueda de Historial Médico</h2>
 
-        <form onSubmit={handleSearch} className="d-flex gap-3">
+        <form onSubmit={handleSearch} onInvalid={handleInvalid} className={`d-flex gap-3 ${validationClassName}`}>
           <div className="form-floating flex-grow-1">
             <input 
               type="text" 

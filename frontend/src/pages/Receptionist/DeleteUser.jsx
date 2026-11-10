@@ -3,6 +3,7 @@ import useFetch from "../../hooks/useFetch";
 import useForm from "../../hooks/useForm";
 import SuccessModal from "../../components/SuccessModal";
 import useSuccessModal from "../../hooks/useSuccessModal";
+import useFormValidation from "../../hooks/useFormValidation";
 
 const initialState = { document: '' };
 
@@ -10,6 +11,7 @@ function DeleteUser() {
   const { state, handleChange, setValues } = useForm(initialState);
   const { execute: deleteUser, loading, error } = useFetch();
   const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
+  const { validationClassName, handleInvalid } = useFormValidation();
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -42,7 +44,7 @@ function DeleteUser() {
         message={successMessage}
         onConfirm={confirmSuccess}
       />
-      <form onSubmit={handleSearch}>
+      <form onSubmit={handleSearch} onInvalid={handleInvalid} className={validationClassName}>
           <div className="form-floating mb-4">
             <input 
               type="text" 

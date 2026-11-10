@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import useForm from '../../hooks/useForm';
+import useFormValidation from '../../hooks/useFormValidation';
 
 const initialState = { document: '' };
 
@@ -25,6 +26,7 @@ function ManagePatientAppointments() {
   const [patientAppointments, setPatientAppointments] = useState([]);
   const { state, handleChange } = useForm(initialState);
   const { execute, loading, error } = useFetch();
+  const { validationClassName, handleInvalid } = useFormValidation();
 
   const findPatient = async (e) => {
     e.preventDefault();
@@ -111,7 +113,7 @@ function ManagePatientAppointments() {
       <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mb-4">
         <h2 className="text-success fw-bold mb-4 text-center">Gestión de Citas por Paciente</h2>
         
-        <form onSubmit={findPatient} className="d-flex gap-3">
+        <form onSubmit={findPatient} onInvalid={handleInvalid} className={`d-flex gap-3 ${validationClassName}`}>
           <div className="form-floating flex-grow-1">
             <input type="text" className="form-control rounded-3 bg-light shadow-none border-light-subtle" placeholder="Documento" id="document" name="document" value={state.document} onChange={handleChange} disabled={loading} required />
             <label htmlFor="document" className="text-secondary small">Buscar por Documento...</label>

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import useFetch from "../hooks/useFetch";
 import useForm from "../hooks/useForm";
+import useFormValidation from "../hooks/useFormValidation";
+import { getLocalDateString } from "../utils/date";
 
 const initialState = {
   userName: '',
@@ -23,6 +25,8 @@ function UpdateUser() {
   const { state, handleChange, setValues } = useForm(initialState);
   const { auth } = useAuth();
   const navigate = useNavigate();
+  const { validationClassName, handleInvalid } = useFormValidation();
+  const maxBirthDate = getLocalDateString();
   const {
     data: userData,
     loading: loadingUser,
@@ -102,7 +106,7 @@ function UpdateUser() {
             <p className="text-muted mt-2 small">Cargando perfil...</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={validationClassName}>
             
             <h5 className="text-muted small mb-3 border-bottom pb-2">Información Personal</h5>
             <div className="row g-3 mb-4">
@@ -133,7 +137,7 @@ function UpdateUser() {
                 <label htmlFor="address" className="text-secondary small ms-2">Dirección de Residencia</label>
               </div>
               <div className="col-md-6 form-floating">
-                <input type="date" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="birthDate" name="birthDate" value={state.birthDate} onChange={handleChange} required disabled={loading} />
+                <input type="date" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="birthDate" name="birthDate" value={state.birthDate} onChange={handleChange} max={maxBirthDate} required disabled={loading} />
                 <label htmlFor="birthDate" className="text-secondary small ms-2">Fecha de Nacimiento</label>
               </div>
             </div>

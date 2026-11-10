@@ -3,6 +3,7 @@ import { API_URL } from "../../config";
 import useFetch from "../../hooks/useFetch";
 import { useNavigate } from "react-router-dom";
 import useForm from "../../hooks/useForm";
+import useFormValidation from "../../hooks/useFormValidation";
 
 const initialState = { name: '', description: '', cost: '', treatmentItems: [] };
 const mapItems = (data) => data.map((item) => ({
@@ -15,6 +16,7 @@ const mapItems = (data) => data.map((item) => ({
 function CreateTreatment() {
   const [selectedItems, setSelectedItems] = useState([]);
   const { state, handleChange } = useForm(initialState);
+  const { validationClassName, handleInvalid } = useFormValidation();
   const {
     data: itemData,
     loading: loadingItems,
@@ -77,7 +79,7 @@ function CreateTreatment() {
           <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 h-100 bg-white">
             <h5 className="text-success fw-bold mb-4 pb-2 border-bottom">Información del Tratamiento</h5>
             
-            <form onSubmit={handleSubmit} className="d-flex flex-column h-100">
+            <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={`d-flex flex-column h-100 ${validationClassName}`}>
               <div className="form-floating mb-3">
                 <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="name" name="name" value={state.name} onChange={handleChange} placeholder="Nombre"                 disabled={loading} required />
                 <label htmlFor="name" className="text-secondary small">Nombre del Tratamiento</label>

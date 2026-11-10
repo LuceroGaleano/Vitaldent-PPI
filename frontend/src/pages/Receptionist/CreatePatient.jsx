@@ -4,6 +4,8 @@ import useForm from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
 import SuccessModal from "../../components/SuccessModal";
 import useSuccessModal from "../../hooks/useSuccessModal";
+import useFormValidation from "../../hooks/useFormValidation";
+import { getLocalDateString } from "../../utils/date";
 
 const initialForm = {
   fullName: '',
@@ -19,6 +21,8 @@ function CreatePatient() {
   const { execute: createPatient, loading, error } = useFetch();
   const navigate = useNavigate();
   const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
+  const { validationClassName, handleInvalid } = useFormValidation();
+  const maxBirthDate = getLocalDateString();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +58,7 @@ function CreatePatient() {
         onConfirm={confirmSuccess}
       />
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={validationClassName}>
         <div className="row g-3 mb-3">
           <div className="col-md-6 form-floating">
             <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="fullName" name="fullName" value={form.fullName} onChange={handleChange} placeholder="Nombre" disabled={loading} required />
@@ -83,7 +87,7 @@ function CreatePatient() {
             <label htmlFor="address" className="text-secondary small ms-2">Dirección</label>
           </div>
           <div className="col-md-6 form-floating">
-            <input type="date" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="birthDate" name="birthDate" value={form.birthDate} onChange={handleChange} disabled={loading} required />
+            <input type="date" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="birthDate" name="birthDate" value={form.birthDate} onChange={handleChange} max={maxBirthDate} disabled={loading} required />
             <label htmlFor="birthDate" className="text-secondary small ms-2">Fecha de Nacimiento</label>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import useFetch from '../hooks/useFetch';
 import useForm from '../hooks/useForm';
+import useFormValidation from '../hooks/useFormValidation';
 
 function Login() {
   const initialState = {
@@ -14,6 +15,7 @@ function Login() {
   const { execute: login, loading, error } = useFetch();
   const navigate = useNavigate();
   const { setAuth } = useAuth();
+  const { validationClassName, handleInvalid } = useFormValidation();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -75,7 +77,7 @@ function Login() {
           )}
 
           {/* Formulario con Etiquetas Flotantes */}
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleLogin} onInvalid={handleInvalid} className={validationClassName}>
             <div className="form-floating mb-3">
               <input
                 id="user"

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useForm from "../../hooks/useForm";
 import SuccessModal from "../../components/SuccessModal";
 import useSuccessModal from "../../hooks/useSuccessModal";
+import useFormValidation from "../../hooks/useFormValidation";
 
 const initialState = {
   dateAndHour: '',
@@ -15,6 +16,7 @@ function CreateAppointment() {
   const { execute: createAppointment, loading, error } = useFetch();
   const navigate = useNavigate();
   const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
+  const { validationClassName, handleInvalid } = useFormValidation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,7 +50,7 @@ function CreateAppointment() {
       />
       
       
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={validationClassName}>
         <div className="form-floating mb-3">
           <input 
             type="text" 

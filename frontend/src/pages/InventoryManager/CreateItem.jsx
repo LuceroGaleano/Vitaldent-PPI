@@ -2,6 +2,7 @@ import { API_URL } from "../../config";
 import useFetch from "../../hooks/useFetch";
 import useForm from "../../hooks/useForm";
 import { useNavigate } from "react-router-dom";
+import useFormValidation from "../../hooks/useFormValidation";
 
 const initialState = { name: '', stock: '', active: '' };
 
@@ -9,6 +10,7 @@ function CreateItem() {
   const { state, handleChange } = useForm(initialState);
   const { execute: createItem, loading, error } = useFetch();
   const navigate = useNavigate();
+  const { validationClassName, handleInvalid } = useFormValidation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +36,7 @@ function CreateItem() {
         </div>
       )}
       
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={validationClassName}>
         <div className="form-floating mb-3">
           <input 
             type="text" 

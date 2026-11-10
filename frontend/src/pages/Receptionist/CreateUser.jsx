@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import useForm from "../../hooks/useForm";
 import SuccessModal from "../../components/SuccessModal";
 import useSuccessModal from "../../hooks/useSuccessModal";
+import useFormValidation from "../../hooks/useFormValidation";
+import { getLocalDateString } from "../../utils/date";
 
 const initialState = {
   userName: '',
@@ -22,6 +24,8 @@ function CreateUser() {
   const { execute: createUser, loading, error } = useFetch();
   const navigate = useNavigate();
   const { successMessage, showSuccess, confirmSuccess } = useSuccessModal();
+  const { validationClassName, handleInvalid } = useFormValidation();
+  const maxBirthDate = getLocalDateString();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -59,7 +63,7 @@ function CreateUser() {
         onConfirm={confirmSuccess}
       />
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onInvalid={handleInvalid} className={validationClassName}>
         <h5 className="text-muted small mb-3 border-bottom pb-2">Datos Personales</h5>
         <div className="row g-3 mb-3">
           <div className="col-md-6 form-floating">
@@ -82,7 +86,7 @@ function CreateUser() {
             <label htmlFor="phone" className="text-secondary small ms-2">Teléfono</label>
           </div>
           <div className="col-md-4 form-floating">
-            <input type="date" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="birthDate" name="birthDate" value={state.birthDate} onChange={handleChange} disabled={loading} required />
+            <input type="date" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="birthDate" name="birthDate" value={state.birthDate} onChange={handleChange} max={maxBirthDate} disabled={loading} required />
             <label htmlFor="birthDate" className="text-secondary small ms-2">Nacimiento</label>
           </div>
         </div>
