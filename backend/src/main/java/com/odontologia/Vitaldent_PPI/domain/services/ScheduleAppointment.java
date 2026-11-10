@@ -9,16 +9,19 @@ import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
 import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.AppointmentPort;
+import com.odontologia.Vitaldent_PPI.domain.ports.out.NotificationPort;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.PatientPort;
 
 @Service
 public class ScheduleAppointment {
     private final AppointmentPort appointmentPort;
     private final PatientPort patientPort;
+    private final NotificationPort notificationPort;
 
-    public ScheduleAppointment(AppointmentPort appointmentPort, PatientPort patientPort){
+    public ScheduleAppointment(AppointmentPort appointmentPort, PatientPort patientPort, NotificationPort notificationPort){
         this.appointmentPort = appointmentPort;
         this.patientPort = patientPort;
+        this.notificationPort = notificationPort;
     }
 
     public void scheduleAppointment(UUID idAppointment, String patientDocument) throws BusinessException{
@@ -48,5 +51,10 @@ public class ScheduleAppointment {
         appointment.setPatientId(patient.getPatientId());
         appointment.setAppointmentStatus(AppointmentStatus.SCHEDULED);
         appointmentPort.update(appointment);
+        notificationPort.sendEmail(
+            patient.getEmail(),
+            "Confirmación de cita - Vitaldent",
+            AppointmentEmailFormatter.confirmation(patient, appointment)
+        );
     }
 }

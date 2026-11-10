@@ -6,20 +6,31 @@ import org.springframework.stereotype.Service;
 
 import com.odontologia.Vitaldent_PPI.domain.exceptions.BusinessException;
 import com.odontologia.Vitaldent_PPI.domain.models.Appointment;
+import com.odontologia.Vitaldent_PPI.domain.models.Patient;
 import com.odontologia.Vitaldent_PPI.domain.models.User;
 import com.odontologia.Vitaldent_PPI.domain.models.enums.AppointmentStatus;
 import com.odontologia.Vitaldent_PPI.domain.models.enums.RolUser;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.AppointmentPort;
+import com.odontologia.Vitaldent_PPI.domain.ports.out.NotificationPort;
+import com.odontologia.Vitaldent_PPI.domain.ports.out.PatientPort;
 import com.odontologia.Vitaldent_PPI.domain.ports.out.UserPort;
 
 @Service
 public class CancelAppointment {
     private final AppointmentPort appointmentPort;
     private final UserPort userPort;
+    private final PatientPort patientPort;
+    private final NotificationPort notificationPort;
 
-    public CancelAppointment(AppointmentPort appointmentPort, UserPort userPort){
+    public CancelAppointment(
+            AppointmentPort appointmentPort,
+            UserPort userPort,
+            PatientPort patientPort,
+            NotificationPort notificationPort) {
         this.appointmentPort = appointmentPort;
         this.userPort = userPort;
+        this.patientPort = patientPort;
+        this.notificationPort = notificationPort;
     }
 
     public void cancelAppointment(UUID idAppointment, UUID relatedId) throws BusinessException{
@@ -45,9 +56,19 @@ public class CancelAppointment {
             }
         }
 
+        Patient patient = appointment.getPatientId() == null
+                ? null
+                : patientPort.findById(appointment.getPatientId());
+
         appointment.setPatientId(null);
         appointment.setAppointmentStatus(AppointmentStatus.AVAILABLE);
 
         appointmentPort.update(appointment);
+        if (patient != null && patient.getEmail() != null && !patient.getEmail().isBlank()) {
+            notificationPort.sendEmail(
+                    patient.getEmail(),
+                    "Cancelación de cita - Vitaldent",
+                    AppointmentEmailFormatter.cancellation(patient, appointment));
+        }
     }
 }

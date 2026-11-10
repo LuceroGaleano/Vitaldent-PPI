@@ -193,4 +193,5 @@ public class ReceptionistUseCase implements  com.odontologia.Vitaldent_PPI.domai
     public void closeAppointment(UUID idAppointment) throws BusinessException{
         closeAppointment.closeAppointment(idAppointment);
     }
+
 }
