@@ -1,10 +1,9 @@
-import { useContext, useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { ItemContext } from '../../context/ItemContext';
+import { useState } from 'react';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import logo from '../../assets/LogoInventory@4x-8.png';
 import {
-  FaBoxes, FaPlusSquare, FaEdit, FaUserEdit, FaSignOutAlt,
+  FaBoxes, FaPlusSquare, FaUserEdit, FaSignOutAlt,
   FaChevronDown, FaChevronUp
 } from 'react-icons/fa';
 
@@ -16,18 +15,17 @@ const MENU_SECTIONS = [
     items: [
       { to: '/inventoryManager/viewItems', label: 'Ver Inventario', icon: FaBoxes },
       { to: '/inventoryManager/createItem', label: 'Nuevo Insumo', icon: FaPlusSquare },
-      { to: '/inventoryManager/updateItem', label: 'Editar Insumo', icon: FaEdit },
     ],
   },
 ];
 
 const findSectionByPath = (pathname) =>
-  MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
+  pathname.startsWith('/inventoryManager/items/')
+    ? 'stock'
+    : MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
 
 function InventoryManagerPortal() {
   const { handleLogout } = useAuth();
-  const { setItem } = useContext(ItemContext);
-  const navigate = useNavigate();
   const location = useLocation();
   const activeSection = findSectionByPath(location.pathname);
   const [sectionPreference, setSectionPreference] = useState({
@@ -37,11 +35,6 @@ function InventoryManagerPortal() {
   const openSection = sectionPreference.pathname === location.pathname
     ? sectionPreference.openSection
     : activeSection;
-
-  const goToUpdate = (item) => {
-    setItem(item);
-    navigate('/inventoryManager/updateItem');
-  };
 
   const handleSectionClick = (event, key) => {
     if (openSection === key) event.preventDefault();
@@ -138,7 +131,7 @@ function InventoryManagerPortal() {
 
       <div className="flex-grow-1 p-4 p-md-5 overflow-auto" style={{ maxHeight: '100vh', backgroundColor: '#f4f6f8' }}>
         <div className="container-fluid max-w-7xl">
-          <Outlet context={{ onUpdateClick: goToUpdate }} />
+          <Outlet />
         </div>
       </div>
     </div>

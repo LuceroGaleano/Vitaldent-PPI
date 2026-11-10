@@ -1,7 +1,5 @@
-import { useContext } from "react";
 import { API_URL } from "../../config";
-import { useNavigate } from "react-router-dom";
-import { InvoiceContext } from "../../context/InvoiceContext";
+import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import useForm from "../../hooks/useForm";
 
@@ -10,11 +8,30 @@ const initialState = {
   methodPayment: '',
 };
 
+const mapInvoice = (invoice) => ({
+  id: invoice.invoiceId,
+});
+
 function CreatePayment() {
-  const { invoice } = useContext(InvoiceContext);
+  const { invoiceId } = useParams();
   const { state, handleChange } = useForm(initialState);
-  const { execute: createPayment, loading, error } = useFetch();
+  const {
+    execute: createPayment,
+    loading: saving,
+    error,
+  } = useFetch();
   const navigate = useNavigate();
+  const {
+    data: invoice,
+    loading: loadingInvoice,
+    error: invoiceError,
+  } = useFetch({
+    autoExecute: Boolean(invoiceId),
+    url: invoiceId ? `${API_URL}/receptionist/invoice/${invoiceId}` : undefined,
+    method: 'GET',
+    mapper: mapInvoice,
+  });
+  const loading = saving || loadingInvoice;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,7 +42,7 @@ function CreatePayment() {
           amount: state.amount,
           methodPayment: state.methodPayment,
           state: 'PAID',
-          invoiceId: invoice.id
+          invoiceId
       },
     });
     if (result.success) {
@@ -37,13 +54,18 @@ function CreatePayment() {
     <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
       <h2 className="text-success fw-bold mb-4 text-center">Registrar Pago</h2>
       
-      {error && (
+      {(invoiceError || error) && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {error}
+          {invoiceError || error}
         </div>
       )}
 
-      {!invoice ? (
+      {loadingInvoice ? (
+        <div className="text-center py-5">
+          <span className="spinner-border text-success" role="status"></span>
+          <p className="text-muted mt-2 small">Cargando factura...</p>
+        </div>
+      ) : !invoiceId || !invoice ? (
         <div className="text-center py-5">
           <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '80px', height: '80px' }}>
             <span className="fs-1 opacity-50">🧾</span>

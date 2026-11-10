@@ -1,25 +1,53 @@
-import { useContext } from "react";
 import { API_URL } from "../../config";
-import { AppointmentContext } from "../../context/AppointmentContext";
-import { TreatmentContext } from "../../context/TreatmentContext";
 import useFetch from "../../hooks/useFetch";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import useForm from "../../hooks/useForm";
 
 const initialState = {
   reasonForConsultation: '',
   record: '',
   diagnostic: '',
-  appointmentId: '',
-  treatmentId: '',
 };
 
+const mapAppointments = (data) => data.map((appointment) => ({
+  id: appointment.appointmentId,
+  patient: appointment.patientName ?? 'Sin paciente',
+}));
+
+const mapTreatment = (treatment) => ({
+  id: treatment.treatmentId,
+  name: treatment.name,
+});
+
 function CreateMedicalHistory() {
-  const { appointment } = useContext(AppointmentContext);
-  const { treatment } = useContext(TreatmentContext);
+  const { appointmentId, treatmentId } = useParams();
+  const { auth } = useAuth();
   const { state, handleChange } = useForm(initialState);
   const { execute: createClinicalRecord, loading, error } = useFetch();
   const navigate = useNavigate();
+  const {
+    data: appointmentData,
+    loading: loadingAppointment,
+    error: appointmentError,
+  } = useFetch({
+    autoExecute: Boolean(appointmentId),
+    url: appointmentId ? `${API_URL}/doctor/appointment/doctor/${auth.document}` : undefined,
+    method: 'GET',
+    mapper: mapAppointments,
+  });
+  const appointment = appointmentData?.find((record) => record.id === appointmentId);
+  const {
+    data: treatment,
+    loading: loadingTreatment,
+    error: treatmentError,
+  } = useFetch({
+    autoExecute: Boolean(treatmentId),
+    url: treatmentId ? `${API_URL}/doctor/treatment/${treatmentId}` : undefined,
+    method: 'GET',
+    mapper: mapTreatment,
+  });
+  const loadingSelection = loadingAppointment || loadingTreatment;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,8 +58,8 @@ function CreateMedicalHistory() {
         reasonForConsultation: state.reasonForConsultation,
         record: state.record,
         diagnostic: state.diagnostic,
-        appointmentId: appointment.id,
-        treatmentId: treatment.id,
+        appointmentId,
+        treatmentId,
       },
     });
     if (result.success) {
@@ -43,13 +71,18 @@ function CreateMedicalHistory() {
     <div className="mx-auto" style={{ maxWidth: '800px' }}>
       <h2 className="text-success fw-bold mb-4 text-center">Registrar Historial Clínico</h2>
 
-      {error && (
+      {(appointmentError || treatmentError || error) && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {error}
+          {appointmentError || treatmentError || error}
         </div>
       )}
       
-      {!appointment ? (
+      {loadingSelection ? (
+        <div className="text-center py-5">
+          <span className="spinner-border text-success" role="status"></span>
+          <p className="text-muted mt-2 small">Cargando selección...</p>
+        </div>
+      ) : !appointmentId || !appointment ? (
         <div className="card shadow-lg border-0 rounded-4 p-5 text-center">
           <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '80px', height: '80px' }}>
             <span className="fs-1 opacity-50">📅</span>
@@ -62,7 +95,7 @@ function CreateMedicalHistory() {
             </button>
           </div>
         </div>
-      ) : !treatment ? (
+      ) : !treatmentId || !treatment ? (
         <div className="card shadow-lg border-0 rounded-4 p-5 text-center">
           <div className="alert alert-success border-0 bg-success bg-opacity-10 text-success fw-bold p-3 rounded-3 mb-4 mx-auto" style={{ maxWidth: '400px' }}>
             ✅ Paciente Seleccionado: {appointment.patient}
@@ -73,7 +106,7 @@ function CreateMedicalHistory() {
           <h4 className="text-secondary fw-bold mb-2">Tratamiento pendiente</h4>
           <p className="text-muted mb-4">Ahora debes seleccionar el procedimiento o tratamiento que se le aplicará al paciente.</p>
           <div>
-            <button className="btn btn-primary rounded-3 px-4" onClick={() => navigate('/odontologist/viewTreatments')}>
+            <button className="btn btn-primary rounded-3 px-4" onClick={() => navigate(`/odontologist/appointments/${appointmentId}/treatments`)}>
               Ir a Tratamientos
             </button>
           </div>

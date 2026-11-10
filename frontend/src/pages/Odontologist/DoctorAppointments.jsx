@@ -1,7 +1,7 @@
 import { API_URL } from '../../config';
 import useAuth from '../../hooks/useAuth';
 import useFetch from '../../hooks/useFetch';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const mapAppointments = (data) => data.map((appointment) => ({
   id: appointment.appointmentId,
@@ -12,8 +12,8 @@ const mapAppointments = (data) => data.map((appointment) => ({
 }));
 
 function DoctorAppointments() {
-  const { onAppointmentClick } = useOutletContext();
   const { auth } = useAuth();
+  const navigate = useNavigate();
   const {
     data: appointmentData,
     loading,
@@ -73,7 +73,7 @@ function DoctorAppointments() {
                     {appointment.status !== 'COMPLETED' && (
                       <button 
                         className="btn btn-success btn-sm w-100 rounded-3 fw-semibold py-2 shadow-sm" 
-                        onClick={() => onAppointmentClick(appointment)}
+                        onClick={() => navigate(`/odontologist/appointments/${appointment.id}/treatments`)}
                       >
                         Iniciar Consulta (Crear Historial)
                       </button>

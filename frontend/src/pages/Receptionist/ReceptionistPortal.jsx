@@ -1,6 +1,5 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { InvoiceContext } from '../../context/InvoiceContext';
 import useAuth from '../../hooks/useAuth';
 import logo from '../../assets/LogoReceptionist@4x-8.png';
 
@@ -50,7 +49,6 @@ const findSectionByPath = (pathname) =>
 
 function ReceptionistPortal() {
   const { handleLogout } = useAuth();
-  const { setInvoice } = useContext(InvoiceContext);
   const navigate = useNavigate();
   const location = useLocation();
   const activeSection = findSectionByPath(location.pathname);
@@ -61,16 +59,6 @@ function ReceptionistPortal() {
   const openSection = sectionPreference.pathname === location.pathname
     ? sectionPreference.openSection
     : activeSection;
-
-  const goToInvoice = (invoice) => {
-    setInvoice(invoice);
-    navigate('/receptionist/viewPayments');
-  };
-
-  const goToCreatePay = (invoice) => {
-    setInvoice(invoice);
-    navigate('/receptionist/createPayment');
-  };
 
   const handleSectionClick = (event, key) => {
     if (openSection === key) event.preventDefault();
@@ -167,7 +155,7 @@ function ReceptionistPortal() {
 
       <div className="flex-grow-1 p-4 p-md-5 overflow-auto" style={{ maxHeight: '100vh', backgroundColor: '#f4f6f8' }}>
         <div className="container-fluid max-w-7xl">
-          <Outlet context={{ onInvoiceClick: goToInvoice, onCreatePayClick: goToCreatePay }} />
+          <Outlet />
         </div>
       </div>
     </div>

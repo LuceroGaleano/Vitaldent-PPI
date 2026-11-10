@@ -1,5 +1,5 @@
 import { API_URL } from '../../config';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import useFetch from '../../hooks/useFetch';
 import { 
@@ -15,7 +15,7 @@ const mapItems = (data) => data.map((item) => ({
 }));
 
 function ViewItems() {
-  const { onUpdateClick } = useOutletContext();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const {
     data: itemData,
@@ -137,7 +137,7 @@ function ViewItems() {
                       <td className="text-end px-4">
                         <button 
                           className="btn btn-outline-success btn-sm rounded-3 fw-semibold px-3 shadow-sm"
-                          onClick={() => onUpdateClick(item)}
+                          onClick={() => navigate(`/inventoryManager/items/${item.id}/editar`)}
                         >
                           Editar
                         </button>

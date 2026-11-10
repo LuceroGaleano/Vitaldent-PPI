@@ -1,7 +1,7 @@
 import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
 import useForm from '../../hooks/useForm';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const mapInvoices = (data) =>
   data.map((invoice) => ({
@@ -12,7 +12,7 @@ const mapInvoices = (data) =>
   }));
 
 function ViewInvoices() {
-  const { onInvoiceClick, onCreatePayClick } = useOutletContext();
+  const navigate = useNavigate();
   const { state, handleChange } = useForm({ document: '' });
   
   const {
@@ -86,11 +86,11 @@ function ViewInvoices() {
                   
                   <div className="mt-auto d-flex flex-column gap-2">
                     {!res.isPaid && (
-                      <button className="btn btn-success btn-sm w-100 rounded-3 fw-semibold" onClick={() => onCreatePayClick(res)}>
+                      <button className="btn btn-success btn-sm w-100 rounded-3 fw-semibold" onClick={() => navigate(`/receptionist/invoices/${res.id}/pay`)}>
                         Realizar Pago
                       </button>
                     )}
-                    <button className="btn btn-outline-primary btn-sm w-100 rounded-3 fw-semibold" onClick={() => onInvoiceClick(res)}>
+                    <button className="btn btn-outline-primary btn-sm w-100 rounded-3 fw-semibold" onClick={() => navigate(`/receptionist/invoices/${res.id}/payments`)}>
                       Ver Historial de Pagos
                     </button>
                   </div>

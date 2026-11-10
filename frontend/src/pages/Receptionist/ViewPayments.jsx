@@ -1,8 +1,6 @@
-import { useContext } from 'react';
 import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
-import { InvoiceContext } from '../../context/InvoiceContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const mapPayments = (data) => data.map((payment) => ({
   id: payment.payId,
@@ -12,15 +10,15 @@ const mapPayments = (data) => data.map((payment) => ({
 }));
 
 function ViewPayments() {
-  const {invoice} = useContext(InvoiceContext);
+  const { invoiceId } = useParams();
   const navigate = useNavigate();
   const {
     data: paymentData,
     loading,
     error,
   } = useFetch({
-    autoExecute: Boolean(invoice),
-    url: invoice ? `${API_URL}/receptionist/pay/invoice/${invoice.id}` : undefined,
+    autoExecute: Boolean(invoiceId),
+    url: invoiceId ? `${API_URL}/receptionist/pay/invoice/${invoiceId}` : undefined,
     method: 'GET',
     mapper: mapPayments,
   });
@@ -29,7 +27,7 @@ function ViewPayments() {
   return (
     <div className="mx-auto" style={{ maxWidth: '900px' }}>
       
-      {!invoice ? (
+      {!invoiceId ? (
         <div className="card shadow-lg border-0 rounded-4 p-5 text-center">
           <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '80px', height: '80px' }}>
             <span className="fs-1 opacity-50">💸</span>
@@ -45,7 +43,7 @@ function ViewPayments() {
       ) : (
         <>  
           <div className="d-flex justify-content-between align-items-center mb-4">
-            <h2 className="text-success fw-bold mb-0">Pagos de Factura #{invoice.id}</h2>
+            <h2 className="text-success fw-bold mb-0">Pagos de Factura #{invoiceId}</h2>
             <button className="btn btn-outline-secondary btn-sm rounded-3" onClick={() => navigate('/receptionist/viewInvoices')}>
               Volver
             </button>

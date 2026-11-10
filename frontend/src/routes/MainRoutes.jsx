@@ -25,10 +25,6 @@ import CreatePayment from '../pages/Receptionist/CreatePayment'
 import ViewPayments from '../pages/Receptionist/ViewPayments'
 import ViewInvoices from '../pages/Receptionist/ViewInvoices'
 import ManagePatientAppointments from '../pages/Receptionist/ManagePatientAppointments'
-import { ItemProvider } from '../context/ItemProvider'
-import { AppointmentProvider } from '../context/AppointmentProvider'
-import { TreatmentProvider } from '../context/TreatmentProvider'
-import { InvoiceProvider } from '../context/InvoiceProvider'
 import UpdateUser from '../pages/UpdateUser'
 import useAuth from '../hooks/useAuth'
 
@@ -68,9 +64,7 @@ export const MainRoutes = () => {
                 <Route path="/receptionist" element={
                     auth.role === 'RECEPTIONIST' 
                     ?
-                    <InvoiceProvider>
-                        <ReceptionistPortal />
-                    </InvoiceProvider> 
+                    <ReceptionistPortal />
                     : <Navigate to="/" replace/>
                 }>
                     <Route index element={<Navigate to="createAppointment" replace />} />
@@ -82,6 +76,8 @@ export const MainRoutes = () => {
                     <Route path="viewMedicalHistory" element={<ViewMedicalHistory />} />
                     <Route path="createPayment" element={<CreatePayment />} />
                     <Route path="viewPayments" element={<ViewPayments />} />
+                    <Route path="invoices/:invoiceId/pay" element={<CreatePayment />} />
+                    <Route path="invoices/:invoiceId/payments" element={<ViewPayments />} />
                     <Route path="viewInvoices" element={<ViewInvoices />} />
                     <Route path="managePatientAppointments" element={<ManagePatientAppointments />} />
                     <Route path="actualizarUsuario" element={<UpdateUser />} />
@@ -91,15 +87,13 @@ export const MainRoutes = () => {
                 <Route path="/odontologist" element= 
                 {   auth.role === 'DOCTOR' 
                     ?
-                    <AppointmentProvider>
-                        <TreatmentProvider>
-                            <OdontologistPortal />
-                        </TreatmentProvider>
-                    </AppointmentProvider>
+                    <OdontologistPortal />
                     : <Navigate to="/" replace/>
                 }>
                     <Route index element={<Navigate to="appointments" replace />} />
                     <Route path="appointments" element={<DoctorAppointments />} />
+                    <Route path="appointments/:appointmentId/treatments" element={<ViewTreatments />} />
+                    <Route path="appointments/:appointmentId/treatments/:treatmentId/clinical-record" element={<CreateMedicalHistory />} />
                     <Route path="createMedicalHistory" element={<CreateMedicalHistory />} />
                     <Route path="searchMedicalHistory" element={<SearchMedicalHistory />} />
                     <Route path="createTreatment" element={<CreateTreatment />} />
@@ -111,15 +105,13 @@ export const MainRoutes = () => {
                 <Route path="/inventoryManager" element={
                     auth.role === 'INVENTORY_MANAGER'
                     ?
-                    <ItemProvider>
-                        <InventoryManagerPortal />
-                    </ItemProvider>
+                    <InventoryManagerPortal />
                     : <Navigate to="/" replace/>
                 }>
                     <Route index element={<Navigate to="viewItems" replace />} />
                     <Route path="viewItems" element={<ViewItems />} />
                     <Route path="createItem" element={<CreateItem />} />
-                    <Route path="updateItem" element={<UpdateItem />} />
+                    <Route path="items/:id/editar" element={<UpdateItem />} />
                     <Route path="actualizarUsuario" element={<UpdateUser />} />
                 </Route>
 

@@ -1,27 +1,56 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
 import { API_URL } from '../../config';
-import { ItemContext } from '../../context/ItemContext';
 import useFetch from '../../hooks/useFetch';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useForm from '../../hooks/useForm';
 
+const initialState = {
+  name: '',
+  stock: '',
+  active: 'true',
+};
+
+const mapItem = (item) => ({
+  id: item.itemId,
+  name: item.name,
+  stock: item.stock,
+  active: item.active,
+});
+
 function UpdateItem() {
-  const { item } = useContext(ItemContext);
-  
-  const initialState = {
-    name: item?.name || '',
-    stock: item?.stock || '',
-    active: item?.active || 'true'
-  };
-  
-  const { state, handleChange } = useForm(initialState);
-  const { execute: updateItem, loading, error } = useFetch();
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { state, handleChange, setValues } = useForm(initialState);
+  const {
+    data: item,
+    loading: loadingItem,
+    error: loadError,
+  } = useFetch({
+    autoExecute: true,
+    url: `${API_URL}/inventory_manager/item/${id}`,
+    method: 'GET',
+    mapper: mapItem,
+  });
+  const {
+    execute: updateItem,
+    loading: saving,
+    error: saveError,
+  } = useFetch();
+
+  useEffect(() => {
+    if (item) {
+      setValues({
+        name: item.name,
+        stock: item.stock,
+        active: String(item.active),
+      });
+    }
+  }, [item, setValues]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const result = await updateItem({
-      url: `${API_URL}/inventory_manager/item/${item.id}`,
+      url: `${API_URL}/inventory_manager/item/${id}`,
       method: 'PUT',
       body: {
         name: state.name, stock: state.stock, active: state.active === 'true'
@@ -35,13 +64,18 @@ function UpdateItem() {
   return (
     <div className="mx-auto" style={{ maxWidth: '600px' }}>
       
-      {error && (
+      {(loadError || saveError) && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {error}
+          {loadError || saveError}
         </div>
       )}
-
-      {item ? (
+      
+      {loadingItem || (!item && !loadError) ? (
+        <div className="text-center py-5">
+          <span className="spinner-border text-success" role="status"></span>
+          <p className="text-muted mt-2 small">Cargando insumo...</p>
+        </div>
+      ) : item ? (
         <div className="card shadow-lg border-0 rounded-4 p-4 p-sm-5 bg-white">
           <h2 className="text-success fw-bold mb-4 text-center">Editar Insumo</h2>
           
@@ -51,25 +85,25 @@ function UpdateItem() {
           
           <form onSubmit={handleSubmit}>
             <div className="form-floating mb-3">
-              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="name" name="name" value={state.name} onChange={handleChange} placeholder="Nombre" disabled={loading} required />
+              <input type="text" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="name" name="name" value={state.name} onChange={handleChange} placeholder="Nombre" disabled={saving} required />
               <label htmlFor="name" className="text-secondary small">Nombre del Insumo</label>
             </div>
             
             <div className="form-floating mb-3">
-              <input type="number" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="stock" name="stock" value={state.stock} onChange={handleChange} placeholder="Stock" disabled={loading} required />
+              <input type="number" className="form-control form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="stock" name="stock" value={state.stock} onChange={handleChange} placeholder="Stock" disabled={saving} required />
               <label htmlFor="stock" className="text-secondary small">Cantidad en Stock</label>
             </div>
             
             <div className="form-floating mb-4">
-              <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="active" name="active" value={state.active} onChange={handleChange} disabled={loading} required>
+              <select className="form-select form-control-lg rounded-3 border-light-subtle bg-light shadow-none" id="active" name="active" value={state.active} onChange={handleChange} disabled={saving} required>
                 <option value="true">Activo (Disponible)</option>
                 <option value="false">Inactivo (Oculto)</option>
               </select>
               <label htmlFor="active" className="text-secondary small">Estado Operativo</label>
             </div>
             
-            <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={loading}>
-              {loading ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Actualizar Inventario'}
+            <button type="submit" className="btn btn-success btn-lg w-100 py-3 rounded-3 fw-semibold shadow-sm" disabled={saving}>
+              {saving ? <><span className="spinner-border spinner-border-sm me-2"></span> Guardando...</> : 'Actualizar Inventario'}
             </button>
           </form>
         </div>
@@ -78,8 +112,8 @@ function UpdateItem() {
           <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '80px', height: '80px' }}>
             <span className="fs-1 opacity-50">📦</span>
           </div>
-          <h4 className="text-secondary fw-bold mb-2">Ningún insumo seleccionado</h4>
-          <p className="text-muted mb-4">Para editar la información o el stock de un insumo, búscalo primero en el inventario.</p>
+          <h4 className="text-secondary fw-bold mb-2">Insumo no encontrado</h4>
+          <p className="text-muted mb-4">No se encontró el insumo solicitado. Vuelve al inventario para seleccionar otro.</p>
           <div>
             <button className="btn btn-primary rounded-3 px-4" onClick={() => navigate('/inventoryManager/viewItems')}>
               Ir al Inventario

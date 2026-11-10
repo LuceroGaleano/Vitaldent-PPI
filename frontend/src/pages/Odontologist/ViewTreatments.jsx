@@ -1,9 +1,7 @@
-import { useContext } from 'react';
 import { API_URL } from '../../config';
 import useFetch from '../../hooks/useFetch';
-import { AppointmentContext } from '../../context/AppointmentContext';
-import { useOutletContext } from 'react-router-dom';
-import { TreatmentContext } from '../../context/TreatmentContext';
+import { useNavigate, useParams } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 const mapTreatments = (data) => data.map((treat) => ({
   id: treat.treatmentId,
@@ -13,10 +11,26 @@ const mapTreatments = (data) => data.map((treat) => ({
   items: treat.treatmentItems,
 }));
 
+const mapAppointments = (data) => data.map((appointment) => ({
+  id: appointment.appointmentId,
+  patient: appointment.patientName ?? 'Sin paciente',
+}));
+
 function ViewTreatments() {
-  const { onTreatmentClick } = useOutletContext();
-  const { appointment } = useContext(AppointmentContext);
-  const { treatment } = useContext(TreatmentContext);
+  const { appointmentId } = useParams();
+  const { auth } = useAuth();
+  const navigate = useNavigate();
+  const {
+    data: appointmentData,
+    loading: loadingAppointment,
+    error: appointmentError,
+  } = useFetch({
+    autoExecute: Boolean(appointmentId),
+    url: appointmentId ? `${API_URL}/doctor/appointment/doctor/${auth.document}` : undefined,
+    method: 'GET',
+    mapper: mapAppointments,
+  });
+  const appointment = appointmentData?.find((record) => record.id === appointmentId);
   const {
     data: treatmentData,
     loading,
@@ -38,19 +52,27 @@ function ViewTreatments() {
         </span>
       </div>
 
-      {appointment && !treatment && (
+      {appointment && (
         <div className="alert alert-info border-info border-opacity-25 bg-info bg-opacity-10 text-center rounded-4 p-3 mb-4 shadow-sm fw-semibold">
           💡 Estás creando el historial para {appointment.patient}. Selecciona el tratamiento a aplicar.
         </div>
       )}
 
-      {error && (
+      {(appointmentError || error) && (
         <div className="alert alert-danger py-2 px-3 small text-center rounded-3 border-0 bg-danger bg-opacity-10 text-danger fw-semibold" role="alert">
-          {error}
+          {appointmentError || error}
         </div>
       )}
 
-      {loading || (treatmentData === null && !error) ? (
+      {appointmentId && !loadingAppointment && !appointmentError && !appointment ? (
+        <div className="card shadow-sm border-0 rounded-4 p-5 text-center bg-white">
+          <h4 className="text-secondary fw-bold mb-2">Cita no encontrada</h4>
+          <p className="text-muted mb-4">No se encontró la cita seleccionada en tu agenda.</p>
+          <button className="btn btn-primary rounded-3 px-4 mx-auto" onClick={() => navigate('/odontologist/appointments')}>
+            Ir a Mis Citas
+          </button>
+        </div>
+      ) : loadingAppointment || loading || (treatmentData === null && !error) ? (
         <div className="text-center py-5">
           <span className="spinner-border text-success" role="status"></span>
           <p className="text-muted mt-2 small">Cargando tratamientos...</p>
@@ -81,11 +103,11 @@ function ViewTreatments() {
                     </div>
                   </div>
 
-                  {appointment && !treatment && (
+                  {appointment && (
                     <div className="mt-auto">
                       <button 
                         className="btn btn-success btn-sm w-100 rounded-3 fw-semibold py-2 shadow-sm" 
-                        onClick={() => onTreatmentClick(treatmentRecord)}
+                        onClick={() => navigate(`/odontologist/appointments/${appointmentId}/treatments/${treatmentRecord.id}/clinical-record`)}
                       >
                         Vincular al Historial
                       </button>

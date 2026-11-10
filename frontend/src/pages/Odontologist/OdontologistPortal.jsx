@@ -1,7 +1,5 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { AppointmentContext } from '../../context/AppointmentContext';
-import { TreatmentContext } from '../../context/TreatmentContext';
 import useAuth from '../../hooks/useAuth';
 import logo from '../../assets/LogoDoctor@4x-8.png';
 import {
@@ -43,8 +41,6 @@ const findSectionByPath = (pathname) =>
 
 function OdontologistPortal() {
   const { handleLogout } = useAuth();
-  const { setAppointment } = useContext(AppointmentContext);
-  const { setTreatment } = useContext(TreatmentContext);
   const navigate = useNavigate();
   const location = useLocation();
   const activeSection = findSectionByPath(location.pathname);
@@ -55,16 +51,6 @@ function OdontologistPortal() {
   const openSection = sectionPreference.pathname === location.pathname
     ? sectionPreference.openSection
     : activeSection;
-
-  const goToAppointment = (appointment) => {
-    setAppointment(appointment);
-    navigate('/odontologist/createMedicalHistory');
-  };
-
-  const goToTreatment = (treatment) => {
-    setTreatment(treatment);
-    navigate('/odontologist/createMedicalHistory');
-  };
 
   const handleSectionClick = (event, key) => {
     if (openSection === key) event.preventDefault();
@@ -173,7 +159,7 @@ function OdontologistPortal() {
 
       <div className="flex-grow-1 p-4 p-md-5 overflow-auto" style={{ maxHeight: '100vh', backgroundColor: '#f4f6f8' }}>
         <div className="container-fluid max-w-7xl">
-          <Outlet context={{ onAppointmentClick: goToAppointment, onTreatmentClick: goToTreatment }} />
+          <Outlet />
         </div>
       </div>
     </div>
