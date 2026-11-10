@@ -42,7 +42,7 @@ const findSectionByPath = (pathname) =>
   MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
 
 function OdontologistPortal() {
-  const { setAuth } = useAuth();
+  const { handleLogout } = useAuth();
   const { setAppointment } = useContext(AppointmentContext);
   const { setTreatment } = useContext(TreatmentContext);
   const navigate = useNavigate();
@@ -64,11 +64,6 @@ function OdontologistPortal() {
   const goToTreatment = (treatment) => {
     setTreatment(treatment);
     navigate('/odontologist/createMedicalHistory');
-  };
-
-  const handleLogout = () => {
-    setAuth({ logged: false, token: null });
-    navigate('/');
   };
 
   const handleSectionClick = (event, key) => {

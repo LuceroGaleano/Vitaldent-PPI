@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import logo from '../../assets/LogoPatient@4x-8.png';
 import {
@@ -24,8 +24,7 @@ const findSectionByPath = (pathname) =>
   MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
 
 export default function PatientPortal() {
-  const { setAuth } = useAuth();
-  const navigate = useNavigate();
+  const { handleLogout } = useAuth();
   const location = useLocation();
   const activeSection = findSectionByPath(location.pathname);
   const [sectionPreference, setSectionPreference] = useState({
@@ -35,11 +34,6 @@ export default function PatientPortal() {
   const openSection = sectionPreference.pathname === location.pathname
     ? sectionPreference.openSection
     : activeSection;
-
-  const handleLogout = () => {
-    setAuth({ logged: false, token: null });
-    navigate('/');
-  };
 
   const handleSectionClick = (event, key) => {
     if (openSection === key) event.preventDefault();

@@ -49,7 +49,7 @@ const findSectionByPath = (pathname) =>
   MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
 
 function ReceptionistPortal() {
-  const { setAuth } = useAuth();
+  const { handleLogout } = useAuth();
   const { setInvoice } = useContext(InvoiceContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,11 +61,6 @@ function ReceptionistPortal() {
   const openSection = sectionPreference.pathname === location.pathname
     ? sectionPreference.openSection
     : activeSection;
-
-  const handleLogout = () => {
-    setAuth({ logged: false, token: null });
-    navigate('/');
-  };
 
   const goToInvoice = (invoice) => {
     setInvoice(invoice);

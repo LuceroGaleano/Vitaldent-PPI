@@ -25,7 +25,7 @@ const findSectionByPath = (pathname) =>
   MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
 
 function InventoryManagerPortal() {
-  const { setAuth } = useAuth();
+  const { handleLogout } = useAuth();
   const { setItem } = useContext(ItemContext);
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,11 +37,6 @@ function InventoryManagerPortal() {
   const openSection = sectionPreference.pathname === location.pathname
     ? sectionPreference.openSection
     : activeSection;
-
-  const handleLogout = () => {
-    setAuth({ logged: false, token: null });
-    navigate('/');
-  };
 
   const goToUpdate = (item) => {
     setItem(item);
