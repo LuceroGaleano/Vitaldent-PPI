@@ -1,7 +1,7 @@
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { API_URL } from '../config';
-import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import useFetch from "../customHooks/useFetch";
 import useForm from "../customHooks/useForm";
 
@@ -21,7 +21,7 @@ const initialState = {
 
 function UpdateUser() {
   const { state, handleChange, setValues } = useForm(initialState);
-  const { auth } = useContext(AuthContext);
+  const { auth } = useAuth();
   const navigate = useNavigate();
   const {
     data: userData,

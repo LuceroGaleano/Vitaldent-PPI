@@ -1,6 +1,6 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import useAuth from '../../hooks/useAuth';
 import logo from '../../assets/LogoPatient@4x-8.png';
 import {
   FaCalendarCheck, FaCalendarDay, FaNotesMedical, FaUserEdit,
@@ -24,7 +24,7 @@ const findSectionByPath = (pathname) =>
   MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
 
 export default function PatientPortal() {
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const activeSection = findSectionByPath(location.pathname);

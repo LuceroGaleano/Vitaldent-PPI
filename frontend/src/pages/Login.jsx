@@ -1,7 +1,6 @@
-import { useContext } from 'react';
 import { API_URL } from '../config';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import useAuth from '../hooks/useAuth';
 import useFetch from '../customHooks/useFetch';
 import useForm from '../customHooks/useForm';
 
@@ -14,7 +13,7 @@ function Login() {
   const { state, handleChange } = useForm(initialState);
   const { execute: login, loading, error } = useFetch();
   const navigate = useNavigate();
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();

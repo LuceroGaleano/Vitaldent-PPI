@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
 import { InvoiceContext } from '../../context/InvoiceContext';
+import useAuth from '../../hooks/useAuth';
 import logo from '../../assets/LogoReceptionist@4x-8.png';
 
 import {
@@ -49,7 +49,7 @@ const findSectionByPath = (pathname) =>
   MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
 
 function ReceptionistPortal() {
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
   const { setInvoice } = useContext(InvoiceContext);
   const navigate = useNavigate();
   const location = useLocation();

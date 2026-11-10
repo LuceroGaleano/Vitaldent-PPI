@@ -1,6 +1,5 @@
-import { useContext } from 'react';
 import { API_URL } from '../../config';
-import { AuthContext } from '../../context/AuthContext';
+import useAuth from '../../hooks/useAuth';
 import useFetch from '../../customHooks/useFetch';
 import { useOutletContext } from 'react-router-dom';
 
@@ -14,7 +13,7 @@ const mapAppointments = (data) => data.map((appointment) => ({
 
 function DoctorAppointments() {
   const { onAppointmentClick } = useOutletContext();
-  const { auth } = useContext(AuthContext);
+  const { auth } = useAuth();
   const {
     data: appointmentData,
     loading,

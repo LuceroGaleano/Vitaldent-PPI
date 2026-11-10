@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
 import { AppointmentContext } from '../../context/AppointmentContext';
 import { TreatmentContext } from '../../context/TreatmentContext';
+import useAuth from '../../hooks/useAuth';
 import logo from '../../assets/LogoDoctor@4x-8.png';
 import {
   FaCalendarAlt, FaNotesMedical, FaSearch, FaSyringe, FaListUl,
@@ -42,7 +42,7 @@ const findSectionByPath = (pathname) =>
   MENU_SECTIONS.find((section) => section.items.some((item) => pathname.startsWith(item.to)))?.key ?? null;
 
 function OdontologistPortal() {
-  const { setAuth } = useContext(AuthContext);
+  const { setAuth } = useAuth();
   const { setAppointment } = useContext(AppointmentContext);
   const { setTreatment } = useContext(TreatmentContext);
   const navigate = useNavigate();
